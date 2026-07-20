@@ -1,0 +1,60 @@
+3.4 Hosting Website
+
+Hosting website adalah layanan penyimpanan file dan data sebuah website pada server yang terhubung ke internet sehingga website tersebut dapat diakses oleh pengguna kapan saja dan dari mana saja.
+
+Layanan hosting yang digunakan pada penelitian ini adalah Microsoft Azure (https://azure.microsoft.com), sebuah platform komputasi awan milik Microsoft. Layanan ini diakses melalui program Azure for Students (https://azure.microsoft.com/en-us/free/students) yang tersedia bagi mahasiswa aktif melalui GitHub Student Developer Pack.
+
+Microsoft Azure dipilih karena tersedia secara gratis bagi mahasiswa dengan kredit senilai $100, mendukung runtime PHP 8.x untuk Laravel dan layanan Static Web Apps untuk React.js, serta menyediakan database MySQL terkelola dan sertifikat HTTPS secara otomatis.
+
+Berikut langkah-langkah hosting yang dilakukan:
+
+
+3.4.1 Masuk ke Azure Portal
+
+Langkah pertama adalah membuka browser dan mengakses portal.azure.com, kemudian memasukkan email beserta kata sandi akun Microsoft Azure hingga halaman dashboard utama Azure Portal berhasil ditampilkan.
+
+[SCREENSHOT: Tampilan dashboard utama Azure Portal setelah berhasil login]
+
+
+3.4.2 Membuat Database MySQL
+
+Pada bilah pencarian di bagian atas portal, layanan "Azure Database for MySQL" dicari dan dipilih. Setelah mengklik tombol pembuatan dan memilih tipe Flexible Server, form konfigurasi diisi dengan membuat grup sumber daya (Resource Group) baru, menentukan nama server, lokasi peladen, ukuran komputasi, beserta kredensial administrator (username dan password). Pada bagian jaringan (Networking), opsi untuk mengizinkan akses publik dari layanan Azure lainnya dicentang agar database dapat diakses oleh sistem backend. Setelah menekan tombol konfirmasi pembuatan dan menunggu server aktif, basis data baru dibuat melalui menu Databases.
+
+[SCREENSHOT: Halaman form pembuatan server Azure Database for MySQL]
+
+
+3.4.3 Hosting Backend Laravel (App Service)
+
+Layanan "App Service" dicari pada portal dan dibuat dengan memilih grup sumber daya yang sama, menentukan nama aplikasi backend, serta menggunakan lingkungan PHP bersistem operasi Linux pada tingkatan paket yang sesuai.
+
+[SCREENSHOT: Halaman pembuatan App Service dengan pengaturan lingkungan PHP]
+
+Setelah sumber daya aktif, menu pengaturan lingkungan (Environment Variables) dibuka untuk menambahkan seluruh variabel konfigurasi produksi dari aplikasi lokal, termasuk alamat koneksi dan kredensial akses ke database yang telah dibuat sebelumnya.
+
+[SCREENSHOT: Daftar Environment Variables yang sudah terisi di App Service]
+
+Selanjutnya, pada menu pusat penyebaran (Deployment Center), layanan dihubungkan dengan akun GitHub pengembang dengan memilih organisasi, repositori, cabang (branch) utama, serta menetapkan direktori kerja (working directory) letak folder backend berada. Setelah disimpan, sistem akan otomatis memproses deployment hingga indikator GitHub Actions menunjukkan status berhasil.
+
+[SCREENSHOT: Halaman Deployment Center yang terhubung ke repositori GitHub]
+
+Langkah terakhir untuk backend adalah masuk ke konsol server (SSH) melalui portal Azure. Di dalam konsol tersebut, perintah dasar kerangka kerja dieksekusi secara berurutan untuk memigrasikan tabel database, mengisi data awal, dan menautkan folder penyimpanan publik.
+
+[SCREENSHOT: Konsol Azure menampilkan hasil eksekusi perintah kerangka kerja yang berhasil]
+
+
+3.4.4 Hosting Frontend React (Static Web Apps)
+
+Layanan "Static Web Apps" dicari dan dibuat dengan menghubungkan kembali aplikasi ke repositori proyek di GitHub. Pada pengaturan pembangunan aplikasi (build), prasetel React dipilih dengan menentukan lokasi folder aplikasi antarmuka dan folder hasil kompilasi (output).
+
+[SCREENSHOT: Form pembuatan Static Web Apps dengan konfigurasi folder proyek]
+
+Setelah proses pembuatan dikonfirmasi, riwayat kompilasi dapat dipantau melalui tab Actions di GitHub. URL publik website kemudian bisa diakses setelah proses tersebut selesai seluruhnya.
+
+[SCREENSHOT: Halaman Overview Static Web Apps dengan URL live yang aktif]
+
+
+3.4.5 Menghubungkan Frontend ke Backend
+
+Agar antarmuka dapat berkomunikasi secara langsung dengan backend, sebuah file pengaturan lingkungan (environment) khusus produksi dibuat di dalam repositori frontend yang berisi alamat URL API publik dari App Service yang telah didapatkan. File tersebut kemudian disimpan dan dipublikasikan (push) kembali ke repositori, yang secara otomatis memicu proses kompilasi ulang pada server. Setelah selesai, URL frontend dibuka untuk memastikan bahwa data dari sistem backend telah berhasil ditampilkan secara utuh.
+
+[SCREENSHOT: Tampilan antarmuka sistem yang sudah dapat diakses secara publik]

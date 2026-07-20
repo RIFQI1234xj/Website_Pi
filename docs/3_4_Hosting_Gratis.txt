@@ -1,0 +1,43 @@
+3.4 Hosting Website
+
+Hosting website adalah layanan penyimpanan file dan data sebuah website pada server yang terhubung ke internet sehingga website tersebut dapat diakses oleh pengguna kapan saja dan dari mana saja.
+
+Pada penelitian ini, proses penyebaran (deployment) sistem menggunakan pendekatan arsitektur terdistribusi (Decoupled Architecture) yang memanfaatkan layanan Cloud tanpa biaya (Free Tier). Pendekatan ini memisahkan ketiga komponen utama sistem ke layanan yang berbeda untuk memaksimalkan efisiensi dan keamanan. 
+
+Tiga layanan utama yang digunakan adalah:
+1. Aiven (https://aiven.io) — Untuk menyediakan layanan basis data MySQL terkelola (Always-Free Tier).
+2. Render (https://render.com) — Untuk menjalankan logika sistem backend Laravel menggunakan layanan Free Web Service.
+3. Vercel (https://vercel.com) — Untuk mengeksekusi antarmuka frontend React.js dengan performa tinggi.
+
+Berikut adalah tahapan implementasi hosting yang dilakukan:
+
+
+3.4.1 Pembuatan Basis Data MySQL (Aiven)
+
+Langkah pertama adalah menyiapkan tempat penyimpanan data. Portal Aiven diakses dan sebuah proyek baru dibuat. Pada halaman pembuatan layanan, opsi "MySQL" dipilih. Selanjutnya, paket layanan diatur ke pilihan "Free Plan" (Paket Gratis) yang menyediakan kuota memori dan penyimpanan dasar yang memadai. Setelah layanan basis data dikonfirmasi dan berstatus aktif, parameter koneksi (Host, Port, User, Password) disalin untuk digunakan pada tahapan berikutnya.
+
+[SCREENSHOT: Halaman parameter koneksi database MySQL pada portal Aiven]
+
+
+3.4.2 Hosting Backend Laravel (Render)
+
+Layanan Render digunakan untuk mempublikasikan backend. Sebelum menghubungkan ke Render, sebuah file pengaturan khusus (Dockerfile) dibuat di dalam repositori untuk menginstruksikan server cara menjalankan PHP dan Laravel. 
+
+Pada portal Render, opsi pembuatan "Web Service" dipilih dan dihubungkan secara langsung ke repositori proyek di GitHub. Pada bagian pengaturan, variabel lingkungan (Environment Variables) ditambahkan, yang memuat kredensial koneksi ke basis data Aiven beserta pengaturan aplikasi. Setelah konfigurasi disimpan, sistem Render secara otomatis akan mengunduh kode, memasang dependensi, dan menjalankan server backend.
+
+[SCREENSHOT: Halaman pengaturan Environment Variables pada portal Render]
+
+Setelah backend aktif, antarmuka terminal (Shell) yang disediakan oleh Render dibuka untuk menjalankan perintah dasar Laravel berupa migrasi tabel untuk membentuk struktur basis data di dalam server Aiven.
+
+
+3.4.3 Hosting Frontend React (Vercel)
+
+Layanan Vercel digunakan karena kemudahannya dalam memproses aplikasi berbasis antarmuka. Pada dashboard Vercel, opsi "Add New Project" diklik dan dihubungkan ke repositori proyek frontend di GitHub. 
+
+Sistem Vercel secara otomatis akan mendeteksi bahwa kerangka kerja yang digunakan adalah React/Vite. Sebelum menekan tombol Deploy, sebuah variabel lingkungan (Environment Variable) ditambahkan dengan nama VITE_API_BASE_URL yang diisi dengan alamat URL publik dari backend Render. Hal ini memastikan frontend dapat melakukan pertukaran data dengan backend.
+
+[SCREENSHOT: Form penambahan Environment Variables di Vercel sebelum proses Deploy]
+
+Setelah menekan tombol Deploy, Vercel akan mengkompilasi kode React secara otomatis. Ketika proses selesai, URL publik dari Vercel sudah dapat diakses untuk melihat hasil akhir sistem yang telah terintegrasi secara penuh.
+
+[SCREENSHOT: Tampilan halaman utama website yang telah berhasil diakses secara online melalui URL Vercel]
