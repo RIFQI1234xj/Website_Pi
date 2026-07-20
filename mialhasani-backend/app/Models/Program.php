@@ -14,6 +14,14 @@ class Program extends Model
         'title', 
         'description', 
         'image', 
-        'category'
+        'images', // Tambahkan images (JSON array)
+        'category',
+        'schedule',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'images' => 'array',
     ];
 }

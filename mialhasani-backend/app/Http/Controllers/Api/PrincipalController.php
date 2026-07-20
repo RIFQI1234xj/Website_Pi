@@ -4,16 +4,44 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Principal;
+use Illuminate\Http\Request;
 
 class PrincipalController extends Controller
 {
     public function index()
     {
-        $principal = Principal::first(); // Ambil 1 data teratas
-        
-        return response()->json([
-            'success' => true,
-            'data'    => $principal
-        ], 200);
+        $principal = Principal::first();
+        return response()->json(['success' => true, 'data' => $principal], 200);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'name'    => 'sometimes|string|max:255',
+            'role'    => 'sometimes|string|max:255',
+            'image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'message' => 'sometimes|string',
+        ]);
+
+        $principal = Principal::first();
+        $data = $request->except('image', '_method');
+
+        if ($request->hasFile('image')) {
+            if ($principal && $principal->image && file_exists(public_path('images/' . $principal->image))) {
+                unlink(public_path('images/' . $principal->image));
+            }
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images'), $filename);
+            $data['image'] = $filename;
+        }
+
+        if (!$principal) {
+            $principal = Principal::create($data);
+        } else {
+            $principal->update($data);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Profil pimpinan berhasil diperbarui', 'data' => $principal], 200);
     }
 }

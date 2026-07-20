@@ -7,8 +7,8 @@ export const useScrollObserver = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('active');
-            // Optional: unobserve after revealing if you want it to animate only once
-            // observer.unobserve(entry.target); 
+          } else {
+            entry.target.classList.remove('active');
           }
         });
       },

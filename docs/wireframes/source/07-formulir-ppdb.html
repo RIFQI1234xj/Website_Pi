@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 - Wireframe Formulir PPDB (Outline Sederhana)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #fff; color: #111; width: 1600px; }
+  .page { width: 1600px; min-height: 1000px; padding: 20px; }
+
+  /* Shared wireframe styles */
+  .box { background: #eee; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box { background: #eee; border: 1px solid #999; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)), linear-gradient(to top right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+  
+  .card { border: 1px solid #999; padding: 30px; background: #fff; border-radius: 12px; }
+  
+  .btn { border: 2px solid #333; padding: 10px 24px; display: inline-block; font-size: 14px; background: #fff; border-radius: 8px; font-weight: bold; color: #333; }
+  .btn-primary { background: #eee; color: #111; border: 2px solid #333; padding: 10px 24px; display: inline-block; font-size: 14px; border-radius: 8px; font-weight: bold; }
+  
+  .flex { display: flex; }
+  .flex-col { display: flex; flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .gap-4 { gap: 16px; }
+
+  /* Navbar */
+  .navbar { border: 2px solid #333; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; background: #fff; }
+  .nav-logo { font-size: 14px; font-weight: bold; }
+  .nav-links { display: flex; gap: 20px; font-size: 12px; }
+
+  .page-label { font-size: 10px; color: #999; text-align: right; margin-bottom: 4px; }
+  
+  /* Form Steps */
+  .step-container { display: flex; justify-content: space-between; position: relative; margin-bottom: 40px; }
+  .step-line { position: absolute; top: 20px; left: 0; right: 0; height: 4px; background: #eee; border-top: 1px solid #999; border-bottom: 1px solid #999; z-index: 1; }
+  .step-line-active { position: absolute; top: 20px; left: 0; width: 25%; height: 4px; background: #555; z-index: 2; }
+  .step-item { position: relative; z-index: 3; text-align: center; width: 120px; }
+  .step-circle { width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 2px solid #999; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #999; }
+  .step-item.active .step-circle { border-color: #333; color: #111; border-width: 4px; }
+  .step-title { font-size: 12px; font-weight: bold; color: #999; }
+  .step-item.active .step-title { color: #111; }
+  
+  /* Form Inputs */
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #333; }
+  .form-input { width: 100%; padding: 12px; border: 1px solid #999; border-radius: 6px; font-size: 14px; background: #f9f9f9; color: #999; }
+
+  /* === Responsive Override === */
+  html, body { width: 100% !important; max-width: 100% !important; overflow-x: auto !important; box-sizing: border-box !important; }
+  .page { width: 100% !important; max-width: 1600px !important; box-sizing: border-box !important; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-label">Wireframe 07 — Formulir PPDB (Outline Sederhana)</div>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="flex items-center gap-2">
+      <div class="cross-box" style="width:36px;height:36px;border:1px solid #999;"></div>
+      <div class="nav-logo">MI Al-Hasani</div>
+    </div>
+    <div class="nav-links">
+      <span>Beranda</span>
+      <span>Profil</span>
+      <span>Program</span>
+      <span>Berita</span>
+      <span>Galeri</span>
+      <span style="border-bottom: 2px solid #333; font-weight: bold;">PPDB</span>
+      <span>Kontak</span>
+    </div>
+  </div>
+
+  <div style="max-width: 800px; margin: 0 auto;">
+    
+    <div style="text-align:center; margin-bottom: 40px;">
+      <div style="font-size:32px; font-weight:bold; margin-bottom:8px;">Formulir Pendaftaran PPDB</div>
+      <div style="color:#555;">Tahun Ajaran 2026/2027</div>
+    </div>
+
+    <!-- Steps -->
+    <div class="step-container">
+      <div class="step-line"></div>
+      <div class="step-line-active"></div>
+      
+      <div class="step-item active">
+        <div class="step-circle">1</div>
+        <div class="step-title">Data Siswa</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">2</div>
+        <div class="step-title">Data Orang Tua</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">3</div>
+        <div class="step-title">Upload Dokumen</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">4</div>
+        <div class="step-title">Ringkasan</div>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card">
+      <div style="font-size:20px; font-weight:bold; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+        <div class="cross-box" style="width:24px;height:24px;border:1px solid #999;"></div> Data Calon Peserta Didik
+      </div>
+      <div style="color:#555; font-size:12px; margin-bottom:24px;">Lengkapi data diri calon siswa dengan benar sesuai dokumen resmi.</div>
+      
+      <div class="form-group">
+        <label class="form-label">Nama Lengkap (Sesuai Akta Kelahiran)</label>
+        <div class="form-input">Masukkan nama lengkap...</div>
+      </div>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div class="form-group">
+          <label class="form-label">Tempat Lahir</label>
+          <div class="form-input">Contoh: Jakarta</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tanggal Lahir</label>
+          <div class="form-input flex justify-between">
+            <span>DD/MM/YYYY</span>
+            <span class="cross-box" style="width:16px;height:16px;border:1px solid #999;"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Jenis Kelamin</label>
+        <div style="display:flex; gap:20px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:16px;height:16px;border-radius:50%;border:2px solid #999;"></div> Laki-laki
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:16px;height:16px;border-radius:50%;border:2px solid #999;"></div> Perempuan
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Alamat Lengkap</label>
+        <div class="form-input" style="height:100px;">Nama jalan, RT/RW, Kelurahan, Kecamatan...</div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div style="display:flex; justify-content:space-between; margin-top:40px; padding-top:20px; border-top:1px solid #999;">
+        <div style="visibility:hidden;" class="btn">Kembali</div>
+        <div class="btn-primary">Selanjutnya &rarr;</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

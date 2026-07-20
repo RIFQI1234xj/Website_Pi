@@ -12,6 +12,12 @@ class Teacher extends Model
         'role',
         'description',
         'image',
-        'order'
+        'order',
+        'subject',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 }

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komponen UML - Bab 2 Skripsi</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #000000;
+            text-align: center;
+        }
+        h1 { margin-bottom: 5px; }
+        .subtitle { text-align: center; margin-bottom: 40px; color: #000000; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            margin-bottom: 50px;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 16px;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #ffffff;
+            font-weight: bold;
+            text-align: center;
+        }
+        .icon-cell {
+            width: 150px;
+            text-align: center;
+            background-color: #ffffff;
+        }
+        .name-cell {
+            width: 180px;
+            font-weight: bold;
+            color: #000000;
+        }
+        
+        /* SVG Styles */
+        svg {
+            display: block;
+            margin: 0 auto;
+            overflow: visible;
+        }
+        .line { stroke: #000000; stroke-width: 2; fill: none; }
+        .line-dashed { stroke: #000000; stroke-width: 2; fill: none; stroke-dasharray: 6,4; }
+        .shape { stroke: #000000; stroke-width: 2; fill: #ffffff; }
+        .shape-filled { stroke: #000000; stroke-width: 2; fill: #000000; }
+    </style>
+</head>
+<body>
+
+    <h1>Tabel Simbol UML</h1>
+    <p class="subtitle">Buka halaman ini, lalu Anda bisa mengambil screenshot (Snip) masing-masing tabel untuk dimasukkan ke Microsoft Word.</p>
+
+    <h2>1. Komponen Use Case Diagram</h2>
+    <table>
+        <tr>
+            <th>Simbol / Gambar</th>
+            <th>Nama Komponen</th>
+            <th>Deskripsi</th>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="40" height="70">
+                    <circle cx="20" cy="15" r="8" class="shape" />
+                    <line x1="20" y1="23" x2="20" y2="45" class="line" />
+                    <line x1="5" y1="30" x2="35" y2="30" class="line" />
+                    <line x1="20" y1="45" x2="5" y2="65" class="line" />
+                    <line x1="20" y1="45" x2="35" y2="65" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Actor (Aktor)</td>
+            <td>Mewakili entitas eksternal (manusia, perangkat keras, atau sistem lain) yang berinteraksi langsung dengan sistem yang sedang dibangun.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="50">
+                    <ellipse cx="50" cy="25" rx="45" ry="20" class="shape" />
+                </svg>
+            </td>
+            <td class="name-cell">Use Case</td>
+            <td>Menggambarkan fungsionalitas, layanan, atau pekerjaan tertentu yang dapat dilakukan atau diberikan oleh sistem kepada aktor.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="30">
+                    <line x1="10" y1="15" x2="90" y2="15" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Association (Asosiasi)</td>
+            <td>Garis penghubung yang menunjukkan interaksi dan komunikasi antara aktor dengan use case tertentu.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="40">
+                    <line x1="10" y1="20" x2="85" y2="20" class="line-dashed" />
+                    <polyline points="75,13 85,20 75,27" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Include</td>
+            <td>Menunjukkan bahwa suatu use case mutlak membutuhkan atau memanggil use case lainnya agar dapat berjalan (bersifat wajib).</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="40">
+                    <line x1="10" y1="20" x2="85" y2="20" class="line-dashed" />
+                    <polyline points="75,13 85,20 75,27" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Extend</td>
+            <td>Menunjukkan bahwa suatu use case merupakan tambahan atau perluasan opsional dari use case utama pada kondisi tertentu.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="90" height="70">
+                    <rect x="5" y="5" width="80" height="60" class="shape" />
+                </svg>
+            </td>
+            <td class="name-cell">System Boundary</td>
+            <td>Garis batas yang menandakan ruang lingkup sistem. Use case diletakkan di dalam kotak, sedangkan aktor berada di luarnya.</td>
+        </tr>
+    </table>
+
+
+    <h2>2. Komponen Activity Diagram</h2>
+    <table>
+        <tr>
+            <th>Simbol / Gambar</th>
+            <th>Nama Komponen</th>
+            <th>Deskripsi</th>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="40" height="40">
+                    <circle cx="20" cy="20" r="12" class="shape-filled" />
+                </svg>
+            </td>
+            <td class="name-cell">Initial Node</td>
+            <td>Menandakan titik awal dimulainya suatu alur aktivitas pada diagram. Hanya ada satu dalam sebuah diagram.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="50">
+                    <rect x="5" y="10" width="90" height="30" rx="15" class="shape" />
+                </svg>
+            </td>
+            <td class="name-cell">Activity / Action</td>
+            <td>Mewakili satu langkah pekerjaan, tindakan, atau proses yang sedang dilakukan dalam sebuah sistem.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="30">
+                    <line x1="10" y1="15" x2="85" y2="15" class="line" />
+                    <polyline points="75,8 85,15 75,22" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Control Flow</td>
+            <td>Menunjukkan arah atau urutan perpindahan eksekusi dari satu aktivitas ke aktivitas berikutnya.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="60" height="60">
+                    <polygon points="30,5 55,30 30,55 5,30" class="shape" />
+                </svg>
+            </td>
+            <td class="name-cell">Decision / Merge Node</td>
+            <td>Decision: Titik percabangan bersyarat (Ya/Tidak).<br>Merge: Titik penggabungan kembali jalur-jalur alternatif.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="80" height="50">
+                    <rect x="10" y="20" width="60" height="6" class="shape-filled" />
+                    <line x1="40" y1="0" x2="40" y2="20" class="line" />
+                    <polyline points="35,15 40,20 45,15" class="line" />
+                    <line x1="20" y1="26" x2="20" y2="50" class="line" />
+                    <polyline points="15,45 20,50 25,45" class="line" />
+                    <line x1="60" y1="26" x2="60" y2="50" class="line" />
+                    <polyline points="55,45 60,50 65,45" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Fork Node</td>
+            <td>Memecah satu alur menjadi dua atau lebih alur yang berjalan secara paralel (bersamaan).</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="80" height="50">
+                    <rect x="10" y="20" width="60" height="6" class="shape-filled" />
+                    <line x1="20" y1="0" x2="20" y2="20" class="line" />
+                    <polyline points="15,15 20,20 25,15" class="line" />
+                    <line x1="60" y1="0" x2="60" y2="20" class="line" />
+                    <polyline points="55,15 60,20 65,15" class="line" />
+                    <line x1="40" y1="26" x2="40" y2="50" class="line" />
+                    <polyline points="35,45 40,50 45,45" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Join Node</td>
+            <td>Menyatukan kembali alur-alur paralel sebelum aktivitas bisa dilanjutkan.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="40" height="40">
+                    <circle cx="20" cy="20" r="14" class="shape" />
+                    <circle cx="20" cy="20" r="8" class="shape-filled" />
+                </svg>
+            </td>
+            <td class="name-cell">Final Node</td>
+            <td>Menandakan titik akhir (selesai) dari seluruh rangkaian proses atau aktivitas di dalam diagram.</td>
+        </tr>
+    </table>
+
+
+    <h2>3. Komponen Class Diagram</h2>
+    <table>
+        <tr>
+            <th>Simbol / Gambar</th>
+            <th>Nama Komponen</th>
+            <th>Deskripsi</th>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="110" height="90">
+                    <rect x="5" y="5" width="100" height="80" class="shape" />
+                    <line x1="5" y1="30" x2="105" y2="30" class="line" />
+                    <line x1="5" y1="55" x2="105" y2="55" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Class (Kelas)</td>
+            <td>Merepresentasikan entitas. Terdiri dari 3 bagian: (1) Nama Kelas, (2) Atribut / Properties, dan (3) Operasi / Methods.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="30">
+                    <line x1="10" y1="15" x2="90" y2="15" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Association</td>
+            <td>Hubungan struktural antara satu objek dengan objek di kelas lain secara umum.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="30">
+                    <line x1="10" y1="15" x2="70" y2="15" class="line" />
+                    <polygon points="70,7 90,15 70,23" class="shape" />
+                </svg>
+            </td>
+            <td class="name-cell">Generalization</td>
+            <td>Hubungan Pewarisan (Inheritance). Ujung panah segitiga kosong mengarah ke kelas induk (Superclass).</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="30">
+                    <line x1="40" y1="15" x2="90" y2="15" class="line" />
+                    <polygon points="10,15 25,7 40,15 25,23" class="shape" />
+                </svg>
+            </td>
+            <td class="name-cell">Aggregation</td>
+            <td>Hubungan "Has-a" yang lemah. Belah ketupat kosong menempel pada kelas utama (Whole).</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="30">
+                    <line x1="40" y1="15" x2="90" y2="15" class="line" />
+                    <polygon points="10,15 25,7 40,15 25,23" class="shape-filled" />
+                </svg>
+            </td>
+            <td class="name-cell">Composition</td>
+            <td>Hubungan "Has-a" yang kuat. Belah ketupat hitam penuh menempel pada kelas utama (Whole). Jika kelas utama hancur, kelas bagian (Part) ikut hancur.</td>
+        </tr>
+        <tr>
+            <td class="icon-cell">
+                <svg width="100" height="30">
+                    <line x1="10" y1="15" x2="85" y2="15" class="line-dashed" />
+                    <polyline points="75,8 85,15 75,22" class="line" />
+                </svg>
+            </td>
+            <td class="name-cell">Dependency</td>
+            <td>Ketergantungan, di mana perubahan pada satu kelas independen memengaruhi kelas dependen yang menggunakannya.</td>
+        </tr>
+    </table>
+
+</body>
+</html>

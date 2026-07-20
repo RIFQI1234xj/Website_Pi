@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 - Wireframe Informasi PPDB (Outline Sederhana)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #fff; color: #111; width: 1600px; }
+  .page { width: 1600px; min-height: 1000px; padding: 20px; }
+
+  /* Outline Wireframe Styles */
+  .box { background: #eee; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box { background: #eee; border: 1px solid #999; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)), linear-gradient(to top right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+
+  .flex { display: flex; }
+  .flex-col { display: flex; flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  
+  /* Navbar */
+  .navbar { border: 2px solid #333; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; background: #fff; }
+  .nav-logo { font-size: 14px; font-weight: bold; }
+  .nav-links { display: flex; gap: 20px; font-size: 12px; }
+
+  .page-label { font-size: 10px; color: #999; text-align: right; margin-bottom: 4px; }
+  
+  /* Sections */
+  .hero-section { background: #eee; border: 1px solid #999; border-top: none; padding: 120px 20px 140px; text-align: center; }
+  .hero-title { font-size: 42px; font-weight: bold; margin-bottom: 24px; color: #111; line-height: 1.2; }
+  .hero-subtitle { font-size: 18px; color: #555; max-width: 800px; margin: 0 auto; line-height: 1.6; }
+  
+  /* Main Content */
+  .main-content { max-width: 1200px; margin: -60px auto 80px; position: relative; z-index: 10; }
+  
+  /* Cards Grid */
+  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 60px; }
+  .action-card { background: #fff; border: 1px solid #999; border-radius: 16px; padding: 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+  .icon-circle { width: 48px; height: 48px; border-radius: 50%; border: 1px solid #999; background: #f9f9f9; display: flex; justify-content: center; align-items: center; }
+  .card-title { font-size: 14px; font-weight: bold; color: #111; letter-spacing: 1px; }
+
+  /* Agreement Box */
+  .agreement-box { background: #f9f9f9; border: 2px solid #999; border-radius: 16px; padding: 30px; max-width: 800px; margin: 0 auto; }
+  .agreement-header { font-size: 16px; font-weight: bold; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+  
+  .checkbox-row { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 30px; cursor: pointer; }
+  .checkbox-box { width: 24px; height: 24px; border: 2px solid #999; border-radius: 6px; flex-shrink: 0; background: #fff; margin-top: 2px; }
+  .checkbox-text { font-size: 14px; color: #333; line-height: 1.6; }
+  
+  .submit-btn { width: 100%; padding: 20px; background: #eee; border: 2px solid #333; border-radius: 12px; font-size: 16px; font-weight: bold; color: #111; text-align: center; }
+
+  /* Footer */
+  .footer { border: 2px solid #333; padding: 24px; background: #f9f9f9; color: #333; font-size: 11px; }
+
+  /* === Responsive Override === */
+  html, body { width: 100% !important; max-width: 100% !important; overflow-x: auto !important; box-sizing: border-box !important; }
+  .page { width: 100% !important; max-width: 1600px !important; box-sizing: border-box !important; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-label">Wireframe 06 — Informasi PPDB (Outline Sederhana)</div>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="flex items-center gap-2">
+      <div class="cross-box" style="width:36px;height:36px;border:1px solid #999;"></div>
+      <div class="nav-logo">MI Al-Hasani</div>
+    </div>
+    <div class="nav-links">
+      <span>Beranda</span>
+      <span>Profil</span>
+      <span>Program</span>
+      <span>Berita</span>
+      <span>Galeri</span>
+      <span style="border-bottom: 2px solid #333; font-weight: bold;">PPDB</span>
+      <span>Kontak</span>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-title">
+      Penerimaan Peserta<br>Didik Baru (PPDB)
+    </div>
+    <div class="hero-subtitle">
+      MI Al-Hasani membuka pendaftaran siswa baru. Mari bergabung dalam keluarga besar MI Al-Hasani untuk pendidikan yang berkualitas dan Islami.
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    
+    <!-- Cards Grid -->
+    <div class="cards-grid">
+      <!-- Card 1 -->
+      <div class="action-card">
+        <div class="cross-box icon-circle" style="border:1px solid #999;"></div>
+        <div class="card-title">BROSUR SEKOLAH</div>
+      </div>
+      
+      <!-- Card 2 -->
+      <div class="action-card">
+        <div class="cross-box icon-circle" style="border:1px solid #999;"></div>
+        <div class="card-title">ALUR PENDAFTARAN</div>
+      </div>
+      
+      <!-- Card 3 -->
+      <div class="action-card">
+        <div class="cross-box icon-circle" style="border:1px solid #999;"></div>
+        <div class="card-title">PERSYARATAN DOKUMEN</div>
+      </div>
+    </div>
+
+    <!-- Agreement Box -->
+    <div class="agreement-box">
+      <div class="agreement-header">
+        <div class="cross-box" style="width:16px;height:16px;border:none;"></div>
+        Persetujuan Pendaftaran
+      </div>
+      
+      <div class="checkbox-row">
+        <div class="checkbox-box"></div>
+        <div class="checkbox-text">
+          Saya telah membaca dan memahami persyaratan dokumen serta alur pendaftaran yang berlaku. Saya menyatakan bahwa data yang akan saya berikan adalah benar dan dapat dipertanggungjawabkan.
+        </div>
+      </div>
+      
+      <div class="submit-btn">
+        Mulai Pendaftaran &rarr;
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="flex justify-between">
+      <div>
+        <div style="font-size:14px; font-weight:bold; margin-bottom:4px;">MI Al-Hasani</div>
+        <div style="font-size:11px; color:#555; max-width:200px;">Tempat di mana Ilmu Pengetahuan dan Nilai-nilai Islami berpadu.</div>
+      </div>
+      <div>
+        <div style="font-weight:bold; margin-bottom:8px;">Navigasi</div>
+        <div style="color:#555; line-height:1.6;">Beranda<br>Profil<br>Program<br>Berita<br>PPDB</div>
+      </div>
+      <div>
+        <div style="font-weight:bold; margin-bottom:8px;">Kontak</div>
+        <div style="color:#555; line-height:1.6;">[Alamat Lengkap]<br>[Telepon]<br>[Email]</div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #ddd; margin-top:20px; padding-top:20px; text-align:center; color:#777;">
+      &copy; 2026 MI Al-Hasani. Hak Cipta Dilindungi.
+    </div>
+  </div>
+</div>
+</body>
+</html>

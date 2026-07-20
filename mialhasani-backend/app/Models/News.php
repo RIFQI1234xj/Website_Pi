@@ -10,6 +10,10 @@ class News extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'category', 'image', 'excerpt', 'content', 'author', 'date'
+        'title', 'category', 'image', 'photos', 'excerpt', 'content', 'author', 'date'
+    ];
+
+    protected $casts = [
+        'photos' => 'array',
     ];
 }

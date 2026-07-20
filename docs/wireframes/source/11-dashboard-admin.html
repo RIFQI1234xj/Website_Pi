@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11 - Wireframe Dashboard Admin (Outline)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #fff; color: #111; width: 1600px; display: flex; }
+  
+  /* Outline Wireframe Styles */
+  .box { background: #eee; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box { background: #eee; border: 1px solid #999; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)), linear-gradient(to top right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+  .cross-box span { position: relative; z-index: 1; background: rgba(255,255,255,0.8); padding: 2px 4px; font-weight:bold; }
+
+  /* Sidebar */
+  .sidebar { width: 250px; background: #f9f9f9; border-right: 2px solid #999; min-height: 1000px; padding: 20px 0; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; }
+  .menu-item { padding: 10px 16px; font-size: 13px; color: #333; display: flex; align-items: center; gap: 12px; cursor: pointer; margin: 2px 12px; border-radius: 6px; }
+  .menu-item.active { background: #eee; border: 1px solid #999; font-weight: bold; }
+  
+  /* Main Content */
+  .main-content { flex: 1; padding: 30px; background: #fff; }
+  
+  .card { background: #fff; border: 1px solid #999; padding: 20px; border-radius: 8px; margin-bottom: 24px; }
+  
+  .page-label { font-size: 10px; color: #999; text-align: right; margin-bottom: 20px; }
+  
+  /* Stats Row */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-box { background: #fff; border: 1px solid #999; padding: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .stat-val { font-size: 24px; font-weight: bold; margin-bottom: 4px; color: #111; }
+  .stat-name { font-size: 12px; color: #555; }
+  
+  /* Charts Grid */
+  .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .chart-area { height: 250px; width: 100%; border: 1px solid #999; background: #eee; display: flex; align-items: center; justify-content: center; position: relative; }
+
+  /* === Responsive Override === */
+  html, body { width: 100% !important; max-width: 100% !important; overflow-x: auto !important; box-sizing: border-box !important; }
+  .page { width: 100% !important; max-width: 1600px !important; box-sizing: border-box !important; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div>
+    <!-- Logo -->
+    <div style="padding: 0 20px 20px; display: flex; align-items: center; gap: 12px;">
+      <div class="cross-box" style="width:36px;height:36px;border-radius:8px;border:none;"></div>
+      <div>
+        <div style="font-weight:bold; font-size:16px; color:#111;">MI Al-Hasani</div>
+        <div style="font-size:11px; color:#777;">Admin Panel</div>
+      </div>
+    </div>
+    
+    <!-- Profile Box -->
+    <div style="margin: 0 16px 20px; padding: 12px; border: 1px solid #999; border-radius: 8px; display: flex; align-items: center; gap: 12px; background: #eee;">
+      <div class="cross-box" style="width:32px;height:32px;border-radius:50%;border:none;"><span>A</span></div>
+      <div>
+        <div style="font-weight:bold; font-size:13px; color:#111;">Admin Sekolah</div>
+        <div style="font-size:10px; color:#777; display:flex; align-items:center; gap:4px;">
+          <span style="width:6px;height:6px;background:#999;border-radius:50%;display:inline-block;"></span> Online
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:10px; font-weight:bold; color:#777; padding:10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Utama</div>
+    <div class="menu-item active"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Dashboard</div>
+    
+    <div style="font-size:10px; font-weight:bold; color:#777; padding:15px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Konten</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Berita & Artikel</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Galeri Foto</div>
+    
+    <div style="font-size:10px; font-weight:bold; color:#777; padding:15px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Data Sekolah</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Profil Pimpinan</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Program Sekolah</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Data Guru</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> PPDB Online</div>
+    
+    <div style="font-size:10px; font-weight:bold; color:#777; padding:15px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Sistem</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Pengaturan</div>
+  </div>
+  
+  <div style="margin-top:auto; padding-top:20px; border-top:1px solid #ddd;">
+    <div class="menu-item" style="color:#d00; font-weight:bold; margin-bottom: 20px;"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Logout</div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="page-label">Wireframe 11 — Dashboard Admin (Outline Sederhana)</div>
+
+  <!-- Header Banner -->
+  <div style="background:#eee; border:1px solid #999; padding:24px; border-radius:8px; margin-bottom:24px;">
+    <div style="font-size:14px; font-weight:bold; margin-bottom:8px;">Selamat Datang Kembali 👋</div>
+    <div style="font-size:28px; font-weight:bold; margin-bottom:8px;">Admin MI Al-Hasani</div>
+    <div style="font-size:14px; color:#555;">Tahun Ajaran 2024/2025 • Semester Genap — Ringkasan performa dan pembaruan sistem hari ini.</div>
+  </div>
+
+  <!-- Status Cards -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div>
+        <div class="stat-name">TENAGA PENDIDIK</div>
+        <div class="stat-val">28</div>
+        <div style="font-size:11px; font-weight:bold;">28 guru terdaftar</div>
+      </div>
+      <div class="cross-box" style="width:48px;height:48px;border-radius:8px;"></div>
+    </div>
+    <div class="stat-box">
+      <div>
+        <div class="stat-name">BERITA TAYANG</div>
+        <div class="stat-val">45</div>
+        <div style="font-size:11px; font-weight:bold;">45 artikel aktif</div>
+      </div>
+      <div class="cross-box" style="width:48px;height:48px;border-radius:8px;"></div>
+    </div>
+    <div class="stat-box">
+      <div>
+        <div class="stat-name">ALBUM GALERI</div>
+        <div class="stat-val">12</div>
+        <div style="font-size:11px; font-weight:bold;">12 foto terunggah</div>
+      </div>
+      <div class="cross-box" style="width:48px;height:48px;border-radius:8px;"></div>
+    </div>
+    <div class="stat-box">
+      <div>
+        <div class="stat-name">PROGRAM SEKOLAH</div>
+        <div class="stat-val">4</div>
+        <div style="font-size:11px; font-weight:bold;">4 program aktif</div>
+      </div>
+      <div class="cross-box" style="width:48px;height:48px;border-radius:8px;"></div>
+    </div>
+  </div>
+
+  <!-- Charts & Quick Actions -->
+  <div class="charts-grid">
+    
+    <!-- Distribusi Konten (Donut Chart) -->
+    <div class="card">
+      <div style="font-size:16px; font-weight:bold;">Distribusi Konten Berita</div>
+      <div style="font-size:12px; color:#555; margin-bottom:20px;">Berdasarkan kategori artikel tayang di website</div>
+      
+      <div style="display:flex; align-items:center; gap:32px;">
+        <div style="flex:1;">
+          <div class="chart-area" style="border-radius:50%; width:200px; height:200px; margin: 0 auto; border:none; background:transparent;">
+            <div class="cross-box" style="width:100%; height:100%; border-radius:50%; position:absolute; top:0; left:0; border:1px solid #999;">
+              <span style="font-size:14px; border:1px solid #999;">[ Donut Chart ]</span>
+            </div>
+            <!-- Hole in middle -->
+            <div style="width:100px; height:100px; background:#fff; border-radius:50%; position:absolute; z-index:2; border:1px solid #999;"></div>
+          </div>
+        </div>
+        <div style="flex:1; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px;height:12px;border:1px solid #999;"></div><div style="font-size:12px;font-weight:bold;">Kegiatan</div></div>
+          <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px;height:12px;border:1px solid #999;"></div><div style="font-size:12px;font-weight:bold;">Pengumuman</div></div>
+          <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px;height:12px;border:1px solid #999;"></div><div style="font-size:12px;font-weight:bold;">Prestasi</div></div>
+          <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px;height:12px;border:1px solid #999;"></div><div style="font-size:12px;font-weight:bold;">Artikel Islami</div></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="card">
+      <div style="font-size:16px; font-weight:bold;">Aksi Cepat</div>
+      <div style="font-size:12px; color:#555; margin-bottom:20px;">Jalan pintas menu utama</div>
+      
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid #ddd; border-radius:8px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="cross-box" style="width:36px;height:36px;border-radius:8px;"></div>
+            <div>
+              <div style="font-size:14px; font-weight:bold;">Tulis Berita Baru</div>
+              <div style="font-size:10px; color:#777;">Publikasikan informasi terbaru</div>
+            </div>
+          </div>
+          <div style="font-weight:bold; font-size:16px;">+</div>
+        </div>
+        
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid #ddd; border-radius:8px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="cross-box" style="width:36px;height:36px;border-radius:8px;"></div>
+            <div>
+              <div style="font-size:14px; font-weight:bold;">Upload Galeri</div>
+              <div style="font-size:10px; color:#777;">Tambah dokumentasi kegiatan</div>
+            </div>
+          </div>
+          <div style="font-weight:bold; font-size:16px;">+</div>
+        </div>
+        
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid #ddd; border-radius:8px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="cross-box" style="width:36px;height:36px;border-radius:8px;"></div>
+            <div>
+              <div style="font-size:14px; font-weight:bold;">Pengaturan Sekolah</div>
+              <div style="font-size:10px; color:#777;">Ubah profil dan identitas</div>
+            </div>
+          </div>
+          <div style="font-weight:bold; font-size:16px;">→</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

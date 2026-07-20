@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Diagram - MI Al-Hasani</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 { margin-bottom: 5px; }
+        .subtitle { color: #555; margin-bottom: 30px; }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+    <!-- Load Mermaid JS -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#ffffff',
+                primaryBorderColor: '#000000',
+                primaryTextColor: '#000000',
+                lineColor: '#000000',
+                fontFamily: 'Times New Roman'
+            },
+            class: {
+                hideEmptyMembersBox: true
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <h1>Class Diagram - Website MI Al-Hasani</h1>
+    <p class="subtitle">Buka halaman ini, lalu Anda bisa mengambil screenshot (Snip) gambarnya untuk dimasukkan ke Bab 3 atau Bab 4.</p>
+
+    <div class="mermaid">
+        classDiagram
+            direction TB
+
+            class User {
+                - id: Integer
+                - name: String
+                - email: String
+                - password: String
+                + login()
+                + logout()
+            }
+
+            class News {
+                - id: Integer
+                - title: String
+                - category: String
+                - image: String
+                - excerpt: String
+                - content: String
+                - author: String
+                - date: Date
+                + create()
+                + update()
+                + delete()
+            }
+
+            class Gallery {
+                - id: Integer
+                - title: String
+                - category: String
+                - image: String
+                - photos: String
+                - description: String
+                + create()
+                + update()
+                + delete()
+            }
+
+            class Teacher {
+                - id: Integer
+                - name: String
+                - role: String
+                - description: String
+                - image: String
+                - order: Integer
+                - subject: String
+                + create()
+                + update()
+                + delete()
+            }
+
+            class Program {
+                - id: Integer
+                - title: String
+                - description: String
+                - image: String
+                - images: String
+                - category: String
+                - schedule: String
+                - is_active: Boolean
+                + create()
+                + update()
+                + delete()
+            }
+
+            class SchoolSetting {
+                - id: Integer
+                - school_name: String
+                - npsn: String
+                - email: String
+                - phone: String
+                - whatsapp_number: String
+                - website: String
+                - address: String
+                - postal_code: String
+                - school_status: String
+                - accreditation: String
+                - established_year: Integer
+                - welcome_title: String
+                - welcome_highlight: String
+                - welcome_tagline_1: String
+                - welcome_tagline_2: String
+                - welcome_tagline_3: String
+                - hero_images: String
+                - map_embed_url: String
+                - map_link: String
+                - facebook_url: String
+                - instagram_url: String
+                - youtube_url: String
+                - twitter_url: String
+                - brochure_images: String
+                + update()
+            }
+
+            class PpdbSetting {
+                - id: Integer
+                - tahun_ajaran: String
+                - is_open: Boolean
+                + update()
+            }
+
+            class Principal {
+                - id: Integer
+                - name: String
+                - role: String
+                - image: String
+                - message: String
+                + update()
+            }
+
+            class PpdbApplicant {
+                - id: Integer
+                - registration_id: String
+                - tahun_ajaran: String
+                - student_name: String
+                - birth_place: String
+                - birth_date: Date
+                - gender: String
+                - address: String
+                - parent_name: String
+                - whatsapp_number: String
+                - kk_file_name: String
+                - kk_file_data: String
+                - akta_file_name: String
+                - akta_file_data: String
+                - ktp_file_name: String
+                - ktp_file_data: String
+                - ijazah_file_name: String
+                - ijazah_file_data: String
+                - status: String
+                + create()
+                + update()
+                + delete()
+            }
+
+            User "1" -- "0..*" News : mengelola >
+            User "1" -- "0..*" Gallery : mengelola >
+            User "1" -- "0..*" Teacher : mengelola >
+            User "1" -- "0..*" Program : mengelola >
+            User "1" -- "0..*" PpdbApplicant : mengelola >
+            User "1" -- "1" SchoolSetting : mengatur >
+            User "1" -- "1" PpdbSetting : mengatur >
+            User "1" -- "1" Principal : mengatur >
+    </div>
+
+</body>
+</html>

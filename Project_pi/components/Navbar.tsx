@@ -55,8 +55,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
       ]
     },
     { label: 'Program', value: Page.PROGRAMS },
-    { label: 'Berita', value: Page.NEWS },
+    { label: 'Berita & Artikel', value: Page.NEWS },
     { label: 'Galeri', value: Page.GALLERY },
+    { label: 'PPDB', value: Page.PPDB },
     { label: 'Kontak', value: Page.CONTACT },
   ];
 
@@ -69,20 +70,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
   };
 
   const handleDropdownClick = (page: Page, tab: string) => {
-    setProfileTab(tab);
     setIsOpen(false);
     setActiveDropdown(null);
-
-    if (currentPage === page) {
-        const element = document.getElementById(tab);
-        if (element) {
-            const yOffset = -90; 
-            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-        }
-    } else {
-        setPage(page);
+    if (page === Page.PROFILE) {
+      setProfileTab(tab);
+      return;
     }
+    setPage(page);
   };
 
   // Logic for visual state:
@@ -92,28 +86,28 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
   const isSolidNavbar = isOpen || isScrolled;
 
   // Dynamic Styles
-  const navbarClasses = `fixed top-0 left-0 w-full z-50 transition-all duration-500 font-sans ${
+  const navbarClasses = `fixed top-0 left-0 w-full z-50 transition-all duration-500 font-poppins ${
     isOpen 
       ? 'bg-white shadow-md py-0' // Mobile menu open: Solid White
       : isScrolled
-        ? 'bg-white/80 backdrop-blur-md shadow-sm py-2' // Scrolled: Frosted Glass Effect
+        ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' // Scrolled: Frosted Glass Effect
         : 'bg-transparent py-4' // Top: Transparent
   }`;
 
   // Text Colors:
-  // Dark Green when scrolled or menu open (for readability on white/glass)
+  // Dark Forest Green when scrolled or menu open (for readability on white/glass)
   // White when at top (for readability on dark hero images)
-  const textColorClass = isSolidNavbar ? 'text-emerald-950' : 'text-white';
-  const subTextColorClass = isSolidNavbar ? 'text-emerald-700' : 'text-emerald-100';
-  const mobileMenuButtonColor = isSolidNavbar ? 'text-emerald-800' : 'text-white';
+  const textColorClass = isSolidNavbar ? 'text-teal-900' : 'text-white';
+  const subTextColorClass = isSolidNavbar ? 'text-teal-600' : 'text-white/80';
+  const mobileMenuButtonColor = isSolidNavbar ? 'text-teal-800' : 'text-white';
 
   const getLinkClass = (itemValue: Page) => {
     const isActive = currentPage === itemValue;
     if (isSolidNavbar) {
         // Style when scrolled (Dark Text)
         return isActive 
-            ? 'text-emerald-800 border-yellow-500' 
-            : 'text-gray-600 border-transparent hover:text-emerald-800 hover:border-emerald-300';
+            ? 'text-teal-700 border-yellow-400' 
+            : 'text-gray-600 border-transparent hover:text-teal-700 hover:border-teal-300';
     } else {
         // Style when top (White Text)
         return isActive 
@@ -143,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
               />
 
               <div className="flex flex-col">
-                <h1 className={`font-bold text-xl md:text-2xl leading-none tracking-tight drop-shadow-sm transition-colors duration-300 ${textColorClass}`}>MI AL-HASANI</h1>
+                <h1 className={`font-poppins font-bold text-xl md:text-2xl leading-none tracking-tight drop-shadow-sm transition-colors duration-300 ${textColorClass}`}>MI AL-HASANI</h1>
                 <p className={`text-[10px] md:text-xs font-medium tracking-wide mt-0.5 transition-colors duration-300 ${subTextColorClass}`}>Cerdas, Berkarakter, Islami</p>
               </div>
             </div>
@@ -171,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
                               e.stopPropagation();
                               handleDropdownClick(item.value, child.tab);
                             }}
-                            className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors border-b border-gray-50 last:border-0"
+                            className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition-colors border-b border-gray-50 last:border-0"
                           >
                             {child.label}
                           </button>
@@ -194,7 +188,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
               onClick={() => { setPage(Page.ADMIN_DASHBOARD); setIsOpen(false); }}
               className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full border transition-all duration-300 ${
                 isSolidNavbar
-                  ? 'border-emerald-700 text-emerald-700 hover:bg-emerald-700 hover:text-white'
+                  ? 'border-teal-700 text-teal-700 hover:bg-teal-700 hover:text-white'
                   : 'border-white/60 text-white/80 hover:bg-white/20 hover:text-white'
               }`}
             >
@@ -226,8 +220,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
                         onClick={() => setActiveDropdown(activeDropdown === item.label ? null : item.label)}
                         className={`flex items-center justify-between w-full text-left px-4 py-3 rounded-lg text-base font-bold transition-colors ${
                           currentPage === item.value
-                            ? 'text-emerald-800 bg-emerald-50 border-l-4 border-emerald-600'
-                            : 'text-gray-600 hover:text-emerald-800 hover:bg-gray-50'
+                            ? 'text-teal-800 bg-teal-50 border-l-4 border-teal-600'
+                            : 'text-gray-600 hover:text-teal-800 hover:bg-gray-50'
                         }`}
                       >
                         {item.label}
@@ -240,7 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
                            <button
                              key={child.label}
                              onClick={() => handleDropdownClick(item.value, child.tab)}
-                             className="block w-full text-left px-4 py-2 text-sm font-medium text-gray-500 hover:text-emerald-700 rounded-md hover:bg-emerald-50"
+                             className="block w-full text-left px-4 py-2 text-sm font-medium text-gray-500 hover:text-teal-700 rounded-md hover:bg-teal-50"
                            >
                              {child.label}
                            </button>
@@ -252,8 +246,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
                     onClick={() => handleNavClick(item.value)}
                     className={`block w-full text-left px-4 py-3 rounded-lg text-base font-bold transition-colors ${
                       currentPage === item.value
-                        ? 'text-emerald-800 bg-emerald-50 border-l-4 border-emerald-600'
-                        : 'text-gray-600 hover:text-emerald-800 hover:bg-gray-50'
+                        ? 'text-teal-800 bg-teal-50 border-l-4 border-teal-600'
+                        : 'text-gray-600 hover:text-teal-800 hover:bg-gray-50'
                     }`}
                   >
                     {item.label}
@@ -264,7 +258,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, setProfile
             {/* Admin Link - Mobile */}
             <button
               onClick={() => { setPage(Page.ADMIN_DASHBOARD); setIsOpen(false); }}
-              className="w-full flex items-center gap-2 px-4 py-3 rounded-lg text-base font-bold text-emerald-700 hover:bg-emerald-50 border border-emerald-200 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-3 rounded-lg text-base font-bold text-teal-700 hover:bg-teal-50 border border-teal-200 transition-colors"
             >
               <ShieldCheck size={16} /> Masuk Panel Admin
             </button>

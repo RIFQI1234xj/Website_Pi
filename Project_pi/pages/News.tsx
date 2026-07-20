@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, User, Loader2, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Calendar, User, Loader2, ArrowRight, Search, Filter, Grid, Activity, Megaphone, Trophy, BookOpen } from 'lucide-react';
+import { AnimatedSection } from '../components/AnimatedSection';
+import { apiFetch, getImageUrl, setImageFallback } from '../lib/api';
 
-// 1. Definisi Interface (Sudah Benar)
+// 1. Definisi Interface
 interface NewsItem {
   id: number;
   title: string;
@@ -20,154 +22,243 @@ export const News: React.FC<NewsProps> = ({ navigateToNewsDetail }) => {
   // 2. State Utama
   const [news, setNews] = useState<NewsItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState<number>(6);
   
-  // 3. Daftar Kategori untuk Sidebar (Kunci untuk angka otomatis)
-  const categories = ["Kegiatan", "Pengumuman", "Prestasi", "Artikel Islami"];
+  // State untuk Pencarian dan Filter
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Semua');
+
+  // 3. Daftar Kategori Statis dengan Ikon
+  const categories = [
+    { name: "Semua", icon: Grid },
+    { name: "Kegiatan", icon: Activity },
+    { name: "Pengumuman", icon: Megaphone },
+    { name: "Prestasi", icon: Trophy },
+    { name: "Artikel Islami", icon: BookOpen }
+  ];
 
   // 4. Proses Ambil Data (Fetching)
   useEffect(() => {
-    setIsLoading(true);
-    fetch('http://127.0.0.1:8000/api/news')
-      .then((res) => res.json())
-      .then((hasil) => {
-        // PERHATIAN: Pastikan di Laravel kamu mengirim return response()->json(['success' => true, 'data' => $news]);
+    const fetchNews = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const hasil = await apiFetch('/news');
         if (hasil.success) {
-          console.log("DATA ASLI DARI LARAVEL:", hasil.data);
-          setNews(hasil.data); 
+          setNews(hasil.data);
         }
-      })
-      .catch((err) => console.error("Error ambil data:", err))
-      .finally(() => setIsLoading(false));
+      } catch (err) {
+        console.error('Error ambil data:', err);
+        setError('Berita belum dapat dimuat saat ini. Silakan coba lagi nanti.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNews();
   }, []);
 
-  // --- LANJUT KE BAGIAN RETURN (TAMPILAN) ---
+  // 5. Fungsi Filter Data Berdasarkan Search & Kategori
+  const filteredNews = useMemo(() => {
+    return news.filter((item) => {
+      const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            item.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'Semua' || item.category === selectedCategory;
+      
+      return matchesSearch && matchesCategory;
+    });
+  }, [news, searchTerm, selectedCategory]);
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Hero Section */}
-      <div className="bg-emerald-800 py-16 text-center text-white">
-        <h1 className="text-4xl font-bold mb-4">Berita Terbaru</h1>
-        <p className="text-emerald-200">Informasi terkini seputar kegiatan dan prestasi MI Al-Hasani</p>
-      </div>
+    <div className="bg-ivory-50 min-h-screen pb-20">
+      {/* Header Halaman */}
+      <AnimatedSection animation="fade" className="bg-teal-700 py-20 text-center text-white relative overflow-hidden">
+        {/* Background Decorative Pattern */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="w-64 h-64 bg-white rounded-full absolute -top-10 -left-10 filter blur-3xl"></div>
+          <div className="w-96 h-96 bg-yellow-400 rounded-full absolute -bottom-20 -right-20 filter blur-3xl"></div>
+        </div>
+        
+        <div className="relative z-10 max-w-3xl mx-auto px-4">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4 drop-shadow-md">Berita & Artikel</h1>
+          <div className="w-24 h-1.5 bg-yellow-400 mx-auto mb-6 rounded-full"></div>
+          <p className="text-teal-100 text-lg md:text-xl">
+            Ikuti update terbaru seputar kegiatan, informasi, dan prestasi membanggakan dari MI Al-Hasani
+          </p>
+        </div>
+      </AnimatedSection>
 
       {/* Container Utama */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col lg:flex-row gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
         
-        {/* KOLOM KIRI: Daftar Berita Utama */}
-        <div className="w-full lg:w-2/3 flex flex-col gap-6">
-          {isLoading ? (
-            <div className="flex justify-center py-20">
-              <Loader2 className="animate-spin text-emerald-600" size={40} />
+        {/* Fitur Search & Filter Bar */}
+        <AnimatedSection animation="slideUp" delay={0.1} className="bg-white/95 backdrop-blur-md rounded-3xl shadow-xl shadow-gray-200/50 p-5 mb-12 border border-white">
+          <div className="flex flex-col lg:flex-row gap-5 items-start lg:items-center">
+            
+            {/* Search Bar */}
+            <div className="relative w-full lg:max-w-xs group shrink-0">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Search size={18} className="text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+              </div>
+              <input 
+                type="text"
+                placeholder="Cari berita atau artikel..."
+                className="w-full pl-11 pr-4 py-3 bg-gray-100/50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 focus:bg-white transition-all text-sm font-medium text-gray-800 placeholder-gray-400"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setVisibleCount(6);
+                }}
+              />
             </div>
-          ) : news.length > 0 ? (
-            news.map((item) => (
-              // PERBAIKAN UKURAN: Card dikunci tingginya (md:h-64) agar foto tidak memanjang ke bawah
-              <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row hover:shadow-md transition h-auto md:h-64">
-                
-                {/* Bagian Gambar */}
-                <div className="w-full md:w-2/5 h-56 md:h-full shrink-0 relative bg-gray-100">
-                  <img 
-                    src={`/images/${item.image}`} 
-                    alt={item.title} 
-                    className="absolute inset-0 w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://picsum.photos/400/300?blur=2'; }}
-                  />
-                </div>
 
-                {/* Bagian Teks */}
-                <div className="p-6 w-full md:w-3/5 flex flex-col justify-center">
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 mb-3">
-                    <span className="flex items-center"><Calendar size={14} className="mr-1" /> {item.date}</span>
-                    <span className="flex items-center"><User size={14} className="mr-1" /> {item.author}</span>
-                    <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-medium">
-                      {item.category}
-                    </span>
-                  </div>
-                  
-                  <h2 className="text-xl font-bold text-gray-900 mb-2 leading-tight line-clamp-2">
-                    {item.title}
-                  </h2>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {item.excerpt}
-                  </p>
-                  
-                  <div className="mt-auto pt-4">
-                    <button 
-                      onClick={() => navigateToNewsDetail(item.id)}
-                      className="text-emerald-600 font-medium text-sm flex items-center hover:text-emerald-700 transition group"
+            {/* Divider */}
+            <div className="hidden lg:block w-px h-10 bg-gray-200 shrink-0"></div>
+
+            {/* Filter Kategori */}
+            <div className="w-full flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-1.5 text-gray-500 font-medium text-sm shrink-0">
+                <Filter size={16} />
+              </div>
+              <div className="flex flex-wrap gap-2.5 w-full">
+                {categories.map((cat) => {
+                  const Icon = cat.icon;
+                  const isSelected = selectedCategory === cat.name;
+                  return (
+                    <button
+                      key={cat.name}
+                      onClick={() => {
+                        setSelectedCategory(cat.name);
+                        setVisibleCount(6);
+                      }}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl font-semibold text-sm transition-all duration-300 ${
+                        isSelected 
+                          ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30 border border-teal-500' 
+                          : 'bg-white text-gray-600 hover:bg-teal-50 border border-gray-200 hover:border-teal-200 hover:text-teal-700 shadow-sm hover:shadow'
+                      }`}
                     >
-                      Baca Selengkapnya <ArrowRight size={16} className="ml-1 transform group-hover:translate-x-1 transition-transform" />
+                      <Icon size={16} className={isSelected ? 'text-teal-100' : 'text-gray-500'} />
+                      {cat.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </AnimatedSection>
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 text-teal-600">
+            <Loader2 className="animate-spin mb-4" size={40} />
+            <p className="font-medium">Memuat Berita...</p>
+          </div>
+        ) : error ? (
+          <AnimatedSection animation="fade" className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+            <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Megaphone size={32} className="text-rose-400" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Berita Belum Bisa Dimuat</h3>
+            <p className="text-gray-500 max-w-lg mx-auto">{error}</p>
+          </AnimatedSection>
+        ) : (
+          <>
+            {/* Grid Berita Utama */}
+            {filteredNews.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredNews.slice(0, visibleCount).map((item, index) => (
+                  <AnimatedSection 
+                    key={item.id} 
+                    animation="slideUp" 
+                    delay={(index % 3) * 0.1} 
+                    className="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 overflow-hidden flex flex-col group cursor-pointer transition-all duration-500 transform hover:-translate-y-1"
+                    onClick={() => navigateToNewsDetail(item.id)}
+                  >
+                    {/* Gambar dengan Badge Kanan Atas */}
+                    <div className="h-56 w-full relative overflow-hidden bg-gray-200">
+                      <img 
+                        src={getImageUrl(item.image)} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={(e) => {
+                          setImageFallback(e.currentTarget, item.title);
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      {/* Badge Kategori Kanan Atas */}
+                      <div className="absolute top-4 right-4 z-10">
+                        <span className="bg-yellow-400 text-teal-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-md">
+                          {item.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Konten Kartu */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      {/* Metadata: Tanggal & Penulis */}
+                      <div className="flex items-center text-xs text-gray-500 mb-3 gap-3">
+                        <span className="flex items-center"><Calendar size={13} className="mr-1" /> {item.date}</span>
+                        <span className="flex items-center"><User size={13} className="mr-1" /> {item.author}</span>
+                      </div>
+                      
+                      {/* Judul & Ringkasan */}
+                      <h2 className="text-xl font-bold text-gray-900 mb-3 leading-tight line-clamp-2 group-hover:text-teal-600 transition-colors">
+                        {item.title}
+                      </h2>
+                      <p className="text-gray-600 text-sm mb-6 line-clamp-3 leading-relaxed flex-grow">
+                        {item.excerpt}
+                      </p>
+                      
+                      {/* Tombol Bawah */}
+                      <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <span className="text-teal-600 font-bold text-sm flex items-center group-hover:text-teal-800 transition-colors">
+                          Baca Selengkapnya <ArrowRight size={16} className="ml-1 transform group-hover:translate-x-1 transition-transform" />
+                        </span>
+                      </div>
+                    </div>
+                  </AnimatedSection>
+                ))}
+              </div>
+
+
+                {/* Tombol Load More */}
+                {!isLoading && !error && filteredNews.length > visibleCount && (
+                  <div className="flex justify-center mt-12">
+                    <button
+                      onClick={() => setVisibleCount((prev) => prev + 6)}
+                      className="px-8 py-3 rounded-xl border-2 border-teal-600 text-teal-700 font-semibold hover:bg-teal-600 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md"
+                    >
+                      Muat Lebih Banyak...
                     </button>
                   </div>
+                )}
+              </>
+            ) : (
+              /* Empty State jika tidak ada berita yang cocok dengan filter */
+              <AnimatedSection animation="fade" className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search size={32} className="text-gray-500" />
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className="text-center py-20 text-gray-500 bg-white rounded-xl border border-gray-100">
-              Belum ada berita yang dipublikasikan.
-            </div>
-          )}
-        </div>
-
-        {/* KOLOM KANAN: Sidebar */}
-        <div className="w-full lg:w-1/3 flex flex-col gap-6">
-          
-          {/* Widget Kategori */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 className="font-bold text-lg text-gray-900 mb-4 border-b pb-2">Kategori</h3>
-           <ul className="space-y-3">
-  {categories.map((cat) => (
-    <li 
-      key={cat} 
-      className="flex justify-between items-center text-gray-600 text-sm hover:text-emerald-600 cursor-pointer group transition-all"
-    >
-      {/* Nama Kategori */}
-      <span className="group-hover:translate-x-1 transition-transform duration-200">
-        {cat}
-      </span> 
-
-      {/* Angka Otomatis: Menghitung jumlah berita berdasarkan kategori */}
-      <span className="bg-gray-100 px-2 py-0.5 rounded-full text-[10px] font-bold text-gray-500 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
-        {
-          // Logika: Filter array 'news', cari yang kategorinya cocok, lalu hitung jumlahnya
-          news.filter((item) => item.category === cat).length
-        }
-      </span>
-    </li>
-  ))}
-</ul>
-          </div>
-
-          {/* Widget Berita Populer */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 className="font-bold text-lg text-gray-900 mb-4 border-b pb-2">Berita Populer</h3>
-            <div className="space-y-4">
-              {news.slice(0, 2).map((item) => (
-                <div 
-                  key={`pop-${item.id}`} 
-                  className="flex gap-3 items-center group cursor-pointer"
-                  onClick={() => navigateToNewsDetail(item.id)}
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Berita Tidak Ditemukan</h3>
+                <p className="text-gray-500">Maaf, kami tidak dapat menemukan berita dengan kata kunci "{searchTerm}" atau di kategori tersebut.</p>
+                <button 
+                  onClick={() => { 
+                    setSearchTerm(''); 
+                    setSelectedCategory('Semua'); 
+                    setVisibleCount(6);
+                  }}
+                  className="mt-6 px-6 py-2.5 bg-teal-600 text-white font-medium rounded-full hover:bg-teal-700 transition"
                 >
-                  <div className="w-16 h-16 shrink-0 relative bg-gray-100 rounded overflow-hidden">
-                    <img 
-                      src={`/images/${item.image}`} 
-                      alt={item.title} 
-                      className="absolute inset-0 w-full h-full object-cover group-hover:opacity-80 transition"
-                      onError={(e) => { (e.target as HTMLImageElement).src = 'https://picsum.photos/100/100?blur=2'; }}
-                    />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900 group-hover:text-emerald-600 transition line-clamp-2">
-                      {item.title}
-                    </h4>
-                    <span className="text-xs text-gray-500">{item.date}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
+                  Reset Filter
+                </button>
+              </AnimatedSection>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

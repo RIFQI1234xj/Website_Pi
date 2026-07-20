@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 - Wireframe Login Admin (Low-Fidelity Outline)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #fff; color: #111; width: 1600px; }
+  .page { width: 1600px; min-height: 1000px; padding: 20px; display: flex; align-items: center; justify-content: center; position: relative; }
+
+  /* Shared wireframe styles */
+  .box { background: #eee; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box { background: #eee; border: 1px solid #999; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)), linear-gradient(to top right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+  .cross-box span { position: relative; z-index: 1; background: rgba(255,255,255,0.8); padding: 2px 4px; font-weight:bold; }
+  
+  .page-label { font-size: 10px; color: #999; position: absolute; top: 20px; right: 20px; }
+  
+  /* Login Container */
+  .login-container { width: 100%; max-width: 450px; }
+  
+  /* Header */
+  .login-header { text-align: center; margin-bottom: 30px; }
+  .logo-box { width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 20px; }
+  
+  /* Card */
+  .login-card { background: #fff; border: 1px solid #999; border-radius: 16px; padding: 30px; }
+  
+  /* Form Elements */
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #111; }
+  .input-wrapper { position: relative; }
+  .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; }
+  .form-input { width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #999; border-radius: 8px; font-size: 14px; background: #f9f9f9; }
+  .eye-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; }
+  
+  /* Button */
+  .submit-btn { width: 100%; padding: 14px; background: #eee; color: #111; border: 2px solid #333; border-radius: 8px; font-weight: bold; text-align: center; margin-top: 10px; }
+
+  /* Footer */
+  .login-footer { margin-top: 24px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 11px; color: #777; }
+
+
+  /* === Responsive Override === */
+  html, body { width: 100% !important; max-width: 100% !important; overflow-x: auto !important; box-sizing: border-box !important; }
+  .page { width: 100% !important; max-width: 1600px !important; box-sizing: border-box !important; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-label">Wireframe 10 — Login Admin (Outline Sederhana)</div>
+
+  <!-- Main Wrapper -->
+  <div class="login-container">
+    
+    <!-- Logo & Title -->
+    <div class="login-header">
+      <div class="cross-box logo-box"></div>
+      <div style="font-size:24px; font-weight:bold; color:#111; margin-bottom:8px;">MI Al-Hasani</div>
+      <div style="font-size:14px; color:#555;">Masuk ke Panel Admin untuk mengelola website</div>
+    </div>
+
+    <!-- Login Form Card -->
+    <div class="login-card">
+      
+      <!-- Email Field -->
+      <div class="form-group">
+        <label class="form-label">Alamat Email</label>
+        <div class="input-wrapper">
+          <div class="cross-box input-icon" style="border:1px solid #999; border-radius:4px;"></div>
+          <div class="form-input" style="color:#999;">admin@mialhasani.sch.id</div>
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-wrapper">
+          <div class="cross-box input-icon" style="border:1px solid #999; border-radius:4px;"></div>
+          <div class="form-input" style="color:#999;">••••••••</div>
+          <div class="cross-box eye-icon" style="border:1px solid #999; border-radius:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Login Button -->
+      <div class="submit-btn">Masuk ke Dashboard</div>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        © 2025 MI Al-Hasani • Panel Administrasi
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

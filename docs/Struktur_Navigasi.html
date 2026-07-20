@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktur Navigasi - MI Al-Hasani</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 20px;
+            text-align: center;
+        }
+        h1, h2 { margin-bottom: 5px; }
+        .subtitle { color: #555; margin-bottom: 30px; }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .diagram-container {
+            margin-bottom: 60px;
+        }
+    </style>
+    <!-- Load Mermaid JS -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#ffffff',
+                primaryBorderColor: '#000000',
+                primaryTextColor: '#000000',
+                lineColor: '#000000',
+                fontFamily: 'Times New Roman'
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <h1>Struktur Navigasi - Website MI Al-Hasani</h1>
+    <p class="subtitle">Urutan menu telah disesuaikan secara presisi dengan struktur menu di aplikasi (Navbar & Sidebar).</p>
+
+    <div class="diagram-container">
+        <h2>1. PENGGUNA PUBLIK</h2>
+        <div class="mermaid">
+            graph TD
+                A[BERANDA]
+
+                A --- B1[PROFIL SEKOLAH]
+                A --- B2[PROGRAM]
+                A --- B3[BERITA & ARTIKEL]
+                A --- B4[GALERI]
+                A --- B5[PPDB]
+                A --- B6[KONTAK]
+
+                B2 --> C1a[DETAIL PROGRAM]
+                B3 --> C1[DETAIL ARTIKEL]
+                B4 --> C2[DETAIL ALBUM]
+                B5 --> C3[FORM PENDAFTARAN]
+
+                C3 --> D1[DATA SISWA]
+                D1 --> D2[DATA ORANG TUA]
+                D2 --> D3[UPLOAD DOKUMEN]
+                D3 --> D4[RINGKASAN & KIRIM]
+        </div>
+    </div>
+
+    <hr style="border: 1px solid #eee; margin: 40px 0;">
+
+    <div class="diagram-container">
+        <h2>2. PENGGUNA ADMIN</h2>
+        <div class="mermaid">
+            graph TD
+                A[LOGIN ADMIN] --> B[DASHBOARD]
+
+                B --- C1[BERITA & ARTIKEL]
+                B --- C2[GALERI FOTO]
+                B --- C3[PROFIL PIMPINAN]
+                B --- C4[PROGRAM SEKOLAH]
+                B --- C5[DATA GURU]
+                B --- C6[PPDB ONLINE]
+                B --- C7[PENGATURAN]
+
+                C1 --> C1a[TAMBAH]
+                C1a --> C1b[EDIT]
+                C1b --> C1c[HAPUS]
+
+                C2 --> C2a[TAMBAH]
+                C2a --> C2b[EDIT]
+                C2b --> C2c[HAPUS]
+
+                C3 --> C3a[EDIT DATA]
+
+                C4 --> C4a[TAMBAH]
+                C4a --> C4b[EDIT]
+                C4b --> C4c[HAPUS]
+
+                C5 --> C5a[TAMBAH]
+                C5a --> C5b[EDIT]
+                C5b --> C5c[HAPUS]
+
+                C6 --> C6a[BUKA/TUTUP]
+                C6a --> C6b[LIHAT DATA]
+                C6b --> C6c[VERIFIKASI]
+                C6c --> C6d[HAPUS]
+
+                C7 --> C7a[EDIT DATA]
+        </div>
+    </div>
+
+</body>
+</html>

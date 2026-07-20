@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 - Wireframe Beranda (Outline Sederhana)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #fff; color: #111; width: 1600px; }
+  .page { width: 1600px; min-height: 1000px; background: #fff; padding: 20px; }
+
+  /* Shared wireframe styles */
+  .box { background: #eee; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box { background: #eee; border: 1px solid #999; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)), linear-gradient(to top right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+  .cross-box span { position: relative; z-index: 1; background: rgba(255,255,255,0.8); padding: 2px 4px; font-weight:bold; }
+  
+  .btn { border: 2px solid #333; padding: 7px 18px; display: inline-block; font-size: 12px; background: transparent; font-weight: bold; }
+  .btn-primary { background: #eee; color: #111; border: 2px solid #333; padding: 7px 18px; display: inline-block; font-size: 12px; font-weight: bold; }
+  
+  .section-title { font-size: 20px; font-weight: bold; color: #111; text-align: center; margin-bottom: 20px; }
+  .card { border: 1px solid #999; padding: 20px; background: #fff; border-radius: 8px; }
+  
+  .flex { display: flex; }
+  .flex-col { display: flex; flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .justify-center { justify-content: center; }
+  .gap-4 { gap: 16px; }
+  .gap-8 { gap: 32px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+  /* Navbar */
+  .navbar { border: 2px solid #333; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; background: #fff; }
+  .nav-logo { font-size: 14px; font-weight: bold; }
+  .nav-links { display: flex; gap: 20px; font-size: 12px; }
+  .nav-links span { cursor: pointer; padding-bottom: 2px; }
+  .nav-links .active { border-bottom: 2px solid #333; font-weight: bold; }
+
+  /* Footer */
+  .footer { border: 2px solid #333; border-top: none; padding: 24px; background: #f9f9f9; color: #333; font-size: 11px; }
+
+  /* Page title label */
+  .page-label { font-size: 10px; color: #999; text-align: right; margin-bottom: 4px; }
+
+  /* === Responsive Override === */
+  html, body { width: 100% !important; max-width: 100% !important; overflow-x: auto !important; box-sizing: border-box !important; }
+  .page { width: 100% !important; max-width: 1600px !important; box-sizing: border-box !important; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-label">Wireframe 01 — Beranda (Outline Sederhana)</div>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="flex items-center gap-2">
+      <div class="cross-box" style="width:36px;height:36px;"></div>
+      <div class="nav-logo">MI Al-Hasani</div>
+    </div>
+    <div class="nav-links">
+      <span class="active">Beranda</span>
+      <span>Profil</span>
+      <span>Program</span>
+      <span>Berita</span>
+      <span>Galeri</span>
+      <span>PPDB</span>
+      <span>Kontak</span>
+    </div>
+  </div>
+
+  <!-- Hero Section (Slider Background) -->
+  <div style="border:2px solid #333; border-top:none; position:relative; height: 500px; display:flex; align-items:center; justify-content:center; background:#eee;">
+    <div class="cross-box" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;">
+      
+    </div>
+    <div style="text-align:center; position:relative; z-index:1; padding:30px; background:#fff; border:2px solid #999; width:600px;">
+      <div style="font-size:24px; font-weight:bold; margin-bottom:8px;">Selamat Datang di <br>MI AL-HASANI</div>
+      <div style="width:40px; height:4px; background:#999; margin:0 auto 12px;"></div>
+      <div style="font-size:14px; margin-bottom:20px;">Tempat di Mana Ilmu Pengetahuan dan Nilai - Nilai Islami Berpadu</div>
+      <div class="flex justify-center gap-4">
+        <div class="btn-primary">Profil Sekolah</div>
+        <div class="btn">PPDB</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sambutan Kepala Sekolah -->
+  <div style="border:2px solid #333; border-top:none; padding:40px; position:relative; background:#fff;">
+    <div class="section-title">Sambutan Kepala Sekolah</div>
+    <div style="margin: 0 auto; width: 60px; height: 4px; background: #999; margin-top:-10px; margin-bottom: 40px;"></div>
+    
+    <div style="max-width: 800px; margin: 0 auto; position:relative;">
+      <!-- Foto Kepsek melayang -->
+      <div class="cross-box" style="width:120px; height:120px; border-radius:50%; position:absolute; top:-60px; left:50%; transform:translateX(-50%); border:4px solid #fff; z-index:2; background:#eee;">
+        
+      </div>
+      
+      <!-- Card Sambutan -->
+      <div class="card" style="padding-top: 80px; text-align:center; position:relative; z-index:1;">
+        <div style="font-size:40px; color:#ccc; position:absolute; right:20px; top:20px;">"</div>
+        <p style="font-size:14px; line-height:1.6; color:#444; margin-bottom:20px;">
+          [Teks sambutan kepala sekolah]
+        </p>
+        <div style="border-top:1px solid #eee; padding-top:20px;">
+          <div style="font-weight:bold; font-size:16px;">[Nama Kepala Sekolah]</div>
+          <div style="font-size:12px; color:#666;">Kepala Madrasah</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kenapa Memilih Kami (Highlights) -->
+  <div style="border:2px solid #333; border-top:none; padding:40px; background:#f9f9f9;">
+    <div class="section-title">Kenapa Memilih Kami?</div>
+    <div style="text-align:center; font-size:12px; color:#555; margin-bottom:30px;">Kami menyediakan lingkungan pendidikan yang holistik untuk mendukung tumbuh kembang anak secara optimal.</div>
+    
+    <div class="grid-3">
+      <div class="card" style="text-align:center; border-bottom:4px solid #999;">
+        <div class="cross-box" style="width:60px; height:60px; border-radius:50%; margin:0 auto 16px;"></div>
+        <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">Lingkungan Asri</div>
+        <div style="font-size:12px; color:#555;">Suasana belajar yang hijau, bersih, dan nyaman mendukung konsentrasi siswa dalam menuntut ilmu.</div>
+      </div>
+      <div class="card" style="text-align:center; border-bottom:4px solid #999;">
+        <div class="cross-box" style="width:60px; height:60px; border-radius:50%; margin:0 auto 16px;"></div>
+        <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">Guru Kompeten</div>
+        <div style="font-size:12px; color:#555;">Tenaga pendidik profesional, berpengalaman, dan berdedikasi tinggi dalam membimbing setiap siswa.</div>
+      </div>
+      <div class="card" style="text-align:center; border-bottom:4px solid #999;">
+        <div class="cross-box" style="width:60px; height:60px; border-radius:50%; margin:0 auto 16px;"></div>
+        <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">Pembiasaan Ibadah</div>
+        <div style="font-size:12px; color:#555;">Rutin Shalat Dhuha dan Zhuhur berjamaah serta program Tahfidz Juz 30 untuk karakter Islami.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Program Unggulan -->
+  <div style="border:2px solid #333; border-top:none; padding:40px; background:#eee; color:#111;">
+    <div class="flex items-center justify-between gap-8">
+      <div style="flex:1;">
+        <div style="font-size:10px; font-weight:bold; padding:4px 8px; border:1px solid #999; display:inline-block; margin-bottom:12px; background:#fff;">PROGRAM UNGGULAN</div>
+        <div style="font-size:28px; font-weight:bold; margin-bottom:16px;">[Judul Program Dinamis]</div>
+        <div style="font-size:14px; line-height:1.5; margin-bottom:24px; color:#555;">
+          [Deskripsi program unggulan. Penjelasan mengenai detail kegiatan dan manfaatnya.]
+        </div>
+        <div class="btn">Selengkapnya tentang Program &rarr;</div>
+      </div>
+      <div style="flex:1;">
+        <div class="cross-box" style="width:100%; height:250px; background:#fff; border:1px solid #999; border-radius:8px;">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Artikel & Berita Terbaru -->
+  <div style="border:2px solid #333; border-top:none; padding:40px; background:#fff;">
+    <div class="section-title">Artikel & Berita</div>
+    <div style="text-align:center; font-size:12px; color:#555; margin-bottom:30px;">Ikuti update terbaru seputar kegiatan dan informasi sekolah</div>
+    
+    <div class="grid-3">
+      <!-- Card Berita 1 -->
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="cross-box" style="height:150px; border:none; border-bottom:1px solid #999; border-radius:0;"></div>
+        <div style="padding:16px;">
+          <div style="font-size:10px; color:#777; margin-bottom:8px;">[Tanggal] • [Penulis]</div>
+          <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">[Judul Berita Terbaru 1]</div>
+          <div style="font-size:12px; color:#555; margin-bottom:16px;">[Ringkasan isi berita...]</div>
+          <div style="font-size:12px; font-weight:bold;">Baca Selengkapnya &rarr;</div>
+        </div>
+      </div>
+      <!-- Card Berita 2 -->
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="cross-box" style="height:150px; border:none; border-bottom:1px solid #999; border-radius:0;"></div>
+        <div style="padding:16px;">
+          <div style="font-size:10px; color:#777; margin-bottom:8px;">[Tanggal] • [Penulis]</div>
+          <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">[Judul Berita Terbaru 2]</div>
+          <div style="font-size:12px; color:#555; margin-bottom:16px;">[Ringkasan isi berita...]</div>
+          <div style="font-size:12px; font-weight:bold;">Baca Selengkapnya &rarr;</div>
+        </div>
+      </div>
+      <!-- Card Berita 3 -->
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="cross-box" style="height:150px; border:none; border-bottom:1px solid #999; border-radius:0;"></div>
+        <div style="padding:16px;">
+          <div style="font-size:10px; color:#777; margin-bottom:8px;">[Tanggal] • [Penulis]</div>
+          <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">[Judul Berita Terbaru 3]</div>
+          <div style="font-size:12px; color:#555; margin-bottom:16px;">[Ringkasan isi berita...]</div>
+          <div style="font-size:12px; font-weight:bold;">Baca Selengkapnya &rarr;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="flex justify-between">
+      <div>
+        <div style="font-size:14px; font-weight:bold; margin-bottom:4px;">MI Al-Hasani</div>
+        <div style="font-size:11px; color:#555; max-width:200px;">Tempat di mana Ilmu Pengetahuan dan Nilai-nilai Islami berpadu.</div>
+      </div>
+      <div>
+        <div style="font-weight:bold; margin-bottom:8px;">Navigasi</div>
+        <div style="color:#555; line-height:1.6;">Beranda<br>Profil<br>Program<br>Berita<br>PPDB</div>
+      </div>
+      <div>
+        <div style="font-weight:bold; margin-bottom:8px;">Kontak</div>
+        <div style="color:#555; line-height:1.6;">[Alamat Lengkap]<br>[Telepon]<br>[Email]</div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #ddd; margin-top:20px; padding-top:20px; text-align:center; color:#777;">
+      &copy; 2026 MI Al-Hasani. Hak Cipta Dilindungi.
+    </div>
+  </div>
+</div>
+</body>
+</html>

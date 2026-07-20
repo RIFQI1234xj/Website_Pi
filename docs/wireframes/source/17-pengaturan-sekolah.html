@@ -1,0 +1,334 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17 - Wireframe Pengaturan Sekolah (Outline Sederhana)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #fff; color: #111; width: 1600px; display: flex; }
+  
+  /* Outline Wireframe Styles */
+  .box { background: #eee; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box { background: #eee; border: 1px solid #999; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; flex-direction: column; gap:4px; }
+  .cross-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)), linear-gradient(to top right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+  .cross-box span { position: relative; z-index: 1; background: rgba(255,255,255,0.8); padding: 2px 4px; font-weight:bold; }
+
+  /* Sidebar */
+  .sidebar { width: 250px; background: #f9f9f9; border-right: 2px solid #999; min-height: 1000px; padding: 20px 0; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; }
+  .menu-item { padding: 10px 16px; font-size: 13px; color: #333; display: flex; align-items: center; gap: 12px; cursor: pointer; margin: 2px 12px; border-radius: 6px; }
+  .menu-item.active { background: #eee; border: 1px solid #999; font-weight: bold; }
+  
+  /* Main Content */
+  .main-wrapper { flex: 1; display: flex; flex-direction: column; background: #fff; }
+  
+  /* Topbar */
+  .topbar { height: 64px; border-bottom: 1px solid #999; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: #fff; }
+  .breadcrumb { font-size: 12px; color: #555; }
+  .breadcrumb span.current { font-weight: bold; color: #111; }
+  .topbar-right { display: flex; align-items: center; gap: 20px; }
+  
+  /* Content Area */
+  .content { padding: 30px; flex: 1; background: #fcfcfc; }
+  .page-label { font-size: 10px; color: #999; text-align: right; margin-bottom: 20px; }
+  
+  /* Layout */
+  .layout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+  
+  .card { background: #fff; border: 1px solid #999; border-radius: 8px; margin-bottom: 24px; padding: 24px; }
+  .card-title { font-size: 16px; font-weight: bold; color: #111; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  
+  /* Form Elements */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { margin-bottom: 20px; }
+  .label { font-size: 12px; color: #333; font-weight: bold; margin-bottom: 6px; display: block; }
+  .input-field { border: 1px solid #999; padding: 10px 12px; font-size: 13px; width: 100%; background: #fff; border-radius: 6px; color: #777; display: flex; align-items: center; gap: 8px; }
+  .input-icon { width: 14px; height: 14px; border: none; flex-shrink: 0; }
+  
+  /* Right Sidebar Elements */
+  .info-list { font-size: 12px; color: #555; line-height: 1.6; }
+  .info-list li { margin-bottom: 8px; margin-left: 20px; }
+  
+  .status-list { font-size: 12px; color: #333; display: flex; flex-direction: column; gap: 10px; }
+  .status-list span { font-weight: bold; }
+  
+  .btn-submit { width: 100%; text-align: center; padding: 12px; border: 2px solid #333; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; background: #fff; }
+
+  /* === Responsive Override === */
+  html, body { width: 100% !important; max-width: 100% !important; overflow-x: auto !important; box-sizing: border-box !important; }
+  .page { width: 100% !important; max-width: 1600px !important; box-sizing: border-box !important; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div>
+    <!-- Logo -->
+    <div style="padding: 0 20px 20px; display: flex; align-items: center; gap: 12px;">
+      <div class="cross-box" style="width:36px;height:36px;border-radius:8px;border:none;"></div>
+      <div>
+        <div style="font-weight:bold; font-size:16px; color:#111;">MI Al-Hasani</div>
+        <div style="font-size:11px; color:#777;">Admin Panel</div>
+      </div>
+    </div>
+    
+    <!-- Profile Box -->
+    <div style="margin: 0 16px 20px; padding: 12px; border: 1px solid #999; border-radius: 8px; display: flex; align-items: center; gap: 12px; background: #eee;">
+      <div class="cross-box" style="width:32px;height:32px;border-radius:50%;border:none;"><span>A</span></div>
+      <div>
+        <div style="font-weight:bold; font-size:13px; color:#111;">Admin Sekolah</div>
+        <div style="font-size:10px; color:#777; display:flex; align-items:center; gap:4px;">
+          <span style="width:6px;height:6px;background:#999;border-radius:50%;display:inline-block;"></span> Online
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:10px; font-weight:bold; color:#777; padding:10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Utama</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Dashboard</div>
+    
+    <div style="font-size:10px; font-weight:bold; color:#777; padding:15px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Konten</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Berita & Artikel</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Galeri Foto</div>
+    
+    <div style="font-size:10px; font-weight:bold; color:#777; padding:15px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Data Sekolah</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Profil Pimpinan</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Program Sekolah</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Data Guru</div>
+    <div class="menu-item"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> PPDB Online</div>
+    
+    <div style="font-size:10px; font-weight:bold; color:#777; padding:15px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Sistem</div>
+    <div class="menu-item active"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Pengaturan</div>
+  </div>
+  
+  <div style="margin-top:auto; padding-top:20px; border-top:1px solid #ddd;">
+    <div class="menu-item" style="color:#d00; font-weight:bold; margin-bottom: 20px;"><div class="cross-box" style="width:16px;height:16px;border:none;"></div> Logout</div>
+  </div>
+</div>
+
+<!-- Main Content Wrapper -->
+<div class="main-wrapper">
+  
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="breadcrumb">
+      Admin &rsaquo; Sistem &rsaquo; <span class="current">Pengaturan</span>
+    </div>
+    
+    <div class="topbar-right">
+      <div class="cross-box" style="width:32px;height:32px;border-radius:50%;"></div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="page-label">Wireframe 17 — Pengaturan Sekolah (Outline Sederhana)</div>
+
+    <!-- Header -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size: 28px; font-weight: bold; margin-bottom: 4px; color:#111;">Pengaturan Sekolah</div>
+      <div style="font-size: 14px; color: #555;">Kelola identitas sekolah yang tampil di halaman profil, kontak, footer, dan tautan publik.</div>
+    </div>
+
+    <!-- Layout Grid -->
+    <div class="layout-grid">
+      
+      <!-- Left Column: Forms -->
+      <div>
+        
+        <!-- Card: Profil Institusi -->
+        <div class="card">
+          <div class="card-title">
+            <div class="cross-box" style="width:20px;height:20px;border:none;"></div> Profil Institusi
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="label">Nama Sekolah</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> MI Al-Hasani</div>
+            </div>
+            <div class="form-group">
+              <label class="label">NPSN</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> 199999</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Email Resmi</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> mial.hasani@gmail.com</div>
+            </div>
+            <div class="form-group">
+              <label class="label">No. Telepon</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> 081383080331</div>
+            </div>
+            <div class="form-group">
+              <label class="label">WhatsApp</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> 6281383080331</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Website</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> https://...</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Status Sekolah</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> Aktif</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Akreditasi</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> A</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Tahun Berdiri</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> 2004</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Kode Pos</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> 16730</div>
+            </div>
+          </div>
+          
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="label">Alamat Lengkap</label>
+            <div class="input-field" style="height:80px; align-items:flex-start; position:relative;">
+              Kp. Babakansima Rt 002/002, Jl. Jagjag, Jagjag, Kec. Cisarua, Kabupaten Bogor, Jawa Barat 16750, Indonesia
+              <div class="cross-box" style="width:16px;height:16px;border:none;position:absolute;bottom:8px;right:8px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Beranda (Selamat Datang) -->
+        <div class="card">
+          <div class="card-title">
+            <div class="cross-box" style="width:20px;height:20px;border:none;"></div> Beranda (Selamat Datang)
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="label">Judul</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> Selamat Datang di</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Teks Bawaan</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> MI AL-HASANI</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Kalimat 1</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> Tempat di mana...</div>
+            </div>
+            <div class="form-group">
+              <label class="label">Kalimat 2</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> dan ...</div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="label">Kalimat 3</label>
+            <div class="input-field"><div class="cross-box input-icon"></div> Nilai-nilai Islami...</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div>
+                <label class="label" style="margin-bottom:2px;">Foto Slider Beranda</label>
+                <div style="font-size:10px; color:#777;">Upload foto/kegiatan. Foto yang dipilih akan tampil di slider halaman awal.</div>
+              </div>
+              <div style="padding:6px 12px; border:1px solid #999; border-radius:6px; font-size:12px; font-weight:bold; display:flex; align-items:center; gap:6px; background:#eee;">
+                <div class="cross-box" style="width:12px;height:12px;border:none;"></div> Tambah Foto
+              </div>
+            </div>
+            <div class="cross-box" style="width:100px; height:70px; border-radius:8px; position:relative;">
+              <div class="cross-box" style="width:20px;height:20px;border-radius:50%;position:absolute;top:4px;right:4px;border:1px solid #333;background:#fff;z-index:10;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Peta & Tautan Publik -->
+        <div class="card">
+          <div class="card-title">
+            <div class="cross-box" style="width:20px;height:20px;border:none;"></div> Peta & Tautan Publik
+          </div>
+          
+          <div class="form-group">
+            <label class="label">URL Embed Google Maps</label>
+            <div class="input-field" style="height:80px; align-items:flex-start; position:relative;">
+              https://maps.google.com/maps?q=...
+              <div class="cross-box" style="width:16px;height:16px;border:none;position:absolute;bottom:8px;right:8px;"></div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="label">Link Google Maps</label>
+            <div class="input-field"><div class="cross-box input-icon"></div> https://maps.google.com/...</div>
+          </div>
+        </div>
+
+        <!-- Card: Media Sosial -->
+        <div class="card">
+          <div class="card-title">
+            <div class="cross-box" style="width:20px;height:20px;border:none;"></div> Media Sosial
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="label">Facebook</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> https://facebook.com/...</div>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="label">Instagram</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> https://instagram.com/...</div>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="label">YouTube</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> https://youtube.com/...</div>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="label">Twitter / X</label>
+              <div class="input-field"><div class="cross-box input-icon"></div> https://x.com/...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Info & Action -->
+      <div>
+        
+        <!-- Card: Ringkasan Sinkronisasi -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-title" style="font-size:14px;">Ringkasan Sinkronisasi</div>
+          <div style="font-size:12px; color:#555; margin-bottom:12px;">Perubahan di halaman ini akan dipakai oleh:</div>
+          <ul class="info-list">
+            <li>Halaman Beranda, untuk ucapan selamat datang & slider foto</li>
+            <li>Halaman Profil, untuk identitas sekolah</li>
+            <li>Halaman Kontak, untuk email, WhatsApp, alamat, dan peta</li>
+            <li>Footer, untuk kontak, media sosial, dan lokasi</li>
+          </ul>
+        </div>
+
+        <!-- Card: Status Data -->
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-title" style="font-size:14px;">Status Data</div>
+          <div class="status-list">
+            <div>Website: <span style="color:#777; font-weight:normal;">Belum diisi</span></div>
+            <div>WhatsApp: <span style="color:#111;">081383080331</span></div>
+            <div>Media sosial: <span style="color:#777; font-weight:normal;">Sudah terisi sebagian</span></div>
+            <div>Slider beranda: <span style="color:#111;">1 foto</span></div>
+            <div>Peta: <span style="color:#111;">Sudah tersedia</span></div>
+          </div>
+        </div>
+
+        <!-- Action Area -->
+        <div style="text-align:center;">
+          <div style="font-size:11px; color:#555; margin-bottom:16px; line-height:1.5;">
+            Pastikan data sudah benar sebelum menyimpan karena perubahan akan tampil langsung di website publik.
+          </div>
+          <div class="btn-submit">
+            <div class="cross-box" style="width:16px; height:16px; border:none; background:transparent; border:1px solid #333;"></div> Simpan Pengaturan
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

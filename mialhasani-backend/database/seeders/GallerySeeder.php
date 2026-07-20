@@ -15,10 +15,7 @@ class GallerySeeder extends Seeder
                 'category' => 'Religi',
                 'image' => 'galeri-maulid.jpg',
                 'photos' => [
-                    'https://picsum.photos/seed/maulid1/800/600',
-                    'https://picsum.photos/seed/maulid2/800/600',
-                    'https://picsum.photos/seed/maulid3/800/600',
-                    'https://picsum.photos/seed/maulid4/800/600',
+                    'galeri-maulid.jpg',
                 ],
                 'description' => 'Kegiatan peringatan Maulid Nabi Muhammad SAW yang diisi dengan pembacaan shalawat, tausiyah, dan makan bersama seluruh siswa dan guru di lapangan utama sekolah.'
             ],
@@ -27,11 +24,7 @@ class GallerySeeder extends Seeder
                 'category' => 'Prestasi',
                 'image' => 'galeri-prestasi.jpg',
                 'photos' => [
-                    'https://picsum.photos/seed/porseni1/800/600',
-                    'https://picsum.photos/seed/porseni2/800/600',
-                    'https://picsum.photos/seed/porseni3/800/600',
-                    'https://picsum.photos/seed/porseni4/800/600',
-                    'https://picsum.photos/seed/porseni5/800/600',
+                    'galeri-prestasi.jpg',
                 ],
                 'description' => 'Momen kebanggaan saat kontingen MI Al-Hasani berhasil meraih Juara Umum pada ajang Pekan Olahraga dan Seni (Porseni) tingkat kecamatan.'
             ],
@@ -40,9 +33,7 @@ class GallerySeeder extends Seeder
                 'category' => 'Acara',
                 'image' => 'galeri-museum.jpg',
                 'photos' => [
-                    'https://picsum.photos/seed/museum1/800/600',
-                    'https://picsum.photos/seed/museum2/800/600',
-                    'https://picsum.photos/seed/museum3/800/600',
+                    'galeri-museum.jpg',
                 ],
                 'description' => 'Siswa kelas 6 melakukan *field trip* ke Museum Nasional untuk mengenal lebih dekat sejarah perjuangan bangsa dan melengkapi tugas akhir semester.'
             ],
@@ -51,10 +42,7 @@ class GallerySeeder extends Seeder
                 'category' => 'Ekskul',
                 'image' => 'galeri-pramuka.jpg',
                 'photos' => [
-                    'https://picsum.photos/seed/pramuka1/800/600',
-                    'https://picsum.photos/seed/pramuka2/800/600',
-                    'https://picsum.photos/seed/pramuka3/800/600',
-                    'https://picsum.photos/seed/pramuka4/800/600',
+                    'galeri-pramuka.jpg',
                 ],
                 'description' => 'Kegiatan Perkemahan Jumat Sabtu (Perjusa) untuk melatih kemandirian, kedisiplinan, dan kekompakan tim anggota Pramuka Penggalang MI Al-Hasani.'
             ],
@@ -63,9 +51,7 @@ class GallerySeeder extends Seeder
                 'category' => 'Kegiatan',
                 'image' => 'galeri-shalat.jpg',
                 'photos' => [
-                    'https://picsum.photos/seed/shalat1/800/600',
-                    'https://picsum.photos/seed/shalat2/800/600',
-                    'https://picsum.photos/seed/shalat3/800/600',
+                    'galeri-shalat.jpg',
                 ],
                 'description' => 'Evaluasi praktek ibadah shalat berjamaah untuk kelas 3 sebagai bagian dari penilaian praktik mata pelajaran Fiqih.'
             ],

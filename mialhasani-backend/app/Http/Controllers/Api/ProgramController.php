@@ -10,24 +10,102 @@ class ProgramController extends Controller
 {
     public function index()
     {
-        // Mengambil semua data program dari database
         $programs = Program::all();
-
-        // Mengirimkannya dalam bentuk JSON
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar Program MI Al-Hasani',
-            'data'    => $programs
-        ], 200);
+        return response()->json(['success' => true, 'message' => 'Daftar Program', 'data' => $programs], 200);
     }
+
     public function featured()
     {
-        // Ambil 1 program unggulan
-        $program = Program::first(); 
+        $program = Program::first();
+        return response()->json(['success' => true, 'data' => $program], 200);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'images.*'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'category'    => 'required|string|max:100',
+            'schedule'    => 'nullable|string|max:255',
+            'is_active'   => 'nullable',
+        ]);
+
+        $data = $request->except(['image', 'images']);
         
-        return response()->json([
-            'success' => true,
-            'data'    => $program
-        ], 200);
+        $uploadedImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('images'), $filename);
+                $uploadedImages[] = $filename;
+            }
+        }
+
+        if (count($uploadedImages) > 0) {
+            $data['images'] = $uploadedImages;
+            $data['image'] = $uploadedImages[0];
+        }
+
+        $program = Program::create($data);
+        return response()->json(['success' => true, 'message' => 'Program berhasil ditambahkan', 'data' => $program], 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $program = Program::find($id);
+        if (!$program) return response()->json(['success' => false, 'message' => 'Program tidak ditemukan'], 404);
+
+        $request->validate([
+            'title'       => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'images.*'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'existing_images' => 'nullable|array',
+            'category'    => 'sometimes|string|max:100',
+            'schedule'    => 'nullable|string|max:255',
+            'is_active'   => 'nullable',
+        ]);
+
+        $data = $request->except(['image', 'images', 'existing_images', '_method']);
+        $existingImages = $request->input('existing_images', []);
+        
+        $newImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('images'), $filename);
+                $newImages[] = $filename;
+            }
+        }
+
+        $finalImages = array_merge($existingImages, $newImages);
+        $data['images'] = $finalImages;
+        $data['image'] = count($finalImages) > 0 ? $finalImages[0] : null;
+
+        $oldImages = $program->images ?: ($program->image ? [$program->image] : []);
+        foreach ($oldImages as $oldImg) {
+            if (!in_array($oldImg, $finalImages) && file_exists(public_path('images/' . $oldImg))) {
+                unlink(public_path('images/' . $oldImg));
+            }
+        }
+
+        $program->update($data);
+        return response()->json(['success' => true, 'message' => 'Program berhasil diperbarui', 'data' => $program], 200);
+    }
+
+    public function destroy($id)
+    {
+        $program = Program::find($id);
+        if (!$program) return response()->json(['success' => false, 'message' => 'Program tidak ditemukan'], 404);
+        
+        $oldImages = $program->images ?: ($program->image ? [$program->image] : []);
+        foreach ($oldImages as $oldImg) {
+            if (file_exists(public_path('images/' . $oldImg))) {
+                unlink(public_path('images/' . $oldImg));
+            }
+        }
+        
+        $program->delete();
+        return response()->json(['success' => true, 'message' => 'Program berhasil dihapus'], 200);
     }
 }

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             NewsSeeder::class, // Mengisi data Berita
             GallerySeeder::class, // Mengisi data Galeri
             PrincipalSeeder::class, // Mengisi data Kepala Sekolah
-
+            PpdbSettingSeeder::class, // Mengisi data konfigurasi PPDB
         ]);
        
     }

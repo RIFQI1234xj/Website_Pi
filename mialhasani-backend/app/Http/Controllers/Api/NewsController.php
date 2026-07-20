@@ -4,74 +4,140 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\News;
+use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
     public function index()
     {
-        $news = News::latest()->get(); // Ambil semua berita, urutkan dari yang terbaru
-        
-        return response()->json([
-            'success' => true,
-            'data'    => $news
-        ], 200);
-        
+        $news = News::latest()->get();
+        return response()->json(['success' => true, 'message' => 'Daftar Berita', 'data' => $news], 200);
     }
 
-    /**
-     * Ambil detail satu berita berdasarkan ID
-     */
+    private function storeUploadedPhotos(array $files): array
+    {
+        $storedPhotos = [];
+        foreach ($files as $file) {
+            $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images'), $filename);
+            $storedPhotos[] = $filename;
+        }
+        return $storedPhotos;
+    }
+
+    private function deleteNewsPhotos(array $photos): void
+    {
+        foreach (array_unique($photos) as $photo) {
+            if (!is_string($photo) || str_starts_with($photo, 'http')) {
+                continue;
+            }
+            $path = public_path('images/' . $photo);
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
+    }
+
     public function show($id)
     {
         $news = News::find($id);
-
-        if (!$news) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Berita tidak ditemukan'
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data'    => $news
-        ], 200);
+        if (!$news) return response()->json(['success' => false, 'message' => 'Berita tidak ditemukan'], 404);
+        return response()->json(['success' => true, 'data' => $news], 200);
     }
 
-    /**
-     * Ambil berita terkait (kategori sama, kecuali berita yang sedang dibaca)
-     */
     public function related($id)
     {
         $news = News::find($id);
-
-        if (!$news) {
-            return response()->json([
-                'success' => false,
-                'data'    => []
-            ], 404);
-        }
-
-        $related = News::where('category', $news->category)
-            ->where('id', '!=', $id)
-            ->latest()
-            ->take(3)
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'data'    => $related
-        ], 200);
+        if (!$news) return response()->json(['success' => false, 'data' => []], 404);
+        $related = News::where('category', $news->category)->where('id', '!=', $id)->latest()->take(3)->get();
+        return response()->json(['success' => true, 'data' => $related], 200);
     }
 
     public function latest()
     {
-        // Ambil 3 berita terbaru
         $news = News::latest()->take(3)->get();
+        return response()->json(['success' => true, 'data' => $news], 200);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title'    => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'photos'   => 'required|array|min:1',
+            'photos.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'excerpt'  => 'required|string',
+            'content'  => 'nullable|string',
+            'author'   => 'nullable|string|max:100',
+            'date'     => 'required|string',
+        ]);
+
+        $storedPhotos = $this->storeUploadedPhotos($request->file('photos', []));
+
+        $data = $request->except('photos');
+        $data['image'] = $storedPhotos[0];
+        $data['photos'] = $storedPhotos;
+
+        $news = News::create($data);
+        return response()->json(['success' => true, 'message' => 'Berita berhasil ditambahkan', 'data' => $news], 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $news = News::find($id);
+        if (!$news) return response()->json(['success' => false, 'message' => 'Berita tidak ditemukan'], 404);
+
+        $request->validate([
+            'title'    => 'sometimes|string|max:255',
+            'category' => 'sometimes|string|max:100',
+            'photos'   => 'nullable|array',
+            'photos.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'retained_photos' => 'nullable|array',
+            'sync_existing_photos' => 'nullable|boolean',
+            'excerpt'  => 'sometimes|string',
+            'content'  => 'nullable|string',
+            'author'   => 'nullable|string|max:100',
+            'date'     => 'sometimes|string',
+        ]);
+
+        $data = $request->except('photos', 'retained_photos', 'sync_existing_photos', '_method');
+
+        $currentPhotos = is_array($news->photos) ? $news->photos : (empty($news->image) ? [] : [$news->image]);
+        $retainedPhotos = $request->input('retained_photos', []);
+        $syncExisting = $request->input('sync_existing_photos', false);
+
+        if ($syncExisting) {
+            $photosToDelete = array_diff($currentPhotos, $retainedPhotos);
+            $this->deleteNewsPhotos($photosToDelete);
+            $finalPhotos = $retainedPhotos;
+        } else {
+            $finalPhotos = $currentPhotos;
+        }
+
+        $newPhotos = $this->storeUploadedPhotos($request->file('photos', []));
+        $finalPhotos = array_merge($finalPhotos, $newPhotos);
+
+        if (!empty($finalPhotos)) {
+            $data['image'] = $finalPhotos[0];
+            $data['photos'] = array_values($finalPhotos);
+        } else {
+            $data['image'] = null;
+            $data['photos'] = [];
+        }
+
+        $news->update($data);
+        return response()->json(['success' => true, 'message' => 'Berita berhasil diperbarui', 'data' => $news], 200);
+    }
+
+    public function destroy($id)
+    {
+        $news = News::find($id);
+        if (!$news) return response()->json(['success' => false, 'message' => 'Berita tidak ditemukan'], 404);
         
-        return response()->json([
-            'success' => true,
-            'data'    => $news
-        ], 200);
+        $photosToDelete = is_array($news->photos) ? $news->photos : (empty($news->image) ? [] : [$news->image]);
+        $this->deleteNewsPhotos($photosToDelete);
+
+        $news->delete();
+        return response()->json(['success' => true, 'message' => 'Berita berhasil dihapus'], 200);
     }
 }

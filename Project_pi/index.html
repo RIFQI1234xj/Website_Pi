@@ -4,18 +4,74 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MI Al-Hasani - Generasi Qur'ani</title>
+    <!-- SEO & OpenGraph Meta Tags (Untuk Preview WhatsApp / Facebook) -->
+    <meta name="description" content="MI Al-Hasani - Madrasah Hebat Bermartabat. Mencetak generasi Qur'ani yang cerdas, berprestasi, dan berakhlak mulia." />
+    <meta property="og:title" content="MI Al-Hasani | Madrasah Hebat Bermartabat" />
+    <meta property="og:description" content="Pendaftaran Peserta Didik Baru (PPDB) MI Al-Hasani. Mari bergabung bersama kami mencetak generasi cerdas dan Qur'ani!" />
+    <meta property="og:image" content="/images/hero-bg.jpg" /> <!-- Pastikan ada gambar hero-bg.jpg di folder public/images -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MI Al-Hasani" />
+    <meta name="twitter:card" content="summary_large_image" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Tailwind Custom Config (AFTER CDN) -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              teal: {
+                50: '#F0FDF4',
+                100: '#CCFBF1',
+                200: '#99F6E4',
+                300: '#5EEAD4',
+                400: '#2DD4BF',
+                500: '#14B8A6',
+                600: '#0D9488',
+                700: '#0F766E',
+                800: '#115E59',
+                900: '#134E4A',
+              },
+              mint: {
+                100: '#D1FAE5',
+                200: '#A7F3D0',
+                300: '#6EE7B7',
+                400: '#34D399',
+                500: '#10B981',
+                600: '#059669',
+              },
+              ivory: {
+                50:  '#FDFCF8',
+                100: '#FAF5E9',
+                200: '#F5EED4',
+                300: '#EDE3C4',
+              }
+            },
+            fontFamily: {
+              serif:   ['"Playfair Display"', 'Georgia', 'serif'],
+              sans:    ['"Plus Jakarta Sans"', 'ui-sans-serif', 'sans-serif'],
+              poppins: ['"Poppins"', 'ui-sans-serif', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
+    <!-- Google Fonts: Playfair Display + Plus Jakarta Sans + Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
       html {
         scroll-behavior: smooth;
         scroll-padding-top: 90px; /* Offset for fixed navbar */
       }
       body {
-        font-family: 'Open Sans', sans-serif;
+        font-family: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
       }
-      h1, h2, h3, h4, h5, h6 {
-        font-family: 'Poppins', sans-serif;
+      h1, h2 {
+        font-family: 'Playfair Display', Georgia, serif;
+      }
+      h3, h4, h5, h6 {
+        font-family: 'Poppins', ui-sans-serif, sans-serif;
       }
       /* Custom scrollbar for admin sidebar */
       .scrollbar-thin::-webkit-scrollbar {
@@ -36,6 +92,214 @@
         opacity: 1;
         transform: translateY(0);
       }
+
+      /* ===== PRINT STYLES ===== */
+      @media print {
+        /* Hide everything except print area */
+        body * {
+          visibility: hidden;
+        }
+        #ppdb-print-area, #ppdb-print-area * {
+          visibility: visible;
+        }
+        #ppdb-print-area {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+        }
+        [data-no-print] {
+          display: none !important;
+        }
+        nav, aside, footer, header {
+          display: none !important;
+        }
+      }
+
+      /* Print Receipt Styles */
+      .print-receipt {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 40px;
+        font-family: 'Poppins', 'Arial', sans-serif;
+        color: #1a1a1a;
+        position: relative;
+      }
+      .print-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 12px;
+      }
+      .print-logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #059669, #0d9488);
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .print-school-info h1 {
+        font-size: 22px;
+        font-weight: 800;
+        color: #064e3b;
+        margin: 0;
+        line-height: 1.2;
+      }
+      .print-school-info p {
+        font-size: 11px;
+        color: #6b7280;
+        margin: 2px 0 0;
+      }
+      .print-address {
+        font-size: 10px !important;
+        color: #9ca3af !important;
+      }
+      .print-divider {
+        height: 3px;
+        background: linear-gradient(to right, #059669, #0d9488, #059669);
+        margin: 16px 0;
+        border-radius: 2px;
+      }
+      .print-title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: 800;
+        color: #064e3b;
+        margin: 20px 0 4px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .print-subtitle {
+        text-align: center;
+        font-size: 12px;
+        color: #6b7280;
+        margin: 0 0 20px;
+      }
+      .print-reg-box {
+        text-align: center;
+        padding: 14px;
+        border: 2px solid #059669;
+        border-radius: 12px;
+        margin: 0 auto 24px;
+        max-width: 320px;
+        background: #f0fdf4;
+      }
+      .print-reg-label {
+        display: block;
+        font-size: 10px;
+        color: #059669;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+      }
+      .print-reg-number {
+        display: block;
+        font-size: 26px;
+        font-weight: 800;
+        color: #064e3b;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 2px;
+      }
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      .print-table tr {
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .print-table tr:last-child {
+        border-bottom: none;
+      }
+      .print-td-label {
+        padding: 10px 0;
+        font-size: 12px;
+        color: #6b7280;
+        width: 180px;
+        font-weight: 500;
+      }
+      .print-td-sep {
+        padding: 10px 8px;
+        font-size: 12px;
+        color: #6b7280;
+        width: 10px;
+      }
+      .print-td-value {
+        padding: 10px 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+      .print-status-approved {
+        color: #059669 !important;
+        font-weight: 800 !important;
+      }
+      .print-stamp {
+        position: absolute;
+        top: 50%;
+        right: 60px;
+        transform: rotate(-15deg);
+        font-size: 48px;
+        font-weight: 900;
+        color: rgba(5, 150, 105, 0.12);
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        pointer-events: none;
+        border: 4px solid rgba(5, 150, 105, 0.12);
+        padding: 8px 20px;
+        border-radius: 12px;
+      }
+      .print-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+      }
+      .print-footer-left {
+        font-size: 9px;
+        color: #9ca3af;
+      }
+      .print-footer-left p { margin: 2px 0; }
+      .print-footer-right {
+        text-align: center;
+        font-size: 11px;
+        color: #4b5563;
+      }
+      .print-footer-right p { margin: 2px 0; }
+      .print-signature-line {
+        width: 160px;
+        border-bottom: 1px solid #1f2937;
+        margin: 60px auto 8px;
+      }
+      .print-signee {
+        font-weight: 700;
+        font-size: 12px;
+        color: #1f2937;
+        text-decoration: underline;
+      }
+      .print-signee-role {
+        font-size: 10px;
+        color: #6b7280;
+      }
+
+      /* Hide print area on screen */
+      #ppdb-print-area {
+        display: none;
+      }
+      @media print {
+        #ppdb-print-area {
+          display: block;
+        }
+      }
     </style>
   <script type="importmap">
 {
@@ -48,7 +312,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>

@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 - Wireframe Daftar Berita (Outline Sederhana)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #fff; color: #111; width: 1600px; }
+  .page { width: 1600px; min-height: 1200px; padding: 20px; }
+
+  /* Outline Wireframe Styles */
+  .box { background: #eee; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box { background: #eee; border: 1px solid #999; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #333; }
+  .cross-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)), linear-gradient(to top right, transparent calc(50% - 0.5px), #999 calc(50% - 0.5px), #999 calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+  .cross-box span { position: relative; z-index: 1; background: rgba(255,255,255,0.8); padding: 2px 4px; font-weight:bold; }
+
+  .flex { display: flex; }
+  .flex-col { display: flex; flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  
+  /* Navbar */
+  .navbar { border: 2px solid #333; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; background: #fff; }
+  .nav-logo { font-size: 14px; font-weight: bold; }
+  .nav-links { display: flex; gap: 20px; font-size: 12px; }
+
+  .page-label { font-size: 10px; color: #999; text-align: right; margin-bottom: 4px; }
+  
+  /* Sections */
+  .hero-section { background: #eee; border: 1px solid #999; border-top: none; padding: 100px 20px; text-align: center; }
+  .hero-title { font-size: 32px; font-weight: bold; margin-bottom: 12px; color: #111; }
+  .hero-subtitle { font-size: 16px; color: #555; }
+  
+  /* Filter Bar */
+  .filter-bar { max-width: 1200px; margin: -30px auto 40px; background: #fff; border: 1px solid #999; border-radius: 8px; padding: 20px; position: relative; z-index: 10; display: flex; gap: 20px; align-items: center; justify-content: space-between; }
+  .search-input { flex: 1; padding: 12px; border: 1px solid #999; border-radius: 8px; font-size: 14px; background: #f9f9f9; }
+  .category-filters { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cat-btn { padding: 10px 16px; border: 1px solid #999; border-radius: 20px; font-size: 12px; font-weight: bold; background: #fff; }
+  .cat-btn.active { background: #eee; border: 2px solid #333; }
+
+  /* News Grid */
+  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; max-width: 1200px; margin: 0 auto 80px; }
+  .news-card { border: 1px solid #999; border-radius: 8px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+  .news-img { width: 100%; height: 220px; position: relative; }
+  .news-badge { position: absolute; top: 12px; right: 12px; padding: 4px 12px; background: #eee; border: 1px solid #333; font-size: 10px; font-weight: bold; z-index: 2; border-radius: 20px; }
+  .news-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+  .news-meta { font-size: 11px; color: #777; margin-bottom: 12px; display: flex; gap: 12px; }
+  .news-title { font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #111; line-height: 1.4; }
+  .news-excerpt { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px; flex-grow: 1; }
+  .news-link { font-size: 12px; font-weight: bold; color: #333; border-top: 1px solid #eee; padding-top: 16px; margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+
+  /* Footer */
+  .footer { border: 2px solid #333; padding: 24px; background: #f9f9f9; color: #333; font-size: 11px; }
+
+  /* === Responsive Override === */
+  html, body { width: 100% !important; max-width: 100% !important; overflow-x: auto !important; box-sizing: border-box !important; }
+  .page { width: 100% !important; max-width: 1600px !important; box-sizing: border-box !important; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-label">Wireframe 03 — Daftar Berita (Outline Sederhana)</div>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="flex items-center gap-2">
+      <div class="cross-box" style="width:36px;height:36px;"></div>
+      <div class="nav-logo">MI Al-Hasani</div>
+    </div>
+    <div class="nav-links">
+      <span>Beranda</span>
+      <span>Profil</span>
+      <span>Program</span>
+      <span style="border-bottom: 2px solid #333; font-weight: bold;">Berita</span>
+      <span>Galeri</span>
+      <span>PPDB</span>
+      <span>Kontak</span>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-title">Berita & Artikel</div>
+    <div class="hero-subtitle">Ikuti update terbaru seputar kegiatan, informasi, dan prestasi membanggakan dari MI Al-Hasani</div>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="filter-bar">
+    <div style="flex: 1; display: flex; align-items: center; gap: 12px;">
+      <div class="cross-box" style="width:24px; height:24px; border:none; background:transparent;"></div>
+      <div style="padding:12px; border:1px solid #999; border-radius:8px; width: 100%; color:#777; font-size:14px; background:#f9f9f9;">Cari berita atau artikel...</div>
+    </div>
+    <div style="border-left: 1px solid #999; height: 40px; margin: 0 10px;"></div>
+    <div class="category-filters">
+      <div class="cat-btn active">Semua</div>
+      <div class="cat-btn">Kegiatan</div>
+      <div class="cat-btn">Pengumuman</div>
+      <div class="cat-btn">Prestasi</div>
+      <div class="cat-btn">Artikel Islami</div>
+    </div>
+  </div>
+
+  <!-- News Grid -->
+  <div class="news-grid">
+    <!-- Card 1 -->
+    <div class="news-card">
+      <div class="cross-box news-img">
+        <div class="news-badge">Kegiatan</div>
+      </div>
+      <div class="news-content">
+        <div class="news-meta">
+          <span>14 Jul 2026</span>
+          <span>Admin</span>
+        </div>
+        <div class="news-title">Pelaksanaan Upacara Bendera dan Pembagian Hadiah Lomba</div>
+        <div class="news-excerpt">Kegiatan upacara bendera hari Senin dirangkaikan dengan penyerahan piala dan piagam penghargaan bagi siswa yang berprestasi...</div>
+        <div class="news-link">Baca Selengkapnya <span>&rarr;</span></div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="news-card">
+      <div class="cross-box news-img">
+        <div class="news-badge">Pengumuman</div>
+      </div>
+      <div class="news-content">
+        <div class="news-meta">
+          <span>10 Jul 2026</span>
+          <span>Kepsek</span>
+        </div>
+        <div class="news-title">Pengumuman Libur Semester Ganjil 2025/2026</div>
+        <div class="news-excerpt">Diberitahukan kepada seluruh wali murid bahwa kegiatan belajar mengajar akan diliburkan mulai tanggal 15 Juli hingga...</div>
+        <div class="news-link">Baca Selengkapnya <span>&rarr;</span></div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="news-card">
+      <div class="cross-box news-img">
+        <div class="news-badge">Prestasi</div>
+      </div>
+      <div class="news-content">
+        <div class="news-meta">
+          <span>05 Jul 2026</span>
+          <span>Admin</span>
+        </div>
+        <div class="news-title">Siswa MI Al-Hasani Juara 1 Lomba Tahfidz Tingkat Kabupaten</div>
+        <div class="news-excerpt">Alhamdulillah, ananda Ahmad dari kelas 5 berhasil meraih juara pertama dalam ajang Musabaqah Hifdzil Quran tingkat...</div>
+        <div class="news-link">Baca Selengkapnya <span>&rarr;</span></div>
+      </div>
+    </div>
+    
+    <!-- Card 4 -->
+    <div class="news-card">
+      <div class="cross-box news-img">
+        <div class="news-badge">Artikel Islami</div>
+      </div>
+      <div class="news-content">
+        <div class="news-meta">
+          <span>01 Jul 2026</span>
+          <span>Guru PAI</span>
+        </div>
+        <div class="news-title">Keutamaan Membaca Al-Quran di Waktu Subuh</div>
+        <div class="news-excerpt">Membaca Al-Quran di waktu subuh memiliki keistimewaan tersendiri. Para malaikat menyaksikan bacaan tersebut dan membawa berkah...</div>
+        <div class="news-link">Baca Selengkapnya <span>&rarr;</span></div>
+      </div>
+    </div>
+    
+    <!-- Card 5 -->
+    <div class="news-card">
+      <div class="cross-box news-img">
+        <div class="news-badge">Kegiatan</div>
+      </div>
+      <div class="news-content">
+        <div class="news-meta">
+          <span>28 Jun 2026</span>
+          <span>Admin</span>
+        </div>
+        <div class="news-title">Kunjungan Edukatif ke Museum Sejarah Nasional</div>
+        <div class="news-excerpt">Siswa-siswi kelas 4 dan 5 mengadakan field trip ke museum untuk mempelajari sejarah perjuangan kemerdekaan secara langsung...</div>
+        <div class="news-link">Baca Selengkapnya <span>&rarr;</span></div>
+      </div>
+    </div>
+    
+    <!-- Card 6 -->
+    <div class="news-card">
+      <div class="cross-box news-img">
+        <div class="news-badge">Pengumuman</div>
+      </div>
+      <div class="news-content">
+        <div class="news-meta">
+          <span>25 Jun 2026</span>
+          <span>Panitia PPDB</span>
+        </div>
+        <div class="news-title">Pendaftaran Peserta Didik Baru (PPDB) Gelombang 2 Dibuka</div>
+        <div class="news-excerpt">Bagi orang tua yang belum mendaftarkan putra-putrinya, PPDB gelombang kedua resmi dibuka mulai minggu depan dengan kuota terbatas...</div>
+        <div class="news-link">Baca Selengkapnya <span>&rarr;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="flex justify-between">
+      <div>
+        <div style="font-size:14px; font-weight:bold; margin-bottom:4px;">MI Al-Hasani</div>
+        <div style="font-size:11px; color:#555; max-width:200px;">Tempat di mana Ilmu Pengetahuan dan Nilai-nilai Islami berpadu.</div>
+      </div>
+      <div>
+        <div style="font-weight:bold; margin-bottom:8px;">Navigasi</div>
+        <div style="color:#555; line-height:1.6;">Beranda<br>Profil<br>Program<br>Berita<br>PPDB</div>
+      </div>
+      <div>
+        <div style="font-weight:bold; margin-bottom:8px;">Kontak</div>
+        <div style="color:#555; line-height:1.6;">[Alamat Lengkap]<br>[Telepon]<br>[Email]</div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #ddd; margin-top:20px; padding-top:20px; text-align:center; color:#777;">
+      &copy; 2026 MI Al-Hasani. Hak Cipta Dilindungi.
+    </div>
+  </div>
+</div>
+</body>
+</html>
