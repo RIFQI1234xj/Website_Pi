@@ -6,7 +6,18 @@ import {
   Download, X, Settings, Save, Loader2
 } from 'lucide-react';
 import { PPDBApplicant, PPDBStatus } from '../../types';
-import { apiFetch, API_BASE_URL } from '../../lib/api';
+import { API_BASE_URL, getImageUrl, apiFetch } from '../../lib/api';
+
+const getDownloadUrl = (url: string) => {
+  let fullUrl = url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + url : url;
+  if (fullUrl.includes('/api/media/')) {
+    return fullUrl.replace('/api/media/', '/api/media/download/');
+  }
+  if (fullUrl.includes('res.cloudinary.com') && !fullUrl.includes('fl_attachment')) {
+    return fullUrl.replace('/upload/', '/upload/fl_attachment/');
+  }
+  return fullUrl;
+};
 
 type StatusFilter = 'all' | PPDBStatus;
 
@@ -1059,7 +1070,7 @@ export const AdminPPDB: React.FC = () => {
               </h3>
               <div className="flex items-center gap-2">
                 <a
-                  href={viewDoc.url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + viewDoc.url : viewDoc.url}
+                  href={getDownloadUrl(viewDoc.url)}
                   download={viewDoc.name}
                   className="px-4 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-sm font-semibold flex items-center gap-2"
                 >
@@ -1306,7 +1317,7 @@ const DocPreview: React.FC<{ label: string; fileName: string; data: string; onVi
           <Eye size={14} className="text-teal-600" />
         </button>
         <a
-          href={data.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + data : data}
+          href={getDownloadUrl(data)}
           download={fileName}
           title="Unduh Dokumen"
           className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center hover:bg-blue-100 transition-colors"
