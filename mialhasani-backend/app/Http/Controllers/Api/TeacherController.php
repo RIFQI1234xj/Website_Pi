@@ -31,7 +31,7 @@ class TeacherController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             if (env('CLOUDINARY_URL')) {
-                $data['image'] = $file->storeOnCloudinary('mialhasani/teachers')->getSecurePath();
+                $data['image'] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/teachers'])['secure_url'];
             } else {
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $file->move(public_path('images'), $filename);
@@ -68,7 +68,7 @@ class TeacherController extends Controller
                         if ($parts) {
                             preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
                             if (isset($matches[1])) {
-                                try { \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]); } catch (\Exception $e) {}
+                                try { cloudinary()->uploadApi()->destroy($matches[1]); } catch (\Exception $e) {}
                             }
                         }
                     }
@@ -78,7 +78,7 @@ class TeacherController extends Controller
             }
             $file = $request->file('image');
             if (env('CLOUDINARY_URL')) {
-                $data['image'] = $file->storeOnCloudinary('mialhasani/teachers')->getSecurePath();
+                $data['image'] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/teachers'])['secure_url'];
             } else {
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $file->move(public_path('images'), $filename);
@@ -101,7 +101,7 @@ class TeacherController extends Controller
                     if ($parts) {
                         preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
                         if (isset($matches[1])) {
-                            try { \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]); } catch (\Exception $e) {}
+                            try { cloudinary()->uploadApi()->destroy($matches[1]); } catch (\Exception $e) {}
                         }
                     }
                 }

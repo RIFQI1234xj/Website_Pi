@@ -14,7 +14,7 @@ class GalleryController extends Controller
 
         foreach ($files as $file) {
             if (env('CLOUDINARY_URL')) {
-                $storedPhotos[] = $file->storeOnCloudinary('mialhasani/galleries')->getSecurePath();
+                $storedPhotos[] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/galleries'])['secure_url'];
             } else {
                 $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
                 $file->move(public_path('images'), $filename);
@@ -37,7 +37,7 @@ class GalleryController extends Controller
                         preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
                         if (isset($matches[1])) {
                             try {
-                                \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]);
+                                cloudinary()->uploadApi()->destroy($matches[1]);
                             } catch (\Exception $e) {}
                         }
                     }

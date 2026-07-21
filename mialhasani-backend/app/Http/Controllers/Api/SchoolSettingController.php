@@ -83,7 +83,7 @@ class SchoolSettingController extends Controller
             foreach ($heroFiles as $file) {
                 if (!$file) continue;
                 if (env('CLOUDINARY_URL')) {
-                    $uploadedHeroImages[] = $file->storeOnCloudinary('mialhasani/settings')->getSecurePath();
+                    $uploadedHeroImages[] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/settings'])['secure_url'];
                 } else {
                     $filename = 'hero-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
                     $file->move(public_path('images'), $filename);
@@ -113,7 +113,7 @@ class SchoolSettingController extends Controller
             foreach ($brochureFiles as $file) {
                 if (!$file) continue;
                 if (env('CLOUDINARY_URL')) {
-                    $uploadedBrochureImages[] = $file->storeOnCloudinary('mialhasani/settings')->getSecurePath();
+                    $uploadedBrochureImages[] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/settings'])['secure_url'];
                 } else {
                     $filename = 'brosur-mi-alhasani-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
                     $file->move(public_path('images'), $filename);
