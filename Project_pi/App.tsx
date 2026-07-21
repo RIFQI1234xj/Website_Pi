@@ -58,13 +58,13 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({
   navigateToPage,
   navigateToProfileTab,
 }) => (
-  <div className="min-h-screen bg-white">
+  <div className="min-h-screen bg-white flex flex-col">
     <Navbar
       currentPage={currentPage}
       setPage={navigateToPage}
       setProfileTab={navigateToProfileTab}
     />
-    <main>
+    <main className="flex-grow">
       <Outlet />
     </main>
     <Footer setPage={navigateToPage} />
