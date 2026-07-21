@@ -30,9 +30,13 @@ class TeacherController extends Controller
         $data['description'] = $data['description'] ?? '-';
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-            $data['image'] = $filename;
+            if (env('CLOUDINARY_URL')) {
+                $data['image'] = $file->storeOnCloudinary('mialhasani/teachers')->getSecurePath();
+            } else {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('images'), $filename);
+                $data['image'] = $filename;
+            }
         }
 
         $teacher = Teacher::create($data);
@@ -57,11 +61,29 @@ class TeacherController extends Controller
         $data = $request->except('image', '_method');
         $data['description'] = $data['description'] ?? '-';
         if ($request->hasFile('image')) {
-            if ($teacher->image && file_exists(public_path('images/' . $teacher->image))) unlink(public_path('images/' . $teacher->image));
+            if ($teacher->image) {
+                if (str_starts_with($teacher->image, 'http')) {
+                    if (str_contains($teacher->image, 'cloudinary.com') && env('CLOUDINARY_URL')) {
+                        $parts = parse_url($teacher->image, PHP_URL_PATH);
+                        if ($parts) {
+                            preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
+                            if (isset($matches[1])) {
+                                try { \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]); } catch (\Exception $e) {}
+                            }
+                        }
+                    }
+                } else if (file_exists(public_path('images/' . $teacher->image))) {
+                    unlink(public_path('images/' . $teacher->image));
+                }
+            }
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-            $data['image'] = $filename;
+            if (env('CLOUDINARY_URL')) {
+                $data['image'] = $file->storeOnCloudinary('mialhasani/teachers')->getSecurePath();
+            } else {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('images'), $filename);
+                $data['image'] = $filename;
+            }
         }
 
         $teacher->update($data);
@@ -72,7 +94,21 @@ class TeacherController extends Controller
     {
         $teacher = Teacher::find($id);
         if (!$teacher) return response()->json(['success' => false, 'message' => 'Guru tidak ditemukan'], 404);
-        if ($teacher->image && file_exists(public_path('images/' . $teacher->image))) unlink(public_path('images/' . $teacher->image));
+        if ($teacher->image) {
+            if (str_starts_with($teacher->image, 'http')) {
+                if (str_contains($teacher->image, 'cloudinary.com') && env('CLOUDINARY_URL')) {
+                    $parts = parse_url($teacher->image, PHP_URL_PATH);
+                    if ($parts) {
+                        preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
+                        if (isset($matches[1])) {
+                            try { \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]); } catch (\Exception $e) {}
+                        }
+                    }
+                }
+            } else if (file_exists(public_path('images/' . $teacher->image))) {
+                unlink(public_path('images/' . $teacher->image));
+            }
+        }
         $teacher->delete();
         return response()->json(['success' => true, 'message' => 'Guru berhasil dihapus'], 200);
     }

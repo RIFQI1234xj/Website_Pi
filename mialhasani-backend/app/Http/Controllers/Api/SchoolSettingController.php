@@ -82,9 +82,13 @@ class SchoolSettingController extends Controller
         if (is_array($heroFiles)) {
             foreach ($heroFiles as $file) {
                 if (!$file) continue;
-                $filename = 'hero-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('images'), $filename);
-                $uploadedHeroImages[] = $filename;
+                if (env('CLOUDINARY_URL')) {
+                    $uploadedHeroImages[] = $file->storeOnCloudinary('mialhasani/settings')->getSecurePath();
+                } else {
+                    $filename = 'hero-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('images'), $filename);
+                    $uploadedHeroImages[] = $filename;
+                }
             }
         }
         $settings->hero_images = array_merge($retainedHeroImages, $uploadedHeroImages);
@@ -108,9 +112,13 @@ class SchoolSettingController extends Controller
         if (is_array($brochureFiles)) {
             foreach ($brochureFiles as $file) {
                 if (!$file) continue;
-                $filename = 'brosur-mi-alhasani-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('images'), $filename);
-                $uploadedBrochureImages[] = $filename;
+                if (env('CLOUDINARY_URL')) {
+                    $uploadedBrochureImages[] = $file->storeOnCloudinary('mialhasani/settings')->getSecurePath();
+                } else {
+                    $filename = 'brosur-mi-alhasani-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('images'), $filename);
+                    $uploadedBrochureImages[] = $filename;
+                }
             }
         }
         $settings->brochure_images = array_merge($retainedBrochureImages, $uploadedBrochureImages);

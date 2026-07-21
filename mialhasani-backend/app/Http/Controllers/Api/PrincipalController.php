@@ -27,13 +27,29 @@ class PrincipalController extends Controller
         $data = $request->except('image', '_method');
 
         if ($request->hasFile('image')) {
-            if ($principal && $principal->image && file_exists(public_path('images/' . $principal->image))) {
-                unlink(public_path('images/' . $principal->image));
+            if ($principal && $principal->image) {
+                if (str_starts_with($principal->image, 'http')) {
+                    if (str_contains($principal->image, 'cloudinary.com') && env('CLOUDINARY_URL')) {
+                        $parts = parse_url($principal->image, PHP_URL_PATH);
+                        if ($parts) {
+                            preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
+                            if (isset($matches[1])) {
+                                try { \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]); } catch (\Exception $e) {}
+                            }
+                        }
+                    }
+                } else if (file_exists(public_path('images/' . $principal->image))) {
+                    unlink(public_path('images/' . $principal->image));
+                }
             }
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-            $data['image'] = $filename;
+            if (env('CLOUDINARY_URL')) {
+                $data['image'] = $file->storeOnCloudinary('mialhasani/principals')->getSecurePath();
+            } else {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('images'), $filename);
+                $data['image'] = $filename;
+            }
         }
 
         if (!$principal) {

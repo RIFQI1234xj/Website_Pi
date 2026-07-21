@@ -36,9 +36,13 @@ class ProgramController extends Controller
         $uploadedImages = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images'), $filename);
-                $uploadedImages[] = $filename;
+                if (env('CLOUDINARY_URL')) {
+                    $uploadedImages[] = $file->storeOnCloudinary('mialhasani/programs')->getSecurePath();
+                } else {
+                    $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('images'), $filename);
+                    $uploadedImages[] = $filename;
+                }
             }
         }
 
@@ -72,9 +76,13 @@ class ProgramController extends Controller
         $newImages = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images'), $filename);
-                $newImages[] = $filename;
+                if (env('CLOUDINARY_URL')) {
+                    $newImages[] = $file->storeOnCloudinary('mialhasani/programs')->getSecurePath();
+                } else {
+                    $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('images'), $filename);
+                    $newImages[] = $filename;
+                }
             }
         }
 
@@ -84,8 +92,22 @@ class ProgramController extends Controller
 
         $oldImages = $program->images ?: ($program->image ? [$program->image] : []);
         foreach ($oldImages as $oldImg) {
-            if (!in_array($oldImg, $finalImages) && file_exists(public_path('images/' . $oldImg))) {
-                unlink(public_path('images/' . $oldImg));
+            if (!in_array($oldImg, $finalImages)) {
+                if (str_starts_with($oldImg, 'http')) {
+                    if (str_contains($oldImg, 'cloudinary.com') && env('CLOUDINARY_URL')) {
+                        $parts = parse_url($oldImg, PHP_URL_PATH);
+                        if ($parts) {
+                            preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
+                            if (isset($matches[1])) {
+                                try {
+                                    \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]);
+                                } catch (\Exception $e) {}
+                            }
+                        }
+                    }
+                } else if (file_exists(public_path('images/' . $oldImg))) {
+                    unlink(public_path('images/' . $oldImg));
+                }
             }
         }
 
@@ -100,7 +122,19 @@ class ProgramController extends Controller
         
         $oldImages = $program->images ?: ($program->image ? [$program->image] : []);
         foreach ($oldImages as $oldImg) {
-            if (file_exists(public_path('images/' . $oldImg))) {
+            if (str_starts_with($oldImg, 'http')) {
+                if (str_contains($oldImg, 'cloudinary.com') && env('CLOUDINARY_URL')) {
+                    $parts = parse_url($oldImg, PHP_URL_PATH);
+                    if ($parts) {
+                        preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
+                        if (isset($matches[1])) {
+                            try {
+                                \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]);
+                            } catch (\Exception $e) {}
+                        }
+                    }
+                }
+            } else if (file_exists(public_path('images/' . $oldImg))) {
                 unlink(public_path('images/' . $oldImg));
             }
         }

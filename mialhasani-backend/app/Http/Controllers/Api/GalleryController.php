@@ -13,9 +13,13 @@ class GalleryController extends Controller
         $storedPhotos = [];
 
         foreach ($files as $file) {
-            $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-            $storedPhotos[] = $filename;
+            if (env('CLOUDINARY_URL')) {
+                $storedPhotos[] = $file->storeOnCloudinary('mialhasani/galleries')->getSecurePath();
+            } else {
+                $filename = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('images'), $filename);
+                $storedPhotos[] = $filename;
+            }
         }
 
         return $storedPhotos;
@@ -24,7 +28,20 @@ class GalleryController extends Controller
     private function deleteGalleryPhotos(array $photos): void
     {
         foreach (array_unique($photos) as $photo) {
-            if (!is_string($photo) || str_starts_with($photo, 'http')) {
+            if (!is_string($photo)) continue;
+
+            if (str_starts_with($photo, 'http')) {
+                if (str_contains($photo, 'cloudinary.com') && env('CLOUDINARY_URL')) {
+                    $parts = parse_url($photo, PHP_URL_PATH);
+                    if ($parts) {
+                        preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $parts, $matches);
+                        if (isset($matches[1])) {
+                            try {
+                                \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($matches[1]);
+                            } catch (\Exception $e) {}
+                        }
+                    }
+                }
                 continue;
             }
 
