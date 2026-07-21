@@ -22,114 +22,128 @@ class SchoolSettingController extends Controller
 
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'school_name' => 'required|string|max:255',
-            'npsn' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'whatsapp_number' => 'nullable|string|max:30',
-            'website' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'postal_code' => 'nullable|string|max:20',
-            'school_status' => 'nullable|string|max:100',
-            'accreditation' => 'nullable|string|max:20',
-            'established_year' => 'nullable|integer|min:1900|max:2100',
-            'welcome_title' => 'nullable|string|max:255',
-            'welcome_highlight' => 'nullable|string|max:255',
-            'welcome_tagline_1' => 'nullable|string|max:255',
-            'welcome_tagline_2' => 'nullable|string|max:255',
-            'welcome_tagline_3' => 'nullable|string|max:255',
-            'retained_hero_images' => 'nullable|array',
-            'retained_hero_images.*' => 'string',
-            'hero_images' => 'nullable|array',
-            'hero_images.*' => 'file|mimes:jpg,jpeg,png,webp|max:4096',
-            'retained_brochure_images' => 'nullable|array',
-            'retained_brochure_images.*' => 'string',
-            'brochure_images' => 'nullable|array',
-            'brochure_images.*' => 'file|mimes:jpg,jpeg,png,webp,pdf|max:10240',
-            'map_embed_url' => 'nullable|string',
-            'map_link' => 'nullable|string|max:255',
-            'facebook_url' => 'nullable|string|max:255',
-            'instagram_url' => 'nullable|string|max:255',
-            'youtube_url' => 'nullable|string|max:255',
-            'twitter_url' => 'nullable|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'school_name' => 'nullable|string|max:255',
+                'npsn' => 'nullable|string|max:50',
+                'email' => 'nullable|email|max:255',
+                'phone' => 'nullable|string|max:50',
+                'whatsapp_number' => 'nullable|string|max:50',
+                'website' => 'nullable|url|max:255',
+                'address' => 'nullable|string',
+                'postal_code' => 'nullable|string|max:20',
+                'school_status' => 'nullable|string|max:50',
+                'accreditation' => 'nullable|string|max:10',
+                'established_year' => 'nullable|integer',
+                'welcome_title' => 'nullable|string|max:255',
+                'welcome_highlight' => 'nullable|string|max:255',
+                'welcome_tagline_1' => 'nullable|string|max:255',
+                'welcome_tagline_2' => 'nullable|string|max:255',
+                'welcome_tagline_3' => 'nullable|string|max:255',
+                'retained_hero_images' => 'nullable|array',
+                'retained_hero_images.*' => 'string',
+                'hero_images' => 'nullable|array',
+                'hero_images.*' => 'file|mimes:jpg,jpeg,png,webp|max:10240',
+                'retained_brochure_images' => 'nullable|array',
+                'retained_brochure_images.*' => 'string',
+                'brochure_images' => 'nullable|array',
+                'brochure_images.*' => 'file|mimes:jpg,jpeg,png,webp,pdf|max:10240',
+                'map_embed_url' => 'nullable|string',
+                'map_link' => 'nullable|string|max:255',
+                'facebook_url' => 'nullable|string|max:255',
+                'instagram_url' => 'nullable|string|max:255',
+                'youtube_url' => 'nullable|string|max:255',
+                'twitter_url' => 'nullable|string|max:255',
+            ]);
 
-        $settings = SchoolSetting::query()->firstOrNew([]);
-        $settings->fill($this->normalizeNullableValues(Arr::except($validated, [
-            'retained_hero_images',
-            'hero_images',
-            'retained_brochure_images',
-            'brochure_images',
-        ])));
+            $settings = SchoolSetting::query()->firstOrNew([]);
+            $settings->fill($this->normalizeNullableValues(Arr::except($validated, [
+                'retained_hero_images',
+                'hero_images',
+                'retained_brochure_images',
+                'brochure_images',
+            ])));
 
-        // --- Process Hero Images ---
-        $existingHeroImages = is_array($settings->hero_images) ? $settings->hero_images : [];
-        $retainedHeroImages = $request->input('retained_hero_images');
-        if (!is_array($retainedHeroImages)) {
-            $retainedHeroImages = $existingHeroImages;
-        }
+            // --- Process Hero Images ---
+            $existingHeroImages = is_array($settings->hero_images) ? $settings->hero_images : [];
+            $retainedHeroImages = $request->input('retained_hero_images');
+            if (!is_array($retainedHeroImages)) {
+                $retainedHeroImages = $existingHeroImages;
+            }
 
-        $retainedHeroImages = array_values(array_filter($retainedHeroImages, function ($value) use ($existingHeroImages) {
-            if (!is_string($value)) return false;
-            if (!empty($existingHeroImages)) return in_array($value, $existingHeroImages, true);
-            if (str_contains($value, '/') || str_contains($value, '\\') || str_contains($value, '..')) return false;
-            return true;
-        }));
+            $retainedHeroImages = array_values(array_filter($retainedHeroImages, function ($value) use ($existingHeroImages) {
+                if (!is_string($value)) return false;
+                if (!empty($existingHeroImages)) return in_array($value, $existingHeroImages, true);
+                if (str_contains($value, '/') || str_contains($value, '\\') || str_contains($value, '..')) return false;
+                return true;
+            }));
 
-        $uploadedHeroImages = [];
-        $heroFiles = $request->file('hero_images', []);
-        if (is_array($heroFiles)) {
-            foreach ($heroFiles as $file) {
-                if (!$file) continue;
-                if (env('CLOUDINARY_URL')) {
-                    $uploadedHeroImages[] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/settings'])['secure_url'];
-                } else {
-                    $filename = 'hero-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
-                    $file->move(public_path('images'), $filename);
-                    $uploadedHeroImages[] = $filename;
+            $uploadedHeroImages = [];
+            $heroFiles = $request->file('hero_images', []);
+            if (is_array($heroFiles)) {
+                foreach ($heroFiles as $file) {
+                    if (!$file) continue;
+                    if (env('CLOUDINARY_URL')) {
+                        $uploadedHeroImages[] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/settings'])['secure_url'];
+                    } else {
+                        $filename = 'hero-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
+                        $file->move(public_path('images'), $filename);
+                        $uploadedHeroImages[] = $filename;
+                    }
                 }
             }
-        }
-        $settings->hero_images = array_merge($retainedHeroImages, $uploadedHeroImages);
+            $settings->hero_images = array_merge($retainedHeroImages, $uploadedHeroImages);
 
-        // --- Process Brochure Images ---
-        $existingBrochureImages = is_array($settings->brochure_images) ? $settings->brochure_images : [];
-        $retainedBrochureImages = $request->input('retained_brochure_images');
-        if (!is_array($retainedBrochureImages)) {
-            $retainedBrochureImages = $existingBrochureImages;
-        }
+            // --- Process Brochure Images ---
+            $existingBrochureImages = is_array($settings->brochure_images) ? $settings->brochure_images : [];
+            $retainedBrochureImages = $request->input('retained_brochure_images');
+            if (!is_array($retainedBrochureImages)) {
+                $retainedBrochureImages = $existingBrochureImages;
+            }
 
-        $retainedBrochureImages = array_values(array_filter($retainedBrochureImages, function ($value) use ($existingBrochureImages) {
-            if (!is_string($value)) return false;
-            if (!empty($existingBrochureImages)) return in_array($value, $existingBrochureImages, true);
-            if (str_contains($value, '/') || str_contains($value, '\\') || str_contains($value, '..')) return false;
-            return true;
-        }));
+            $retainedBrochureImages = array_values(array_filter($retainedBrochureImages, function ($value) use ($existingBrochureImages) {
+                if (!is_string($value)) return false;
+                if (!empty($existingBrochureImages)) return in_array($value, $existingBrochureImages, true);
+                if (str_contains($value, '/') || str_contains($value, '\\') || str_contains($value, '..')) return false;
+                return true;
+            }));
 
-        $uploadedBrochureImages = [];
-        $brochureFiles = $request->file('brochure_images', []);
-        if (is_array($brochureFiles)) {
-            foreach ($brochureFiles as $file) {
-                if (!$file) continue;
-                if (env('CLOUDINARY_URL')) {
-                    $uploadedBrochureImages[] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/settings'])['secure_url'];
-                } else {
-                    $filename = 'brosur-mi-alhasani-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
-                    $file->move(public_path('images'), $filename);
-                    $uploadedBrochureImages[] = $filename;
+            $uploadedBrochureImages = [];
+            $brochureFiles = $request->file('brochure_images', []);
+            if (is_array($brochureFiles)) {
+                foreach ($brochureFiles as $file) {
+                    if (!$file) continue;
+                    if (env('CLOUDINARY_URL')) {
+                        $uploadedBrochureImages[] = cloudinary()->uploadApi()->upload($file->getRealPath(), ['folder' => 'mialhasani/settings'])['secure_url'];
+                    } else {
+                        $filename = 'brosur-mi-alhasani-' . time() . '-' . Str::lower(Str::random(10)) . '.' . $file->getClientOriginalExtension();
+                        $file->move(public_path('images'), $filename);
+                        $uploadedBrochureImages[] = $filename;
+                    }
                 }
             }
+            $settings->brochure_images = array_merge($retainedBrochureImages, $uploadedBrochureImages);
+
+            $settings->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengaturan sekolah berhasil diperbarui',
+                'data' => $settings,
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . $e->getMessage(),
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error 500: ' . $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
         }
-        $settings->brochure_images = array_merge($retainedBrochureImages, $uploadedBrochureImages);
-
-        $settings->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pengaturan sekolah berhasil diperbarui',
-            'data' => $settings,
-        ], 200);
     }
 
     private function defaultValues(): array
