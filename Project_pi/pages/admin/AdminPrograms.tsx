@@ -123,7 +123,7 @@ export const AdminPrograms: React.FC = () => {
               </label>
             </div>
           </div>
-          <div><label className="block text-sm font-semibold text-slate-700 mb-1.5">Deskripsi</label><textarea rows={3} value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Deskripsi program..." className="w-full px-4 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 resize-none"/></div>
+          <div><label className="block text-sm font-semibold text-slate-700 mb-1.5">Deskripsi</label><textarea rows={6} value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Deskripsi program..." className="w-full px-4 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 resize-y min-h-[120px]"/></div>
         </div>
         <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3 bg-slate-50/50"><button onClick={()=>setShowModal(false)} className="px-4 py-2 text-sm font-semibold text-slate-600">Batal</button><button onClick={handleSubmit} disabled={submitting} className="px-4 py-2 bg-teal-600 text-white text-sm font-semibold rounded-lg hover:bg-teal-700 disabled:opacity-50 flex items-center gap-2">{submitting&&<Loader2 className="w-4 h-4 animate-spin"/>}{editingId?'Simpan':'Simpan Program'}</button></div>
       </div></div>)}

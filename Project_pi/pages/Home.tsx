@@ -197,8 +197,7 @@ export const Home: React.FC<HomeProps> = ({ setPage, navigateToNewsDetail }) => 
                      alt={`Slide ${index + 1}`} 
                      className="w-full h-full object-cover object-[center_80%]"
                      onError={(e) => {
-                       setImageFallback(e.currentTarget, 'Hero MI Al-Hasani');
-
+                       e.currentTarget.style.display = 'none';
                     }}
                   />
                 </div>

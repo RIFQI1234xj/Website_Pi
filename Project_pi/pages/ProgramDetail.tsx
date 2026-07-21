@@ -224,7 +224,7 @@ export const ProgramDetail: React.FC = () => {
                   if (navigator.share) {
                     navigator.share({
                       title: program.title,
-                      text: program.description || `Lihat program: ${program.title}`,
+                      text: `Lihat program: ${program.title}`,
                       url: window.location.href,
                     }).catch(console.error);
                   } else {

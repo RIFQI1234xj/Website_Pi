@@ -833,7 +833,7 @@ export const PPDBForm: React.FC = () => {
                 <PartyPopper size={36} className="text-white" />
               </div>
 
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Pendaftaran Berhasil! ðŸŽ‰</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Pendaftaran Berhasil! 🎉</h2>
               <p className="text-gray-500 text-sm mb-6">Data Anda telah berhasil dikirim.</p>
 
               <div className="bg-gradient-to-r from-teal-50 to-teal-50 border-2 border-teal-200 rounded-2xl p-5 mb-6">

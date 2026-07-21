@@ -335,45 +335,41 @@ export const AdminPPDB: React.FC = () => {
 
   const escapeCsv = (value: string | number | null | undefined): string => {
     const text = value === null || value === undefined ? '' : String(value);
+    // Fix Excel scientific notation for phone numbers (e.g. 889E+10)
+    if (/^[0-9+\-\s]+$/.test(text) && text.replace(/[^0-9]/g, '').length >= 10) {
+      return `="${text}"`;
+    }
     return `"${text.replace(/"/g, '""')}"`;
   };
 
   const exportAcademicYearReport = () => {
-    const filterLabel = tahunAjaranFilter === 'all' ? 'Semua Tahun Ajaran' : tahunAjaranFilter;
     const lines: string[] = [];
 
+    // Header untuk data lengkap pendaftar
     lines.push([
-      'Laporan PPDB Berdasarkan Tahun Ajaran',
-      `Filter: ${filterLabel}`,
-      `Dicetak: ${new Date().toLocaleString('id-ID')}`,
+      'No. Registrasi', 
+      'Tahun Ajaran', 
+      'Nama Siswa',
+      'Jenis Kelamin',
+      'Tempat Lahir',
+      'Tanggal Lahir',
+      'Alamat',
+      'Nama Orang Tua', 
+      'WhatsApp', 
+      'Status', 
+      'Tanggal Daftar'
     ].map(escapeCsv).join(','));
-    lines.push('');
-    lines.push(['Ringkasan Tahun Ajaran', 'Total', 'Menunggu', 'Diterima', 'Ditolak'].map(escapeCsv).join(','));
-
-    if (reportByYear.length > 0) {
-      reportByYear.forEach(([year, summary]) => {
-        lines.push([
-          year,
-          summary.total,
-          summary.pending,
-          summary.approved,
-          summary.rejected,
-        ].map(escapeCsv).join(','));
-      });
-    } else {
-      lines.push(['-', 0, 0, 0, 0].map(escapeCsv).join(','));
-    }
-
-    lines.push('');
-    lines.push(['Detail Pendaftar', 'No. Registrasi', 'Tahun Ajaran', 'Nama Siswa', 'Orang Tua', 'WhatsApp', 'Status', 'Tanggal Daftar'].map(escapeCsv).join(','));
 
     if (filtered.length > 0) {
       filtered.forEach((applicant) => {
         lines.push([
-          'Detail',
           applicant.id,
           applicant.tahunAjaran || configTahunAjaran,
           applicant.studentName,
+          applicant.gender === 'L' ? 'Laki-laki' : (applicant.gender === 'P' ? 'Perempuan' : applicant.gender),
+          applicant.birthPlace,
+          formatFullDate(applicant.birthDate),
+          applicant.address,
           applicant.parentName,
           applicant.whatsappNumber,
           STATUS_CONFIG[applicant.status].label,
@@ -381,10 +377,11 @@ export const AdminPPDB: React.FC = () => {
         ].map(escapeCsv).join(','));
       });
     } else {
-      lines.push(['-', '-', '-', '-', '-', '-', '-', '-'].map(escapeCsv).join(','));
+      // Jika kosong
+      lines.push(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'].map(escapeCsv).join(','));
     }
 
-    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -964,7 +961,7 @@ export const AdminPPDB: React.FC = () => {
               </div>
               <div className="print-footer-right">
                 <p>Kepala Sekolah,</p>
-                <img src="/images/ttd.jpg" alt="Tanda Tangan Kepala Sekolah" style={{ width: '160px', height: '95px', objectFit: 'contain', margin: '-5px auto -15px auto', mixBlendMode: 'multiply', filter: 'contrast(1.2)' }} />
+                <img src="/images/ttd.jpg" alt="Tanda Tangan Kepala Sekolah" style={{ width: '160px', height: '95px', objectFit: 'contain', margin: '-5px auto -15px auto' }} />
                 <p className="print-signee" style={{ marginTop: '5px', fontWeight: 'bold', textDecoration: 'underline' }}>Eneng Heti Nurhayati, S.Pd.I</p>
                 <p className="print-signee-role">NIP. 197804302007102002</p>
               </div>
@@ -1062,7 +1059,7 @@ export const AdminPPDB: React.FC = () => {
               </h3>
               <div className="flex items-center gap-2">
                 <a
-                  href={viewDoc.url}
+                  href={viewDoc.url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + viewDoc.url : viewDoc.url}
                   download={viewDoc.name}
                   className="px-4 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-sm font-semibold flex items-center gap-2"
                 >
@@ -1078,9 +1075,9 @@ export const AdminPPDB: React.FC = () => {
             </div>
             <div className="flex-1 overflow-auto bg-gray-50 flex items-center justify-center p-4">
               {viewDoc.url.startsWith('data:image') || viewDoc.url.match(/\.(jpg|jpeg|png)$/i) ? (
-                <img src={viewDoc.url.startsWith('/') ? API_BASE_URL.replace('/api', '') + viewDoc.url : viewDoc.url} alt={viewDoc.name} className="max-w-full max-h-full object-contain rounded-lg shadow-sm" />
+                <img src={viewDoc.url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + viewDoc.url : viewDoc.url} alt={viewDoc.name} className="max-w-full max-h-full object-contain rounded-lg shadow-sm" />
               ) : viewDoc.url.startsWith('data:application/pdf') || viewDoc.url.match(/\.pdf$/i) ? (
-                <iframe src={viewDoc.url.startsWith('/') ? API_BASE_URL.replace('/api', '') + viewDoc.url : viewDoc.url} title={viewDoc.name} className="w-full h-full rounded-lg shadow-sm border-0 bg-white" />
+                <iframe src={viewDoc.url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + viewDoc.url : viewDoc.url} title={viewDoc.name} className="w-full h-full rounded-lg shadow-sm border-0 bg-white" />
               ) : (
                 <div className="text-center">
                   <FileText size={48} className="text-gray-400 mx-auto mb-4" />
@@ -1309,7 +1306,7 @@ const DocPreview: React.FC<{ label: string; fileName: string; data: string; onVi
           <Eye size={14} className="text-teal-600" />
         </button>
         <a
-          href={data}
+          href={data.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + data : data}
           download={fileName}
           title="Unduh Dokumen"
           className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center hover:bg-blue-100 transition-colors"

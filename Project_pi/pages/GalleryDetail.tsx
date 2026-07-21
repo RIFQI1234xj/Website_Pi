@@ -227,7 +227,7 @@ export const GalleryDetail: React.FC = () => {
                   if (navigator.share) {
                     navigator.share({
                       title: gallery.title,
-                      text: gallery.description || `Lihat galeri foto: ${gallery.title}`,
+                      text: `Lihat galeri foto: ${gallery.title}`,
                       url: window.location.href,
                     }).catch(console.error);
                   } else {

@@ -225,7 +225,7 @@ export const NewsDetail: React.FC<NewsDetailProps> = () => {
                     if (navigator.share) {
                       navigator.share({
                         title: news.title,
-                        text: news.excerpt,
+                        text: `Baca berita: ${news.title}`,
                         url: window.location.href,
                       }).catch(console.error);
                     } else {
