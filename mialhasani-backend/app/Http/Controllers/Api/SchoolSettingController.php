@@ -66,16 +66,10 @@ class SchoolSettingController extends Controller
 
             // --- Process Hero Images ---
             $existingHeroImages = is_array($settings->hero_images) ? $settings->hero_images : [];
-            $retainedHeroImages = $request->input('retained_hero_images');
-            if (!is_array($retainedHeroImages)) {
-                $retainedHeroImages = $existingHeroImages;
-            }
+            $retainedHeroImages = $request->input('retained_hero_images', []);
 
             $retainedHeroImages = array_values(array_filter($retainedHeroImages, function ($value) use ($existingHeroImages) {
-                if (!is_string($value)) return false;
-                if (!empty($existingHeroImages)) return in_array($value, $existingHeroImages, true);
-                if (str_contains($value, '/') || str_contains($value, '\\') || str_contains($value, '..')) return false;
-                return true;
+                return is_string($value) && in_array($value, $existingHeroImages, true);
             }));
 
             $uploadedHeroImages = [];
@@ -96,16 +90,10 @@ class SchoolSettingController extends Controller
 
             // --- Process Brochure Images ---
             $existingBrochureImages = is_array($settings->brochure_images) ? $settings->brochure_images : [];
-            $retainedBrochureImages = $request->input('retained_brochure_images');
-            if (!is_array($retainedBrochureImages)) {
-                $retainedBrochureImages = $existingBrochureImages;
-            }
+            $retainedBrochureImages = $request->input('retained_brochure_images', []);
 
             $retainedBrochureImages = array_values(array_filter($retainedBrochureImages, function ($value) use ($existingBrochureImages) {
-                if (!is_string($value)) return false;
-                if (!empty($existingBrochureImages)) return in_array($value, $existingBrochureImages, true);
-                if (str_contains($value, '/') || str_contains($value, '\\') || str_contains($value, '..')) return false;
-                return true;
+                return is_string($value) && in_array($value, $existingBrochureImages, true);
             }));
 
             $uploadedBrochureImages = [];
