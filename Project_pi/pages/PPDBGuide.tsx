@@ -101,7 +101,7 @@ export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
   ];
 
   const brochureImages = settings?.brochure_images || [];
-  const primaryBrochure = brochureImages.length > 0 ? getImageUrl(brochureImages[0]) : '/images/brosur-mi-alhasani.jpg';
+  const primaryBrochure = brochureImages.length > 0 ? getImageUrl(brochureImages[0]) : '/logo.png';
   const downloadUrl = primaryBrochure.replace('/api/media/', '/api/media/download/');
   const isPdf = primaryBrochure.toLowerCase().endsWith('.pdf');
 
