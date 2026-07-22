@@ -163,7 +163,7 @@ export const AdminDashboard: React.FC = () => {
             ) : newsPerCategoryData.length > 0 ? (
               <div className="flex flex-col md:flex-row items-center gap-6 h-auto md:h-48">
                 <div className="w-full md:w-1/2 h-48 min-w-0 min-h-0 relative">
-                  <ResponsiveContainer width="99%" height="100%">
+                  <ResponsiveContainer width="99%" height="100%" minWidth={1} minHeight={1}>
                     <PieChart>
                       <Pie
                         data={newsPerCategoryData}
@@ -215,7 +215,7 @@ export const AdminDashboard: React.FC = () => {
             ) : galleriesPerCategoryData.length > 0 ? (
               <div className="flex flex-col md:flex-row items-center gap-6 h-auto md:h-48">
                 <div className="w-full md:w-1/2 h-48 min-w-0 min-h-0 relative">
-                  <ResponsiveContainer width="99%" height="100%">
+                  <ResponsiveContainer width="99%" height="100%" minWidth={1} minHeight={1}>
                     <PieChart>
                       <Pie
                         data={galleriesPerCategoryData}
