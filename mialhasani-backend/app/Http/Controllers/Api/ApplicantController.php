@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PpdbApplicant;
 use App\Models\PpdbSetting;
 use Illuminate\Http\Request;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\DB;
 
 class ApplicantController extends Controller
@@ -83,31 +84,19 @@ class ApplicantController extends Controller
         
         $registrationId = 'PPDB-' . $yearStr . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        // Helper function untuk decode base64 dan simpan ke disk
+        // Helper function untuk upload base64 ke Cloudinary
         $saveBase64 = function($base64Data, $type) use ($registrationId) {
             if (!$base64Data) return null;
             if (strpos($base64Data, 'data:') !== 0) return $base64Data; // Bukan base64, mungkin sudah URL
 
-            @list($typePrefix, $fileData) = explode(';', $base64Data);
-            @list(, $fileData)      = explode(',', $fileData);
-            $fileData = base64_decode($fileData);
-            
-            $ext = 'jpg';
-            if (strpos($typePrefix, 'pdf') !== false) $ext = 'pdf';
-            elseif (strpos($typePrefix, 'png') !== false) $ext = 'png';
-            elseif (strpos($typePrefix, 'jpeg') !== false) $ext = 'jpg';
-
-            $filename = 'applicants/' . $registrationId . '_' . $type . '_' . time() . '.' . $ext;
-            
-            // Pastikan folder exists
-            $dir = public_path('images/applicants');
-            if (!file_exists($dir)) {
-                mkdir($dir, 0755, true);
+            try {
+                $uploadedFileUrl = Cloudinary::upload($base64Data, [
+                    'folder' => 'applicants'
+                ])->getSecurePath();
+                return $uploadedFileUrl;
+            } catch (\Exception $e) {
+                return null;
             }
-            
-            file_put_contents(public_path('images/' . $filename), $fileData);
-            
-            return '/api/media/' . $filename;
         };
 
         $applicant = PpdbApplicant::create([
@@ -164,14 +153,22 @@ class ApplicantController extends Controller
     {
         $applicant = PpdbApplicant::findOrFail($id);
 
-        // Helper untuk menghapus file fisik berdasarkan URL yang tersimpan
+        // Helper untuk menghapus file Cloudinary/fisik berdasarkan URL yang tersimpan
         $deleteFile = function($fileUrl) {
-            if ($fileUrl && strpos($fileUrl, '/api/media/applicants/') !== false) {
-                // Ekstrak nama file dari URL
-                $filename = str_replace('/api/media/', '', $fileUrl);
-                $filePath = public_path('images/' . $filename);
-                if (file_exists($filePath)) {
-                    @unlink($filePath);
+            if ($fileUrl) {
+                if (strpos($fileUrl, 'res.cloudinary.com') !== false) {
+                    preg_match('/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z]+$/', $fileUrl, $matches);
+                    if (isset($matches[1])) {
+                        try {
+                            cloudinary()->uploadApi()->destroy($matches[1]);
+                        } catch (\Exception $e) {}
+                    }
+                } else if (strpos($fileUrl, '/api/media/applicants/') !== false) {
+                    $filename = str_replace('/api/media/', '', $fileUrl);
+                    $filePath = public_path('images/' . $filename);
+                    if (file_exists($filePath)) {
+                        @unlink($filePath);
+                    }
                 }
             }
         };
