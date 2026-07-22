@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\PpdbApplicant;
 use App\Models\PpdbSetting;
 use Illuminate\Http\Request;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\DB;
 
 class ApplicantController extends Controller
@@ -90,9 +89,9 @@ class ApplicantController extends Controller
             if (strpos($base64Data, 'data:') !== 0) return $base64Data; // Bukan base64, mungkin sudah URL
 
             try {
-                $uploadedFileUrl = Cloudinary::upload($base64Data, [
+                $uploadedFileUrl = cloudinary()->uploadApi()->upload($base64Data, [
                     'folder' => 'applicants'
-                ])->getSecurePath();
+                ])['secure_url'];
                 return $uploadedFileUrl;
             } catch (\Exception $e) {
                 return null;
