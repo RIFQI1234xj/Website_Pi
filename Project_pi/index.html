@@ -15,16 +15,6 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="MI Al-Hasani" />
     <meta name="twitter:card" content="summary_large_image" />
-    <script>
-      const originalWarn = console.warn;
-      console.warn = (...args) => {
-        if (args[0] && typeof args[0] === 'string') {
-          if (args[0].includes('cdn.tailwindcss.com should not be used in production')) return;
-          if (args[0].includes('The width(') && args[0].includes('and height(')) return;
-        }
-        originalWarn(...args);
-      };
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Tailwind Custom Config (AFTER CDN) -->
     <script>
