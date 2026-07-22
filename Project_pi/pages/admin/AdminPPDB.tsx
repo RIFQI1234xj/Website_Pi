@@ -8,12 +8,16 @@ import {
 import { PPDBApplicant, PPDBStatus } from '../../types';
 import { API_BASE_URL, getImageUrl, apiFetch } from '../../lib/api';
 
-const getDownloadUrl = (url: string) => {
+const getDownloadUrl = (url: string, customName?: string) => {
   let fullUrl = url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + url : url;
   if (fullUrl.includes('/api/media/')) {
     return fullUrl.replace('/api/media/', '/api/media/download/');
   }
   if (fullUrl.includes('res.cloudinary.com') && !fullUrl.includes('fl_attachment')) {
+    if (customName) {
+      const safeName = encodeURIComponent(customName.replace(/\.[^/.]+$/, ""));
+      return fullUrl.replace('/upload/', `/upload/fl_attachment:${safeName}/`);
+    }
     return fullUrl.replace('/upload/', '/upload/fl_attachment/');
   }
   return fullUrl;
@@ -842,10 +846,10 @@ export const AdminPPDB: React.FC = () => {
                   <h4 className="font-bold text-purple-800 text-xs flex items-center gap-2"><FileText size={14} /> Dokumen</h4>
                 </div>
                 <div className="p-4 space-y-3">
-                  <DocPreview label="Kartu Keluarga (KK)" fileName={selectedApplicant.kkFileName} data={selectedApplicant.kkFileData} onView={(url, name) => setViewDoc({ url, name })} />
-                  <DocPreview label="Akta Kelahiran" fileName={selectedApplicant.aktaFileName} data={selectedApplicant.aktaFileData} onView={(url, name) => setViewDoc({ url, name })} />
-                  <DocPreview label="KTP Orang Tua/Wali" fileName={selectedApplicant.ktpFileName} data={selectedApplicant.ktpFileData} onView={(url, name) => setViewDoc({ url, name })} />
-                  <DocPreview label="Ijazah Terakhir" fileName={selectedApplicant.ijazahFileName} data={selectedApplicant.ijazahFileData} onView={(url, name) => setViewDoc({ url, name })} />
+                  <DocPreview label="Kartu Keluarga (KK)" fileName={selectedApplicant.kkFileName} data={selectedApplicant.kkFileData} applicantName={selectedApplicant.studentName} onView={(url, name) => setViewDoc({ url, name })} />
+                  <DocPreview label="Akta Kelahiran" fileName={selectedApplicant.aktaFileName} data={selectedApplicant.aktaFileData} applicantName={selectedApplicant.studentName} onView={(url, name) => setViewDoc({ url, name })} />
+                  <DocPreview label="KTP Orang Tua/Wali" fileName={selectedApplicant.ktpFileName} data={selectedApplicant.ktpFileData} applicantName={selectedApplicant.studentName} onView={(url, name) => setViewDoc({ url, name })} />
+                  <DocPreview label="Ijazah Terakhir" fileName={selectedApplicant.ijazahFileName} data={selectedApplicant.ijazahFileData} applicantName={selectedApplicant.studentName} onView={(url, name) => setViewDoc({ url, name })} />
                 </div>
               </div>
 
@@ -1070,7 +1074,7 @@ export const AdminPPDB: React.FC = () => {
               </h3>
               <div className="flex items-center gap-2">
                 <a
-                  href={getDownloadUrl(viewDoc.url)}
+                  href={getDownloadUrl(viewDoc.url, viewDoc.name)}
                   download={viewDoc.name}
                   className="px-4 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-sm font-semibold flex items-center gap-2"
                 >
@@ -1280,7 +1284,7 @@ const DetailRow: React.FC<{ label: string; value: string }> = ({ label, value })
   </div>
 );
 
-const DocPreview: React.FC<{ label: string; fileName: string; data: string; onView: (url: string, name: string) => void }> = ({ label, fileName, data, onView }) => {
+const DocPreview: React.FC<{ label: string; fileName: string; data: string; applicantName?: string; onView: (url: string, name: string) => void }> = ({ label, fileName, data, applicantName, onView }) => {
   if (!data) {
     return (
       <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200/80 opacity-60">
@@ -1294,6 +1298,8 @@ const DocPreview: React.FC<{ label: string; fileName: string; data: string; onVi
       </div>
     );
   }
+
+  const downloadName = applicantName ? `${applicantName}_${label}`.replace(/[^a-zA-Z0-9_ -]/g, '') : fileName;
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-lg bg-white border border-gray-200 shadow-sm">
@@ -1310,15 +1316,15 @@ const DocPreview: React.FC<{ label: string; fileName: string; data: string; onVi
       </div>
       <div className="flex items-center gap-2">
         <button
-          onClick={() => onView(data, fileName)}
+          onClick={() => onView(data, downloadName)}
           title="Lihat Dokumen"
           className="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center hover:bg-teal-100 transition-colors"
         >
           <Eye size={14} className="text-teal-600" />
         </button>
         <a
-          href={getDownloadUrl(data)}
-          download={fileName}
+          href={getDownloadUrl(data, downloadName)}
+          download={downloadName}
           title="Unduh Dokumen"
           className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center hover:bg-blue-100 transition-colors"
         >
