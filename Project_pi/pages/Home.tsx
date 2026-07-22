@@ -185,26 +185,29 @@ export const Home: React.FC<HomeProps> = ({ setPage, navigateToNewsDetail }) => 
            </div>
          ) : (
            <>
-             {/* Container Gambar Slider */}
+              {/* Container Gambar Slider */}
              <div className="absolute inset-0 z-0">
                {heroImages.map((img, index) => (
                  <div
-                   key={index}
+                   key={img + index}
                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                     index === currentSlide ? 'opacity-100' : 'opacity-0'
+                     index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
                    }`}
                  >
                    <img 
                      src={img} 
                      alt={`Slide ${index + 1}`} 
                      className="w-full h-full object-cover object-[center_80%]"
+                     onError={(e) => {
+                       setImageFallback(e.currentTarget, `Slide ${index + 1} Error`);
+                     }}
                   />
                 </div>
               ))}
               
               {/* Overlay Gelap & Gradient (Tetap di atas gambar) */}
-              <div className="absolute inset-0 bg-black bg-opacity-45"></div>
-              <div className="absolute inset-0 bg-gradient-to-b from-teal-900/50 via-transparent to-teal-700/50"></div>
+              <div className="absolute inset-0 bg-black/45 z-20 pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-b from-teal-900/50 via-transparent to-teal-700/50 z-20 pointer-events-none"></div>
             </div>
             
             {/* Content Hero */}
