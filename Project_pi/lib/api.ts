@@ -87,7 +87,13 @@ export const isDummyImageSource = (value: string | null | undefined): boolean =>
 export const getImageUrl = (filename: string | null | undefined): string => {
   if (!filename) return '';
   // Jika sudah URL lengkap (blob: atau http), langsung return
-  if (filename.startsWith('http') || filename.startsWith('blob:')) return filename;
+  if (filename.startsWith('http') || filename.startsWith('blob:')) {
+    // Optimasi jika ini adalah URL Cloudinary untuk mempercepat loading (convert ke WebP)
+    if (filename.includes('res.cloudinary.com') && filename.includes('/upload/')) {
+      return filename.replace('/upload/', '/upload/q_auto,f_auto,w_1920,c_limit/');
+    }
+    return filename;
+  }
   // Semua gambar diambil dari endpoint media backend
   return `${IMAGE_BASE_URL}/${encodeFilename(filename)}`;
 };
