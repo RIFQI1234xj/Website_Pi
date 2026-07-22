@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { usePrograms, ProgramItem } from '../../hooks/usePrograms';
 import { getFallbackImage, getImageUrl, setImageFallback } from '../../lib/api';
-import { Plus, Search, Edit, Trash2, BookOpen, Clock, Calendar, CheckCircle2, XCircle as XCircleIcon, X, Loader2, AlertTriangle, UploadCloud, ImageIcon, XCircle } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, BookOpen, Clock, Calendar, CheckCircle2, XCircle as XCircleIcon, X, Loader2, AlertTriangle, UploadCloud, ImageIcon, XCircle, LayoutGrid, List } from 'lucide-react';
 
 const emptyForm = { title:'', description:'', category:'Keagamaan', schedule:'', is_active:true };
 
@@ -16,6 +16,7 @@ export const AdminPrograms: React.FC = () => {
   const [keptExistingImages, setKeptExistingImages] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number|null>(null);
+  const [view, setView] = useState<'grid'|'list'>('list');
   const [selectedImage, setSelectedImage] = useState<string|null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -78,9 +79,18 @@ export const AdminPrograms: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-4 sm:p-5 border-b border-slate-100"><div className="relative w-full sm:max-w-md"><Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"/><input type="text" placeholder="Cari program..." value={search} onChange={e=>setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white"/></div></div>
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white">
+          <div className="relative w-full sm:max-w-md">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"/>
+            <input type="text" placeholder="Cari program..." value={search} onChange={e=>setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white"/>
+          </div>
+          <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200 self-end sm:self-auto">
+            <button onClick={() => setView('grid')} className={`p-2 rounded-lg transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-400 hover:text-slate-600'}`}><LayoutGrid className="w-4 h-4" /></button>
+            <button onClick={() => setView('list')} className={`p-2 rounded-lg transition-colors ${view === 'list' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-400 hover:text-slate-600'}`}><List className="w-4 h-4" /></button>
+          </div>
+        </div>
 
-        {loading?(<div className="flex items-center justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-teal-500"/><span className="ml-3 text-slate-500">Memuat...</span></div>):(
+        {loading?(<div className="flex items-center justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-teal-500"/><span className="ml-3 text-slate-500">Memuat...</span></div>) : view === 'list' ? (
           <div className="overflow-x-auto"><table className="w-full text-left text-sm text-slate-600 whitespace-nowrap"><thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold text-xs uppercase tracking-wider"><tr><th className="px-6 py-4">Program</th><th className="px-6 py-4">Kategori</th><th className="px-6 py-4">Status</th><th className="px-6 py-4 text-right">Aksi</th></tr></thead>
           <tbody className="divide-y divide-slate-100">{filtered.length===0?(<tr><td colSpan={4} className="text-center py-12 text-slate-400 text-sm">Tidak ditemukan.</td></tr>):filtered.map(p=>(
             <tr key={p.id} className="hover:bg-teal-50/30 group">
@@ -90,6 +100,32 @@ export const AdminPrograms: React.FC = () => {
               <td className="px-6 py-4 text-right"><div className="flex items-center justify-end gap-1"><button onClick={()=>openEdit(p)} className="p-2 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg"><Edit className="w-4 h-4"/></button><button onClick={()=>setDeleteConfirm(p.id)} className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg"><Trash2 className="w-4 h-4"/></button></div></td>
             </tr>
           ))}</tbody></table></div>
+        ) : (
+          <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 bg-slate-50">
+            {filtered.length === 0 ? (
+              <div className="col-span-full text-center py-12 text-slate-400 text-sm">Tidak ada program ditemukan.</div>
+            ) : filtered.map((p) => (
+              <div key={p.id} className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden flex flex-col">
+                <div className="aspect-video relative overflow-hidden bg-slate-100 cursor-pointer" onClick={() => setSelectedImage(p.image?getImageUrl(p.image):getFallbackImage(p.title))}>
+                  <img src={p.image?getImageUrl(p.image):getFallbackImage(p.title)} alt={p.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e)=>{setImageFallback(e.currentTarget, p.title)}} />
+                  <div className="absolute top-3 right-3">
+                    {p.is_active?<span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-teal-50 text-teal-700 shadow-sm"><CheckCircle2 className="w-3 h-3"/>Aktif</span>:<span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-white text-slate-600 shadow-sm"><XCircleIcon className="w-3 h-3"/>Nonaktif</span>}
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col flex-1">
+                  <div className="mb-2">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold border bg-slate-50 text-slate-600 border-slate-200"><BookOpen className="w-3 h-3 text-slate-400"/> {p.category}</span>
+                  </div>
+                  <h3 className="font-bold text-slate-800 text-sm mb-2 line-clamp-1 group-hover:text-teal-600 transition-colors">{p.title}</h3>
+                  <p className="text-xs text-slate-500 line-clamp-2 mb-4 flex-1">{p.description}</p>
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-1 mt-auto">
+                    <button onClick={()=>openEdit(p)} className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"><Edit className="w-3.5 h-3.5"/></button>
+                    <button onClick={()=>setDeleteConfirm(p.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"><Trash2 className="w-3.5 h-3.5"/></button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 

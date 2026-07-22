@@ -3,6 +3,8 @@ import { Page } from '../types';
 import { BookOpen, Users, ArrowRight, ChevronLeft, ChevronRight, Sun, Quote, Loader2 } from 'lucide-react';
 import { useScrollObserver } from '../hooks/useScrollObserver';
 import { AnimatedSection } from '../components/AnimatedSection';
+import { Skeleton } from '../components/Skeleton';
+import { SEO } from '../components/SEO';
 import { apiFetch, getFallbackImage, getImageUrl, setImageFallback } from '../lib/api';
 import { useSchoolSettings } from '../hooks/useSchoolSettings';
 
@@ -174,8 +176,8 @@ export const Home: React.FC<HomeProps> = ({ setPage, navigateToNewsDetail }) => 
 
   return (
     <div className="overflow-hidden">
-      {/* Hero Section - Slider Background */}
-      <section className="relative min-h-[85vh] flex items-center justify-center text-center text-white bg-teal-900 overflow-hidden">
+      <SEO title="Beranda" />
+      <section className="relative min-h-[85vh] pt-20 md:pt-28 flex items-center justify-center text-center text-white bg-teal-900 overflow-hidden">
         {isSettingsLoading ? (
            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-teal-700 text-teal-100">
              <Loader2 size={48} className="animate-spin text-teal-400 mb-4" />
@@ -364,8 +366,18 @@ export const Home: React.FC<HomeProps> = ({ setPage, navigateToNewsDetail }) => 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             {/* LOGIKA PENGECEKAN: Jika data sudah masuk, tampilkan. Jika belum, tampilkan teks loading */}
             {isLoadingFeaturedProgram ? (
-              <div className="text-center py-20 animate-pulse">
-                <p className="text-emerald-200 text-lg">Memuat program unggulan...</p>
+              <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+                  <div className="md:w-1/2 w-full">
+                      <Skeleton className="w-24 h-6 rounded-full mb-4" />
+                      <Skeleton className="h-10 w-3/4 mb-4" />
+                      <Skeleton className="h-4 w-full mb-2" />
+                      <Skeleton className="h-4 w-5/6 mb-2" />
+                      <Skeleton className="h-4 w-4/5 mb-6" />
+                      <Skeleton className="h-10 w-40 rounded-full" />
+                  </div>
+                  <div className="md:w-1/2 w-full">
+                      <Skeleton className="rounded-3xl w-full h-[400px]" />
+                  </div>
               </div>
             ) : featuredProgramError ? (
               <div className="text-center py-20 bg-white/5 rounded-3xl border border-white/10">
@@ -481,10 +493,23 @@ export const Home: React.FC<HomeProps> = ({ setPage, navigateToNewsDetail }) => 
                   </AnimatedSection>
                 </div>
               )}) : isLoadingLatestNews ? (
-                <div className="w-full text-center py-12 text-gray-500">
-                  <Loader2 className="animate-spin mx-auto mb-3" size={32} />
-                  <p>Memuat berita terbaru...</p>
-                </div>
+                <>
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex-none w-80 md:w-96 scroll-snap-align-start px-2">
+                      <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 flex flex-col h-full p-0">
+                        <Skeleton className="h-48 w-full rounded-none" />
+                        <div className="p-6 flex flex-col flex-grow">
+                          <Skeleton className="w-1/3 h-4 mb-3" />
+                          <Skeleton className="w-full h-6 mb-3" />
+                          <Skeleton className="w-3/4 h-6 mb-4" />
+                          <Skeleton className="w-full h-4 mb-2" />
+                          <Skeleton className="w-5/6 h-4 mb-4" />
+                          <Skeleton className="w-1/2 h-4 mt-auto" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
               ) : latestNewsError ? (
                 <div className="w-full text-center py-12 text-gray-500 bg-white rounded-2xl border border-gray-100">
                   <p className="font-semibold text-gray-800 mb-2">Berita Belum Bisa Dimuat</p>

@@ -27,7 +27,9 @@ Pada portal Render, opsi pembuatan "Web Service" dipilih dan dihubungkan secara 
 
 [SCREENSHOT: Halaman pengaturan Environment Variables pada portal Render]
 
-Setelah backend aktif, antarmuka terminal (Shell) yang disediakan oleh Render dibuka untuk menjalankan perintah dasar Laravel berupa migrasi tabel untuk membentuk struktur basis data di dalam server Aiven.
+Setelah backend aktif, antarmuka terminal (Shell) yang disediakan oleh Render dibuka untuk menjalankan perintah dasar Laravel berupa migrasi tabel untuk membentuk struktur basis data di dalam server Aiven. Untuk memverifikasi keberhasilan pembuatan tabel, perintah `php artisan migrate:status` dijalankan untuk menampilkan daftar status tabel yang telah berhasil terhubung ke server.
+
+[SCREENSHOT: Tampilan status keberhasilan migrasi tabel database pada terminal lokal]
 
 
 3.4.3 Hosting Frontend React (Vercel)

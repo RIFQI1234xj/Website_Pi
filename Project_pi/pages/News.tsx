@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Calendar, User, Loader2, ArrowRight, Search, Filter, Grid, Activity, Megaphone, Trophy, BookOpen } from 'lucide-react';
 import { AnimatedSection } from '../components/AnimatedSection';
+import { Skeleton } from '../components/Skeleton';
+import { SEO } from '../components/SEO';
 import { apiFetch, getImageUrl, setImageFallback } from '../lib/api';
 
 // 1. Definisi Interface
@@ -72,7 +74,8 @@ export const News: React.FC<NewsProps> = ({ navigateToNewsDetail }) => {
   }, [news, searchTerm, selectedCategory]);
 
   return (
-    <div className="bg-ivory-50 min-h-screen pb-20">
+    <div className="bg-gray-50 min-h-screen pt-20 pb-20 font-poppins">
+      <SEO title="Berita & Artikel" />
       {/* Header Halaman */}
       <AnimatedSection animation="fade" className="bg-teal-700 py-20 text-center text-white relative overflow-hidden">
         {/* Background Decorative Pattern */}
@@ -151,9 +154,26 @@ export const News: React.FC<NewsProps> = ({ navigateToNewsDetail }) => {
 
         {/* Loading State */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-teal-600">
-            <Loader2 className="animate-spin mb-4" size={40} />
-            <p className="font-medium">Memuat Berita...</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                <Skeleton className="h-56 w-full rounded-none" />
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex gap-2 mb-3">
+                    <Skeleton className="h-6 w-20" />
+                    <Skeleton className="h-6 w-24" />
+                  </div>
+                  <Skeleton className="h-7 w-full mb-2" />
+                  <Skeleton className="h-7 w-3/4 mb-4" />
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-5/6 mb-4" />
+                  <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
+                    <Skeleton className="h-5 w-24" />
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : error ? (
           <AnimatedSection animation="fade" className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">

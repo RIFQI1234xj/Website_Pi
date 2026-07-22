@@ -1,0 +1,251 @@
+@import "tailwindcss";
+@config "./tailwind.config.js";
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+#root {
+  display: flex;
+  flex-direction: column;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px; /* Offset for fixed navbar */
+}
+body {
+  font-family: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+}
+h1, h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+h3, h4, h5, h6 {
+  font-family: 'Poppins', ui-sans-serif, sans-serif;
+}
+/* Custom scrollbar for admin sidebar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 3px;
+}
+
+/* Scroll Reveal Animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1s ease-out;
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  /* Hide everything except print area */
+  body * {
+    visibility: hidden;
+  }
+  #ppdb-print-area, #ppdb-print-area * {
+    visibility: visible;
+  }
+  #ppdb-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  [data-no-print] {
+    display: none !important;
+  }
+  nav, aside, footer, header {
+    display: none !important;
+  }
+}
+
+/* Print Receipt Styles */
+.print-receipt {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px;
+  font-family: 'Poppins', 'Arial', sans-serif;
+  color: #1a1a1a;
+  position: relative;
+}
+.print-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.print-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #059669, #0d9488);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.print-school-info h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #064e3b;
+  margin: 0;
+  line-height: 1.2;
+}
+.print-school-info p {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 2px 0 0;
+}
+.print-address {
+  font-size: 10px !important;
+  color: #9ca3af !important;
+}
+.print-divider {
+  height: 3px;
+  background: linear-gradient(to right, #059669, #0d9488, #059669);
+  margin: 16px 0;
+  border-radius: 2px;
+}
+.print-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #064e3b;
+  margin: 20px 0 4px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.print-subtitle {
+  text-align: center;
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0 0 20px;
+}
+.print-reg-box {
+  text-align: center;
+  padding: 14px;
+  border: 2px solid #059669;
+  border-radius: 12px;
+  margin: 0 auto 24px;
+  max-width: 320px;
+  background: #f0fdf4;
+}
+.print-reg-label {
+  display: block;
+  font-size: 10px;
+  color: #059669;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.print-reg-number {
+  display: block;
+  font-size: 26px;
+  font-weight: 800;
+  color: #064e3b;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+}
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+.print-table tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+.print-table tr:last-child {
+  border-bottom: none;
+}
+.print-td-label {
+  padding: 10px 0;
+  font-size: 12px;
+  color: #6b7280;
+  width: 180px;
+  font-weight: 500;
+}
+.print-td-sep {
+  padding: 10px 8px;
+  font-size: 12px;
+  color: #6b7280;
+  width: 10px;
+}
+.print-td-value {
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+.print-status-approved {
+  color: #059669 !important;
+  font-weight: 800 !important;
+}
+.print-stamp {
+  position: absolute;
+  top: 50%;
+  right: 60px;
+  transform: rotate(-15deg);
+  font-size: 48px;
+  font-weight: 900;
+  color: rgba(5, 150, 105, 0.12);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  pointer-events: none;
+  border: 4px solid rgba(5, 150, 105, 0.12);
+  padding: 8px 20px;
+  border-radius: 12px;
+}
+.print-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+.print-footer-left {
+  font-size: 9px;
+  color: #9ca3af;
+}
+.print-footer-left p { margin: 2px 0; }
+.print-footer-right {
+  text-align: center;
+  font-size: 11px;
+  color: #4b5563;
+}
+.print-footer-right p { margin: 2px 0; }
+.print-signature-line {
+  width: 160px;
+  border-bottom: 1px solid #1f2937;
+  margin: 60px auto 8px;
+}
+.print-signee {
+  font-weight: 700;
+  font-size: 12px;
+  color: #1f2937;
+  text-decoration: underline;
+}
+.print-signee-role {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* Hide print area on screen */
+#ppdb-print-area {
+  display: none;
+}
+@media print {
+  #ppdb-print-area {
+    display: block;
+  }
+}

@@ -22,9 +22,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/media/download/{filename}', [MediaController::class, 'download'])->where('filename', '.*');
 Route::get('/media/{filename}', [MediaController::class, 'show'])->where('filename', '.*');
 
-// PPDB Status (Public)
+// PPDB Status & Form (Public)
 Route::get('/ppdb-status', [PpdbStatusController::class, 'getStatus']);
-Route::post('/ppdb/apply', [\App\Http\Controllers\Api\ApplicantController::class, 'store']);
+Route::middleware('throttle:3,10')->post('/ppdb/apply', [\App\Http\Controllers\Api\ApplicantController::class, 'store']);
 
 // Guru
 Route::get('/teachers', [TeacherController::class, 'index']);

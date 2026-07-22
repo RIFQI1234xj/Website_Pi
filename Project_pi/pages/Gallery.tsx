@@ -2,6 +2,8 @@ import { useState, useEffect, FC } from 'react';
 import { Maximize2, Loader2, Images } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatedSection } from '../components/AnimatedSection';
+import { Skeleton } from '../components/Skeleton';
+import { SEO } from '../components/SEO';
 import { apiFetch, getImageUrl, isDummyImageSource, setImageFallback } from '../lib/api';
 
 // Struktur data yang dikirim dari Laravel
@@ -66,9 +68,9 @@ export const Gallery: FC = () => {
 
 
   return (
-    <div className="bg-ivory-50 min-h-screen pb-20">
-      
-      {/* Header Section */}
+    <div className="bg-gray-50 min-h-screen font-poppins pb-20">
+      <SEO title="Galeri" />
+      {/* Header Halaman */}
       <AnimatedSection animation="fade" className="bg-teal-700 pt-32 pb-16 text-center text-white">
         <h1 className="font-serif text-4xl font-bold mb-4">Galeri Kegiatan</h1>
         <p className="text-teal-200 px-4">Dokumentasi momen berharga keluarga besar MI Al-Hasani</p>
@@ -98,8 +100,20 @@ export const Gallery: FC = () => {
 
         {/* Grid Galeri */}
         {isLoading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-teal-600" size={40} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                <Skeleton className="h-64 w-full rounded-none" />
+                <div className="p-5 flex flex-col grow">
+                  <div className="flex items-center justify-between mb-3">
+                    <Skeleton className="h-5 w-20" />
+                    <Skeleton className="h-5 w-16" />
+                  </div>
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : error ? (
           <div className="text-center py-20 text-gray-500 bg-white rounded-2xl border border-gray-100">

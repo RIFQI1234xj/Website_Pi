@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNews, NewsItem } from '../../hooks/useNews';
 import { getImageUrl, setImageFallback } from '../../lib/api';
-import { Edit, Trash2, Plus, Search, Loader2, X, AlertTriangle, UploadCloud, ImageIcon, XCircle } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, Loader2, X, AlertTriangle, UploadCloud, ImageIcon, XCircle, LayoutGrid, List } from 'lucide-react';
 
 const categoryColor: Record<string, string> = {
   Prestasi: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -62,6 +62,7 @@ export const AdminNews: React.FC = () => {
   const [existingPhotos, setExistingPhotos] = useState<ExistingPhoto[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [view, setView] = useState<'grid'|'list'>('list');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filtered = news.filter(
@@ -227,17 +228,21 @@ export const AdminNews: React.FC = () => {
 
       {/* Table Card */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
+        <div className="p-4 sm:p-5 border-b border-slate-100 bg-white flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="relative w-full sm:max-w-md">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input type="text" placeholder="Cari judul atau kategori berita..." value={search} onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
               className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all" />
           </div>
+          <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200 self-end sm:self-auto">
+            <button onClick={() => setView('grid')} className={`p-2 rounded-lg transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-400 hover:text-slate-600'}`}><LayoutGrid className="w-4 h-4" /></button>
+            <button onClick={() => setView('list')} className={`p-2 rounded-lg transition-colors ${view === 'list' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-400 hover:text-slate-600'}`}><List className="w-4 h-4" /></button>
+          </div>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-teal-500" /><span className="ml-3 text-slate-500">Memuat data berita...</span></div>
-        ) : (
+        ) : view === 'list' ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-slate-600 whitespace-nowrap">
               <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold text-xs uppercase tracking-wider">
@@ -272,6 +277,35 @@ export const AdminNews: React.FC = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        ) : (
+          <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 bg-slate-50">
+            {filtered.length === 0 ? (
+              <div className="col-span-full text-center py-12 text-slate-400 text-sm">Tidak ada berita ditemukan.</div>
+            ) : filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
+              <div key={item.id} className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden flex flex-col">
+                <div className="aspect-video relative overflow-hidden bg-slate-100">
+                  <img src={getImageUrl(item.image)} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => setImageFallback(e.currentTarget, item.title)} />
+                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-700 shadow-sm">
+                    {item.date}
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col flex-1">
+                  <div className="mb-2">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border ${categoryColor[item.category] ?? 'bg-slate-50 text-slate-600 border-slate-200'}`}>{item.category}</span>
+                  </div>
+                  <h3 className="font-bold text-slate-800 text-sm mb-2 line-clamp-2 leading-snug group-hover:text-teal-600 transition-colors">{item.title}</h3>
+                  <p className="text-xs text-slate-500 line-clamp-2 mb-4 flex-1">{item.excerpt}</p>
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between mt-auto">
+                    <span className="text-[11px] font-medium text-slate-400">{item.author}</span>
+                    <div className="flex gap-1">
+                      <button onClick={() => openEdit(item)} className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"><Edit className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setDeleteConfirm(item.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
         <div className="p-4 sm:p-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/50">

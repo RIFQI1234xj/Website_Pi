@@ -3,7 +3,7 @@ import {
   ClipboardList, Search, CheckCircle2, XCircle, Clock, Users,
   MessageCircle, Printer, Eye, ChevronDown, ChevronRight, Filter, RefreshCw,
   Phone, User, Calendar, MapPin, FileText, AlertCircle, Trash2,
-  Download, X, Settings, Save, Loader2
+  Download, X, Settings, Save, Loader2, LayoutGrid, List
 } from 'lucide-react';
 import { PPDBApplicant, PPDBStatus } from '../../types';
 import { API_BASE_URL, getImageUrl, apiFetch } from '../../lib/api';
@@ -48,6 +48,7 @@ export const AdminPPDB: React.FC = () => {
   const [printingApplicant, setPrintingApplicant] = useState<PPDBApplicant | null>(null);
   const [printingReport, setPrintingReport] = useState(false);
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const [view, setView] = useState<'grid'|'list'>('grid');
   const printRef = useRef<HTMLDivElement>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   const [waPromptApplicant, setWaPromptApplicant] = useState<PPDBApplicant | null>(null);
@@ -632,18 +633,24 @@ export const AdminPPDB: React.FC = () => {
                 className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none transition-all"
               />
             </div>
-            <div className="flex items-center gap-2">
-              <Filter size={16} className="text-gray-400" />
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-                className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none transition-all cursor-pointer bg-white"
-              >
-                <option value="all">Semua Status</option>
-                <option value="pending">Menunggu</option>
-                <option value="approved">Diterima</option>
-                <option value="rejected">Ditolak</option>
-              </select>
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Filter size={16} className="text-gray-400" />
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+                  className="w-full sm:w-auto px-3 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none transition-all cursor-pointer bg-white"
+                >
+                  <option value="all">Semua Status</option>
+                  <option value="pending">Menunggu</option>
+                  <option value="approved">Diterima</option>
+                  <option value="rejected">Ditolak</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200 w-full sm:w-auto justify-center">
+                <button onClick={() => setView('grid')} className={`p-2 rounded-lg transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-400 hover:text-slate-600'}`}><LayoutGrid className="w-4 h-4" /></button>
+                <button onClick={() => setView('list')} className={`p-2 rounded-lg transition-colors ${view === 'list' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-400 hover:text-slate-600'}`}><List className="w-4 h-4" /></button>
+              </div>
             </div>
           </div>
         </div>
@@ -664,7 +671,7 @@ export const AdminPPDB: React.FC = () => {
                   : 'Coba ubah kata kunci pencarian atau filter status.'}
               </p>
             </div>
-          ) : (
+          ) : view === 'list' ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -778,6 +785,56 @@ export const AdminPPDB: React.FC = () => {
                   })}
                 </tbody>
               </table>
+            </div>
+          ) : (
+            <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 bg-gray-50/50">
+              {filtered.map((applicant) => {
+                const statusConf = STATUS_CONFIG[applicant.status];
+                const StatusIcon = statusConf.icon;
+                return (
+                  <div key={applicant.id} className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group p-5 flex flex-col">
+                    <div className="flex justify-between items-start mb-3">
+                      <span className="text-xs font-mono font-bold text-teal-700 bg-teal-50 px-2 py-1 rounded-md border border-teal-200/60">
+                        {applicant.id}
+                      </span>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold ${statusConf.color} ${statusConf.bg} border ${statusConf.border}`}>
+                        <StatusIcon size={11} /> {statusConf.label}
+                      </span>
+                    </div>
+                    <div className="mb-4">
+                      <h3 className="text-base font-bold text-gray-900 line-clamp-1">{applicant.studentName}</h3>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-1">{applicant.birthPlace}, {formatDate(applicant.birthDate)}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-4 text-xs space-y-2 flex-1">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <User size={14} className="text-gray-400" />
+                        <span className="line-clamp-1">{applicant.parentName}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <MessageCircle size={14} className="text-gray-400" />
+                        <span className="font-mono">{applicant.whatsappNumber}</span>
+                      </div>
+                    </div>
+                    <div className="pt-3 border-t border-gray-100 flex items-center justify-between gap-1 flex-wrap">
+                      <button onClick={() => { setSelectedApplicant(applicant); setShowDetail(true); }} className="flex-1 min-w-[70px] py-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-blue-200/60"><Eye size={13} /> Detail</button>
+                      
+                      {applicant.status !== 'approved' && (
+                        <button onClick={() => updateStatus(applicant.id, 'approved')} className="flex-1 min-w-[70px] py-1.5 rounded-lg bg-teal-50 text-teal-600 hover:bg-teal-100 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-teal-200/60"><CheckCircle2 size={13} /> Terima</button>
+                      )}
+                      {applicant.status !== 'rejected' && (
+                        <button onClick={() => updateStatus(applicant.id, 'rejected')} className="flex-1 min-w-[70px] py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-red-200/60"><XCircle size={13} /> Tolak</button>
+                      )}
+                      
+                      <div className="w-full flex gap-1 mt-1">
+                        <button onClick={() => contactWhatsApp(applicant)} className="flex-1 py-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-green-200/60"><MessageCircle size={13} /> Chat WA</button>
+                        {applicant.status === 'approved' && (
+                          <button onClick={() => handlePrint(applicant)} className="flex-1 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-indigo-200/60"><Printer size={13} /> Cetak</button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

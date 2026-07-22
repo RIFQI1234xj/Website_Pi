@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Facebook, Instagram, Youtube, ArrowRight, Globe, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook, Instagram, Youtube, Globe, ExternalLink, Home, Building2, Award, Newspaper, Image as ImageIcon, UserPlus, MessageCircle } from 'lucide-react';
 import { AnimatedSection } from './AnimatedSection';
 import { Page } from '../types';
 import { useSchoolSettings } from '../hooks/useSchoolSettings';
@@ -22,7 +22,7 @@ export const Footer: React.FC<FooterProps> = ({ setPage }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Kolom 1: Identitas Sekolah */}
-          <AnimatedSection animation="slideUp" delay={0.1} className="flex flex-col items-center md:items-start text-center md:text-left">
+          <AnimatedSection animation="slideUp" delay={0.1} className="flex flex-col items-start text-left">
 
             <img
               src={encodeURI('/logo madrasah hebat.png')}
@@ -59,37 +59,37 @@ export const Footer: React.FC<FooterProps> = ({ setPage }) => {
             <ul className="space-y-3 text-sm text-teal-50">
               <li>
                 <button onClick={() => setPage(Page.HOME)} className="hover:text-yellow-400 transition-colors inline-flex items-center group">
-                  <ArrowRight size={14} className="mr-2 text-teal-400 transform group-hover:translate-x-1 transition-transform" /> Beranda
+                  <Home size={14} className="mr-2 text-yellow-400 transform group-hover:scale-110 transition-all" /> Beranda
                 </button>
               </li>
               <li>
                 <button onClick={() => setPage(Page.PROFILE)} className="hover:text-yellow-400 transition-colors inline-flex items-center group">
-                  <ArrowRight size={14} className="mr-2 text-teal-400 transform group-hover:translate-x-1 transition-transform" /> Profil Sekolah
+                  <Building2 size={14} className="mr-2 text-yellow-400 transform group-hover:scale-110 transition-all" /> Profil Sekolah
                 </button>
               </li>
               <li>
                 <button onClick={() => setPage(Page.PROGRAMS)} className="hover:text-yellow-400 transition-colors inline-flex items-center group">
-                  <ArrowRight size={14} className="mr-2 text-teal-400 transform group-hover:translate-x-1 transition-transform" /> Program Unggulan
+                  <Award size={14} className="mr-2 text-yellow-400 transform group-hover:scale-110 transition-all" /> Program
                 </button>
               </li>
               <li>
                 <button onClick={() => setPage(Page.NEWS)} className="hover:text-yellow-400 transition-colors inline-flex items-center group">
-                  <ArrowRight size={14} className="mr-2 text-teal-400 transform group-hover:translate-x-1 transition-transform" /> Berita & Artikel
+                  <Newspaper size={14} className="mr-2 text-yellow-400 transform group-hover:scale-110 transition-all" /> Berita & Artikel
                 </button>
               </li>
               <li>
                 <button onClick={() => setPage(Page.GALLERY)} className="hover:text-yellow-400 transition-colors inline-flex items-center group">
-                  <ArrowRight size={14} className="mr-2 text-teal-400 transform group-hover:translate-x-1 transition-transform" /> Galeri
+                  <ImageIcon size={14} className="mr-2 text-yellow-400 transform group-hover:scale-110 transition-all" /> Galeri
                 </button>
               </li>
               <li>
                 <button onClick={() => setPage(Page.PPDB)} className="hover:text-yellow-400 transition-colors inline-flex items-center group">
-                  <ArrowRight size={14} className="mr-2 text-teal-400 transform group-hover:translate-x-1 transition-transform" /> PPDB
+                  <UserPlus size={14} className="mr-2 text-yellow-400 transform group-hover:scale-110 transition-all" /> PPDB
                 </button>
               </li>
               <li>
                 <button onClick={() => setPage(Page.CONTACT)} className="hover:text-yellow-400 transition-colors inline-flex items-center group">
-                  <ArrowRight size={14} className="mr-2 text-teal-400 transform group-hover:translate-x-1 transition-transform" /> Kontak
+                  <MessageCircle size={14} className="mr-2 text-yellow-400 transform group-hover:scale-110 transition-all" /> Kontak
                 </button>
               </li>
             </ul>

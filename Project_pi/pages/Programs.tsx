@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sun, Book, Trophy, Loader2, ImageOff } from 'lucide-react';
 import { AnimatedSection } from '../components/AnimatedSection';
+import { Skeleton } from '../components/Skeleton';
+import { SEO } from '../components/SEO';
 import { apiFetch, getImageUrl, setImageFallback } from '../lib/api';
 
 interface ProgramData {
@@ -55,6 +57,7 @@ export const Programs: React.FC = () => {
 
   return (
     <div className="bg-white animate-fade-in min-h-screen">
+      <SEO title="Program Unggulan" />
       {/* Hero Section */}
       <AnimatedSection animation="fade" className="bg-teal-700 pt-32 pb-16 text-center text-white">
         <h1 className="font-serif text-4xl font-bold mb-4">Program Sekolah</h1>
@@ -88,9 +91,20 @@ export const Programs: React.FC = () => {
 
         {/* Konten Program */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-teal-600">
-            <Loader2 size={48} className="animate-spin mb-4" />
-            <p className="text-lg font-medium">Memuat data program...</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white rounded-xl overflow-hidden border border-gray-100 flex flex-col h-full">
+                <Skeleton className="h-56 w-full rounded-none" />
+                <div className="p-6 flex flex-col flex-grow">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Skeleton className="w-8 h-8 rounded-full" />
+                    <Skeleton className="h-6 w-3/4" />
+                  </div>
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : error ? (
           <div className="text-center py-20 text-gray-500 bg-white rounded-2xl border border-gray-100">

@@ -48,7 +48,7 @@ const menuGroups = [
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPage, setPage, collapsed, setCollapsed, onLogout }) => {
   return (
     <aside
-      className={`${collapsed ? 'w-[72px]' : 'w-64'} bg-gradient-to-b from-teal-950 via-teal-900 to-teal-950 text-white min-h-screen fixed left-0 top-0 flex flex-col shadow-2xl z-20 transition-all duration-300 ease-in-out`}
+      className={`${collapsed ? '-translate-x-full md:translate-x-0 md:w-[72px]' : 'translate-x-0 w-64'} bg-gradient-to-b from-teal-950 via-teal-900 to-teal-950 text-white min-h-screen fixed left-0 top-0 flex flex-col shadow-2xl z-20 transition-all duration-300 ease-in-out`}
     >
       {/* Logo */}
       <div className={`h-16 flex items-center border-b border-teal-800/60 ${collapsed ? 'justify-center px-2' : 'px-5'} transition-all duration-300`}>

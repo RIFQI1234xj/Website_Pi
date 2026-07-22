@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Users, FileText, Image, Loader2, Award, PlusCircle, Settings, Camera, PenTool, LayoutDashboard
 } from 'lucide-react';
@@ -81,6 +81,14 @@ export const AdminDashboard: React.FC = () => {
   const { programs, loading: programsLoading } = usePrograms();
   const { ppdbStatus } = usePpdbStatus();
 
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Hitung distribusi kategori berita secara dinamis
   const newsPerCategoryData = useMemo(() => {
     const categoryMap: Record<string, number> = {};
@@ -161,12 +169,13 @@ export const AdminDashboard: React.FC = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
               </div>
             ) : newsPerCategoryData.length > 0 ? (
-              <div className="flex flex-col md:flex-row items-center gap-6 h-auto md:h-48">
-                <div className="w-full md:w-1/2 h-48 min-w-0 min-h-0 relative">
-                  <ResponsiveContainer width="99%" height="100%" minWidth={1} minHeight={1}>
-                    <PieChart>
-                      <Pie
-                        data={newsPerCategoryData}
+              <div className="flex flex-col md:flex-row items-center gap-6 h-auto">
+                <div className="w-full md:w-1/2 relative h-[250px] min-h-[250px] md:h-[350px] md:min-h-[350px]">
+                  {isMounted && (
+                    <ResponsiveContainer width="99%" height="100%" minWidth={1} minHeight={1} initialDimension={{ width: 300, height: 300 }} debounce={50}>
+                      <PieChart>
+                        <Pie
+                          data={newsPerCategoryData}
                         cx="50%"
                         cy="50%"
                         innerRadius={55}
@@ -182,6 +191,7 @@ export const AdminDashboard: React.FC = () => {
                       <Tooltip content={<CustomTooltip />} />
                     </PieChart>
                   </ResponsiveContainer>
+                  )}
                 </div>
                 <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-48 overflow-y-auto pr-2">
                   {newsPerCategoryData.map((item, i) => (
@@ -213,12 +223,13 @@ export const AdminDashboard: React.FC = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
               </div>
             ) : galleriesPerCategoryData.length > 0 ? (
-              <div className="flex flex-col md:flex-row items-center gap-6 h-auto md:h-48">
-                <div className="w-full md:w-1/2 h-48 min-w-0 min-h-0 relative">
-                  <ResponsiveContainer width="99%" height="100%" minWidth={1} minHeight={1}>
-                    <PieChart>
-                      <Pie
-                        data={galleriesPerCategoryData}
+              <div className="flex flex-col md:flex-row items-center gap-6 h-auto">
+                <div className="w-full md:w-1/2 relative h-[250px] min-h-[250px] md:h-[350px] md:min-h-[350px]">
+                  {isMounted && (
+                    <ResponsiveContainer width="99%" height="100%" minWidth={1} minHeight={1} initialDimension={{ width: 300, height: 300 }} debounce={50}>
+                      <PieChart>
+                        <Pie
+                          data={galleriesPerCategoryData}
                         cx="50%"
                         cy="50%"
                         innerRadius={55}
@@ -234,6 +245,7 @@ export const AdminDashboard: React.FC = () => {
                       <Tooltip content={<CustomTooltip />} />
                     </PieChart>
                   </ResponsiveContainer>
+                  )}
                 </div>
                 <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-48 overflow-y-auto pr-2">
                   {galleriesPerCategoryData.map((item, i) => (

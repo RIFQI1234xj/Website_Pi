@@ -20,9 +20,10 @@ interface AdminTopNavbarProps {
   currentPage: Page;
   setPage: (page: Page) => void;
   collapsed: boolean;
+  setCollapsed?: (collapsed: boolean) => void;
 }
 
-export const AdminTopNavbar: React.FC<AdminTopNavbarProps> = ({ currentPage, setPage }) => {
+export const AdminTopNavbar: React.FC<AdminTopNavbarProps> = ({ currentPage, setPage, collapsed, setCollapsed }) => {
   const [showNotif, setShowNotif] = useState(false);
   const [pendingApplicants, setPendingApplicants] = useState<PPDBApplicant[]>([]);
 
@@ -52,9 +53,17 @@ export const AdminTopNavbar: React.FC<AdminTopNavbarProps> = ({ currentPage, set
     <header
       className={`h-16 bg-white border-b border-gray-200 flex items-center px-6 justify-between sticky top-0 z-10 shadow-sm transition-all duration-300`}
     >
-      {/* Left: Breadcrumb */}
-      <div>
-        <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-0.5">
+      {/* Left: Breadcrumb & Hamburger */}
+      <div className="flex items-center gap-3">
+        {setCollapsed && (
+          <button 
+            onClick={() => setCollapsed(!collapsed)}
+            className="md:hidden p-1 -ml-2 text-gray-500 hover:text-teal-600 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
+        )}
+        <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-0.5 hidden sm:flex">
           <Home size={11} />
           {meta.breadcrumb.map((crumb, i) => (
             <React.Fragment key={crumb}>
@@ -63,6 +72,7 @@ export const AdminTopNavbar: React.FC<AdminTopNavbarProps> = ({ currentPage, set
             </React.Fragment>
           ))}
         </div>
+        <div className="sm:hidden text-sm font-bold text-teal-800">{meta.title}</div>
       </div>
 
       {/* Right */}
@@ -138,16 +148,7 @@ export const AdminTopNavbar: React.FC<AdminTopNavbarProps> = ({ currentPage, set
           )}
         </div>
 
-        {/* Admin Avatar */}
-        <div className="flex items-center gap-2 lg:pl-4 lg:border-l border-gray-200">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-teal-950 font-bold text-sm shadow">
-            A
-          </div>
-          <div className="hidden md:block">
-            <p className="text-xs font-semibold text-gray-700 leading-tight">Admin Sekolah</p>
-            <p className="text-[10px] text-gray-400">Super Admin</p>
-          </div>
-        </div>
+        {/* Admin Avatar removed */}
       </div>
     </header>
   );

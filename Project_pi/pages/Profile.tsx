@@ -16,10 +16,10 @@ import {
   User,
   Phone,
   Mail,
-  Info,
-  Loader2
+  Info
 } from 'lucide-react';
 import { AnimatedSection } from '../components/AnimatedSection';
+import { Skeleton } from '../components/Skeleton';
 import { apiFetch, getImageUrl, setImageFallback } from '../lib/api';
 import { useSchoolSettings } from '../hooks/useSchoolSettings';
 import { ensureUrl, getAddressWithPostalCode } from '../lib/schoolSettings';
@@ -316,9 +316,18 @@ export const Profile: React.FC<ProfileProps> = ({ activeTab }) => {
                    
                    {/* Indikator Loading */}
                    {isLoadingTeachers ? (
-                      <div className="flex flex-col items-center justify-center py-20 text-teal-600">
-                         <Loader2 size={48} className="animate-spin mb-4" />
-                         <p className="text-lg font-medium">Memuat data guru dari server...</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+                         {[1, 2, 3, 4, 5, 6].map((i) => (
+                           <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col items-center p-6">
+                             <Skeleton className="w-32 h-32 rounded-full mb-4" />
+                             <Skeleton className="h-6 w-3/4 mb-2" />
+                             <Skeleton className="h-4 w-1/2 mb-4" />
+                             <div className="flex gap-2">
+                               <Skeleton className="w-8 h-8 rounded-full" />
+                               <Skeleton className="w-8 h-8 rounded-full" />
+                             </div>
+                           </div>
+                         ))}
                       </div>
                    ) : teachersError ? (
                       <div className="text-center py-20 text-gray-500">

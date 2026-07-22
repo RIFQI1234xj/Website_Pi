@@ -7,6 +7,7 @@ import {
   ArrowRight, GraduationCap, UserCheck
 } from 'lucide-react';
 import { PPDBStatusModal } from '../components/ppdb/PPDBStatusModal';
+import { SEO } from '../components/SEO';
 import { useSchoolSettings } from '../hooks/useSchoolSettings';
 import { getImageUrl } from '../lib/api';
 
@@ -127,7 +128,10 @@ export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50 min-h-screen pt-20 pb-20 font-poppins relative">
+      <SEO title="PPDB (Pendaftaran Siswa Baru)" />
+      
+      {/* Background Decorative Pattern */}
       <PPDBStatusModal onStatusChange={setIsPpdbOpen} />
 
       {/* Hero Section */}

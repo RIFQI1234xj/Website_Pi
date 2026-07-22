@@ -7,12 +7,15 @@ use App\Models\SchoolSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class SchoolSettingController extends Controller
 {
     public function index()
     {
-        $settings = SchoolSetting::query()->firstOrCreate([], $this->defaultValues());
+        $settings = Cache::remember('school_settings', 60 * 60 * 24, function () {
+            return SchoolSetting::query()->firstOrCreate([], $this->defaultValues());
+        });
 
         return response()->json([
             'success' => true,
@@ -113,6 +116,8 @@ class SchoolSettingController extends Controller
             $settings->brochure_images = array_merge($retainedBrochureImages, $uploadedBrochureImages);
 
             $settings->save();
+
+            Cache::forget('school_settings');
 
             return response()->json([
                 'success' => true,

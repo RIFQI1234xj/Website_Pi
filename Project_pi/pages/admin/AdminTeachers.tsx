@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useTeachers, TeacherItem } from '../../hooks/useTeachers';
 import { getImageUrl, setImageFallback } from '../../lib/api';
-import { Search, Plus, Edit, Trash2, Loader2, X, AlertTriangle, UploadCloud, ImageIcon, XCircle } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Loader2, X, AlertTriangle, UploadCloud, ImageIcon, XCircle, LayoutGrid, List } from 'lucide-react';
 
 const emptyForm = { name: '', role: '', order: 0, subject: '', is_active: true };
 
@@ -15,6 +15,7 @@ export const AdminTeachers: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [view, setView] = useState<'grid'|'list'>('list');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const filtered = teachers.filter(t =>
@@ -83,8 +84,17 @@ export const AdminTeachers: React.FC = () => {
         <button onClick={openCreate} className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium text-sm shadow-sm active:scale-95"><Plus className="w-4 h-4"/>Tambah Guru Baru</button>
       </div>
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-4 sm:p-5 border-b border-slate-100"><div className="relative w-full sm:max-w-md"><Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"/><input type="text" placeholder="Cari nama, peran, atau mapel..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white"/></div></div>
-        {loading?(<div className="flex items-center justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-teal-500"/><span className="ml-3 text-slate-500">Memuat...</span></div>):(
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white">
+          <div className="relative w-full sm:max-w-md">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"/>
+            <input type="text" placeholder="Cari nama, peran, atau mapel..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white"/>
+          </div>
+          <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200 self-end sm:self-auto">
+            <button onClick={() => setView('grid')} className={`p-2 rounded-lg transition-colors ${view === 'grid' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-400 hover:text-slate-600'}`}><LayoutGrid className="w-4 h-4" /></button>
+            <button onClick={() => setView('list')} className={`p-2 rounded-lg transition-colors ${view === 'list' ? 'bg-white shadow-sm text-teal-600' : 'text-slate-400 hover:text-slate-600'}`}><List className="w-4 h-4" /></button>
+          </div>
+        </div>
+        {loading?(<div className="flex items-center justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-teal-500"/><span className="ml-3 text-slate-500">Memuat...</span></div>) : view === 'list' ? (
           <div className="overflow-x-auto"><table className="w-full text-left text-sm text-slate-600 whitespace-nowrap"><thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold text-xs uppercase tracking-wider"><tr><th className="px-6 py-4">Profil</th><th className="px-6 py-4">ID</th><th className="px-6 py-4">Jabatan</th><th className="px-6 py-4">Mapel</th><th className="px-6 py-4">Status</th><th className="px-6 py-4 text-right">Aksi</th></tr></thead>
           <tbody className="divide-y divide-slate-100">{filtered.map(t=>(
             <tr key={t.id} className="hover:bg-teal-50/30 group">
@@ -101,6 +111,34 @@ export const AdminTeachers: React.FC = () => {
             </td>
             <td className="px-6 py-4 text-right"><div className="flex items-center justify-end gap-1"><button onClick={()=>openEdit(t)} className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg"><Edit className="w-4 h-4"/></button><button onClick={()=>setDeleteConfirm(t.id)} className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg"><Trash2 className="w-4 h-4"/></button></div></td></tr>
           ))}{filtered.length===0&&<tr><td colSpan={6} className="p-8 text-center text-slate-500">Tidak ditemukan.</td></tr>}</tbody></table></div>
+        ) : (
+          <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-slate-50">
+            {filtered.length === 0 ? (
+              <div className="col-span-full text-center py-12 text-slate-400 text-sm">Tidak ada data guru ditemukan.</div>
+            ) : filtered.map((t) => (
+              <div key={t.id} className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden flex flex-col items-center text-center p-6">
+                <div className="w-24 h-24 mb-4 relative">
+                  <img src={getImageUrl(t.image)} alt={t.name} className="w-full h-full object-cover rounded-full border-4 border-slate-50 shadow-sm group-hover:scale-105 transition-transform duration-300" onError={(e)=>{setImageFallback(e.currentTarget, t.name)}} />
+                  <div className="absolute bottom-0 right-0">
+                    {t.is_active !== false ? (
+                      <div className="w-4 h-4 bg-teal-500 border-2 border-white rounded-full shadow-sm" title="Aktif"></div>
+                    ) : (
+                      <div className="w-4 h-4 bg-rose-500 border-2 border-white rounded-full shadow-sm" title="Tidak Aktif"></div>
+                    )}
+                  </div>
+                </div>
+                <h3 className="font-bold text-slate-800 text-base mb-1 line-clamp-1 group-hover:text-teal-600 transition-colors">{t.name}</h3>
+                <div className="font-medium text-slate-500 text-xs mb-2 bg-slate-100 px-2 py-0.5 rounded-full">{t.role}</div>
+                {t.subject && <div className="text-indigo-600 text-[11px] font-semibold bg-indigo-50 px-2 py-1 rounded-md mb-4 line-clamp-1 border border-indigo-100/50 w-full">{t.subject}</div>}
+                
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-center gap-2 mt-auto w-full">
+                  <button onClick={()=>openEdit(t)} className="flex-1 py-1.5 flex justify-center items-center gap-1.5 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg text-xs font-semibold transition-colors"><Edit className="w-3.5 h-3.5"/> Edit</button>
+                  <div className="w-px h-4 bg-slate-200"></div>
+                  <button onClick={()=>setDeleteConfirm(t.id)} className="flex-1 py-1.5 flex justify-center items-center gap-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg text-xs font-semibold transition-colors"><Trash2 className="w-3.5 h-3.5"/> Hapus</button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
         <div className="p-4 border-t border-slate-100 text-sm text-slate-500 bg-slate-50/50">Menampilkan <span className="font-semibold text-slate-800">{filtered.length}</span> dari <span className="font-semibold text-slate-800">{teachers.length}</span> Guru</div>
       </div>
