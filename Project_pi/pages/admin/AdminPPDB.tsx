@@ -1088,7 +1088,7 @@ export const AdminPPDB: React.FC = () => {
               {viewDoc.url.startsWith('data:image') || viewDoc.url.match(/\.(jpg|jpeg|png)$/i) ? (
                 <img src={viewDoc.url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + viewDoc.url : viewDoc.url} alt={viewDoc.name} className="max-w-full max-h-full object-contain rounded-lg shadow-sm" />
               ) : viewDoc.url.startsWith('data:application/pdf') || viewDoc.url.match(/\.pdf$/i) ? (
-                <iframe src={viewDoc.url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + viewDoc.url : viewDoc.url} title={viewDoc.name} className="w-full h-full rounded-lg shadow-sm border-0 bg-white" />
+                <iframe src={`https://docs.google.com/viewer?url=${encodeURIComponent(viewDoc.url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + viewDoc.url : viewDoc.url)}&embedded=true`} title={viewDoc.name} className="w-full h-full rounded-lg shadow-sm border-0 bg-white" />
               ) : (
                 <div className="text-center">
                   <FileText size={48} className="text-gray-400 mx-auto mb-4" />
