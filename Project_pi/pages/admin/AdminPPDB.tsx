@@ -377,7 +377,7 @@ export const AdminPPDB: React.FC = () => {
           applicant.id,
           applicant.tahunAjaran || configTahunAjaran,
           applicant.studentName,
-          applicant.gender === 'L' ? 'Laki-laki' : (applicant.gender === 'P' ? 'Perempuan' : applicant.gender),
+          applicant.gender,
           applicant.birthPlace,
           formatFullDate(applicant.birthDate),
           applicant.address,
