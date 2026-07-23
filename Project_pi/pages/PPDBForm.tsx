@@ -773,13 +773,49 @@ export const PPDBForm: React.FC = () => {
                 <FileText size={18} className="text-teal-600 flex-shrink-0" /> <span className="truncate">{viewDoc.name}</span>
               </h3>
               <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                <a
-                  href={viewDoc.url}
-                  download={viewDoc.name}
+                <button
+                  onClick={() => {
+                    try {
+                      if (viewDoc.url.startsWith('data:')) {
+                        const arr = viewDoc.url.split(',');
+                        const mime = arr[0].match(/:(.*?);/)?.[1] || '';
+                        const bstr = atob(arr[1]);
+                        let n = bstr.length;
+                        const u8arr = new Uint8Array(n);
+                        while (n--) {
+                          u8arr[n] = bstr.charCodeAt(n);
+                        }
+                        const blob = new Blob([u8arr], { type: mime });
+                        const blobUrl = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = blobUrl;
+                        a.download = viewDoc.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => {
+                          document.body.removeChild(a);
+                          URL.revokeObjectURL(blobUrl);
+                        }, 100);
+                      } else {
+                        const a = document.createElement('a');
+                        a.href = viewDoc.url;
+                        a.download = viewDoc.name;
+                        a.target = '_blank';
+                        a.click();
+                      }
+                    } catch (e) {
+                      const a = document.createElement('a');
+                      a.href = viewDoc.url;
+                      a.download = viewDoc.name;
+                      a.target = '_blank';
+                      a.click();
+                    }
+                  }}
                   className="px-4 py-2 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-sm font-semibold flex items-center gap-2"
                 >
                   <Download size={16} /> Unduh
-                </a>
+                </button>
                 <button 
                   onClick={() => setViewDoc(null)} 
                   className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center gap-2 text-gray-700 transition-colors text-sm font-semibold"

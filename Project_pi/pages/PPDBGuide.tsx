@@ -111,16 +111,23 @@ export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
       const filename = brochureImages[i];
       const url = getImageUrl(filename).replace('/api/media/', '/api/media/download/');
       
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = url;
-      document.body.appendChild(iframe);
-      
-      setTimeout(() => {
-        if (document.body.contains(iframe)) {
-          document.body.removeChild(iframe);
-        }
-      }, 10000); // 10 seconds to ensure download starts
+      try {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(blobUrl);
+        }, 1000);
+      } catch (err) {
+        window.open(url, '_blank');
+      }
 
       // Delay between starting downloads
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -358,14 +365,33 @@ export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
                         className="w-full h-full border-none"
                         title={`Brosur PPDB ${idx + 1}`}
                       />
-                      <a
-                        href={url.replace('/api/media/', '/api/media/download/')}
-                        download={filename}
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const downloadUrl = url.replace('/api/media/', '/api/media/download/');
+                          try {
+                            const res = await fetch(downloadUrl);
+                            const blob = await res.blob();
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = blobUrl;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(() => {
+                              document.body.removeChild(a);
+                              window.URL.revokeObjectURL(blobUrl);
+                            }, 1000);
+                          } catch (err) {
+                            window.open(downloadUrl, '_blank');
+                          }
+                        }}
                         className="absolute top-4 right-6 bg-black/40 hover:bg-teal-600 text-white p-2.5 rounded-full backdrop-blur-sm transition-colors shadow-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                         title={`Unduh PDF ${idx + 1}`}
                       >
                         <Download size={20} />
-                      </a>
+                      </button>
                     </div>
                   ) : (
                     <div key={idx} className="relative rounded-xl overflow-hidden shrink-0 group">
@@ -375,14 +401,33 @@ export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
                         className="w-full h-auto block"
                         onError={() => setImgError(true)}
                       />
-                      <a
-                        href={url.replace('/api/media/', '/api/media/download/')}
-                        download={filename}
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const downloadUrl = url.replace('/api/media/', '/api/media/download/');
+                          try {
+                            const res = await fetch(downloadUrl);
+                            const blob = await res.blob();
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = blobUrl;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(() => {
+                              document.body.removeChild(a);
+                              window.URL.revokeObjectURL(blobUrl);
+                            }, 1000);
+                          } catch (err) {
+                            window.open(downloadUrl, '_blank');
+                          }
+                        }}
                         className="absolute top-4 right-4 bg-black/40 hover:bg-teal-600 text-white p-2.5 rounded-full backdrop-blur-sm transition-colors shadow-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                         title={`Unduh Brosur ${idx + 1}`}
                       >
                         <Download size={20} />
-                      </a>
+                      </button>
                     </div>
                   );
                 })
