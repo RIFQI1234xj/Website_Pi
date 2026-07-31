@@ -76,14 +76,14 @@ input:-webkit-autofill:active {
   }
 }
 
-/* Print Receipt Styles */
 .print-receipt {
   max-width: 700px;
   margin: 0 auto;
-  padding: 40px;
+  padding: 20px 40px;
   font-family: 'Poppins', 'Arial', sans-serif;
   color: #1a1a1a;
   position: relative;
+  page-break-inside: avoid;
 }
 .print-header {
   display: flex;
@@ -223,6 +223,7 @@ input:-webkit-autofill:active {
   margin-top: 40px;
   padding-top: 20px;
   border-top: 1px solid #e5e7eb;
+  page-break-inside: avoid;
 }
 .print-footer-left {
   font-size: 9px;
