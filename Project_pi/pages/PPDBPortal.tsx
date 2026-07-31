@@ -459,8 +459,7 @@ export const PPDBPortal: React.FC<PPDBPortalProps> = ({ onLogout }) => {
                       {application.status === 'pending' && (
                         <>
                           <p>1. Data Anda sedang diverifikasi. Proses ini memakan waktu 1-3 hari kerja.</p>
-                          <p>2. Siapkan dokumen fisik (KK, Akta Kelahiran, KTP Orang Tua) di dalam map kuning.</p>
-                          <p>3. Pantau terus halaman ini secara berkala untuk melihat hasil pengumuman pendaftaran.</p>
+                          <p>2. Pantau terus halaman ini secara berkala untuk melihat hasil pengumuman pendaftaran.</p>
                         </>
                       )}
                       {application.status === 'approved' && (
