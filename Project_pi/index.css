@@ -131,7 +131,7 @@ input:-webkit-autofill:active {
   font-size: 16px;
   font-weight: 800;
   color: #064e3b;
-  margin: 20px 0 4px;
+  margin: 10px 0 4px;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -146,7 +146,7 @@ input:-webkit-autofill:active {
   padding: 14px;
   border: 2px solid #059669;
   border-radius: 12px;
-  margin: 0 auto 24px;
+  margin: 0 auto 16px;
   max-width: 320px;
   background: #f0fdf4;
 }
@@ -170,7 +170,7 @@ input:-webkit-autofill:active {
 .print-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
+  margin: 12px 0;
 }
 .print-table tr {
   border-bottom: 1px solid #e5e7eb;
@@ -179,20 +179,20 @@ input:-webkit-autofill:active {
   border-bottom: none;
 }
 .print-td-label {
-  padding: 10px 0;
+  padding: 6px 0;
   font-size: 12px;
   color: #6b7280;
   width: 180px;
   font-weight: 500;
 }
 .print-td-sep {
-  padding: 10px 8px;
+  padding: 6px 8px;
   font-size: 12px;
   color: #6b7280;
   width: 10px;
 }
 .print-td-value {
-  padding: 10px 0;
+  padding: 6px 0;
   font-size: 13px;
   font-weight: 600;
   color: #1f2937;
@@ -220,8 +220,8 @@ input:-webkit-autofill:active {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-top: 40px;
-  padding-top: 20px;
+  margin-top: 20px;
+  padding-top: 12px;
   border-top: 1px solid #e5e7eb;
   page-break-inside: avoid;
 }
