@@ -808,12 +808,30 @@ export const PPDBForm: React.FC<PPDBFormProps> = ({ onLogout }) => {
                   inputMode: 'numeric',
                   onChange: handleDigitsOnlyChange('fatherNik', 16)
                 })}
-                {renderInput('Pekerjaan Ayah', 'fatherOccupation', null, { 
-                  placeholder: 'Contoh: Wiraswasta', type: 'text'
-                })}
-                {renderInput('Pendidikan Ayah', 'fatherEducation', null, { 
-                  placeholder: 'Contoh: SMA / S1', type: 'text'
-                })}
+                {renderSelect('Pekerjaan Ayah', 'fatherOccupation', null, [
+                  { value: 'Tidak Bekerja', label: 'Tidak Bekerja' },
+                  { value: 'Pegawai Negeri Sipil (PNS)', label: 'Pegawai Negeri Sipil (PNS)' },
+                  { value: 'TNI/Polri', label: 'TNI/Polri' },
+                  { value: 'Karyawan Swasta', label: 'Karyawan Swasta' },
+                  { value: 'Karyawan BUMN/BUMD', label: 'Karyawan BUMN/BUMD' },
+                  { value: 'Wiraswasta', label: 'Wiraswasta' },
+                  { value: 'Petani/Peternak', label: 'Petani/Peternak' },
+                  { value: 'Nelayan', label: 'Nelayan' },
+                  { value: 'Pedagang', label: 'Pedagang' },
+                  { value: 'Buruh', label: 'Buruh' },
+                  { value: 'Pensiunan', label: 'Pensiunan' },
+                  { value: 'Lainnya', label: 'Lainnya' },
+                ])}
+                {renderSelect('Pendidikan Ayah', 'fatherEducation', null, [
+                  { value: 'Tidak/Belum Sekolah', label: 'Tidak/Belum Sekolah' },
+                  { value: 'SD/Sederajat', label: 'SD/Sederajat' },
+                  { value: 'SMP/Sederajat', label: 'SMP/Sederajat' },
+                  { value: 'SMA/SMK/Sederajat', label: 'SMA/SMK/Sederajat' },
+                  { value: 'Diploma (D1-D4)', label: 'Diploma (D1-D4)' },
+                  { value: 'Sarjana (S1)', label: 'Sarjana (S1)' },
+                  { value: 'Magister (S2)', label: 'Magister (S2)' },
+                  { value: 'Doktor (S3)', label: 'Doktor (S3)' },
+                ])}
                 {renderSelect('Penghasilan Ayah (Opsional)', 'fatherIncome', null, [
                   { value: 'Kurang dari Rp 1.000.000', label: 'Kurang dari Rp 1.000.000' },
                   { value: 'Rp 1.000.000 - Rp 2.000.000', label: 'Rp 1.000.000 - Rp 2.000.000' },
@@ -838,12 +856,31 @@ export const PPDBForm: React.FC<PPDBFormProps> = ({ onLogout }) => {
                   inputMode: 'numeric',
                   onChange: handleDigitsOnlyChange('motherNik', 16)
                 })}
-                {renderInput('Pekerjaan Ibu', 'motherOccupation', null, { 
-                  placeholder: 'Contoh: Ibu Rumah Tangga', type: 'text'
-                })}
-                {renderInput('Pendidikan Ibu', 'motherEducation', null, { 
-                  placeholder: 'Contoh: SMA / S1', type: 'text'
-                })}
+                {renderSelect('Pekerjaan Ibu', 'motherOccupation', null, [
+                  { value: 'Ibu Rumah Tangga', label: 'Ibu Rumah Tangga' },
+                  { value: 'Tidak Bekerja', label: 'Tidak Bekerja' },
+                  { value: 'Pegawai Negeri Sipil (PNS)', label: 'Pegawai Negeri Sipil (PNS)' },
+                  { value: 'TNI/Polri', label: 'TNI/Polri' },
+                  { value: 'Karyawan Swasta', label: 'Karyawan Swasta' },
+                  { value: 'Karyawan BUMN/BUMD', label: 'Karyawan BUMN/BUMD' },
+                  { value: 'Wiraswasta', label: 'Wiraswasta' },
+                  { value: 'Petani/Peternak', label: 'Petani/Peternak' },
+                  { value: 'Nelayan', label: 'Nelayan' },
+                  { value: 'Pedagang', label: 'Pedagang' },
+                  { value: 'Buruh', label: 'Buruh' },
+                  { value: 'Pensiunan', label: 'Pensiunan' },
+                  { value: 'Lainnya', label: 'Lainnya' },
+                ])}
+                {renderSelect('Pendidikan Ibu', 'motherEducation', null, [
+                  { value: 'Tidak/Belum Sekolah', label: 'Tidak/Belum Sekolah' },
+                  { value: 'SD/Sederajat', label: 'SD/Sederajat' },
+                  { value: 'SMP/Sederajat', label: 'SMP/Sederajat' },
+                  { value: 'SMA/SMK/Sederajat', label: 'SMA/SMK/Sederajat' },
+                  { value: 'Diploma (D1-D4)', label: 'Diploma (D1-D4)' },
+                  { value: 'Sarjana (S1)', label: 'Sarjana (S1)' },
+                  { value: 'Magister (S2)', label: 'Magister (S2)' },
+                  { value: 'Doktor (S3)', label: 'Doktor (S3)' },
+                ])}
                 {renderSelect('Penghasilan Ibu (Opsional)', 'motherIncome', null, [
                   { value: 'Kurang dari Rp 1.000.000', label: 'Kurang dari Rp 1.000.000' },
                   { value: 'Rp 1.000.000 - Rp 2.000.000', label: 'Rp 1.000.000 - Rp 2.000.000' },
