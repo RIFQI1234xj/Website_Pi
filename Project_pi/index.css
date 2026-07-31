@@ -55,18 +55,26 @@ input:-webkit-autofill:active {
   @page {
     margin: 10mm;
   }
+  html, body {
+    background-color: white !important;
+  }
   /* Hide everything except print area */
   body * {
     visibility: hidden;
   }
-  #ppdb-print-area, #ppdb-print-area * {
+  #ppdb-print-area, #ppdb-print-area *,
+  #ppdb-report-print-area, #ppdb-report-print-area * {
     visibility: visible;
   }
-  #ppdb-print-area {
+  #ppdb-print-area, #ppdb-report-print-area {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: white !important;
+    z-index: 9999;
   }
   [data-no-print] {
     display: none !important;
