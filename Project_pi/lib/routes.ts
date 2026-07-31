@@ -18,6 +18,9 @@ export const PAGE_PATHS: Record<Page, string> = {
   [Page.ADMIN_PROGRAMS]: '/admin/programs',
   [Page.ADMIN_PRINCIPAL]: '/admin/principal',
   [Page.PPDB]: '/ppdb',
+  [Page.PPDB_LOGIN]: '/ppdb/login',
+  [Page.PPDB_REGISTER]: '/ppdb/register',
+  [Page.PPDB_PORTAL]: '/ppdb/portal',
   [Page.PPDB_FORM]: '/ppdb/daftar',
   [Page.ADMIN_PPDB]: '/admin/ppdb',
 };
@@ -42,6 +45,9 @@ export const getPageFromPathname = (pathname: string): Page => {
   if (pathname.startsWith(PAGE_PATHS[Page.ADMIN_PRINCIPAL])) return Page.ADMIN_PRINCIPAL;
   if (pathname.startsWith(PAGE_PATHS[Page.ADMIN_PPDB])) return Page.ADMIN_PPDB;
   if (pathname === PAGE_PATHS[Page.PPDB_FORM]) return Page.PPDB_FORM;
+  if (pathname === PAGE_PATHS[Page.PPDB_LOGIN]) return Page.PPDB_LOGIN;
+  if (pathname === PAGE_PATHS[Page.PPDB_REGISTER]) return Page.PPDB_REGISTER;
+  if (pathname === PAGE_PATHS[Page.PPDB_PORTAL]) return Page.PPDB_PORTAL;
   if (pathname === PAGE_PATHS[Page.PPDB]) return Page.PPDB;
   if (pathname === PAGE_PATHS[Page.PROFILE]) return Page.PROFILE;
   if (pathname === PAGE_PATHS[Page.PROGRAMS]) return Page.PROGRAMS;

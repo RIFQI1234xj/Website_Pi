@@ -99,24 +99,45 @@ export const getImageUrl = (filename: string | null | undefined): string => {
 };
 
 /**
- * Ambil token dari localStorage
+ * Ambil token Admin dari localStorage
  */
 export const getToken = (): string | null => {
   return localStorage.getItem('admin_token');
 };
 
 /**
- * Simpan token ke localStorage
+ * Simpan token Admin ke localStorage
  */
 export const setToken = (token: string): void => {
   localStorage.setItem('admin_token', token);
 };
 
 /**
- * Hapus token (logout)
+ * Hapus token Admin (logout admin)
  */
 export const removeToken = (): void => {
   localStorage.removeItem('admin_token');
+};
+
+/**
+ * Ambil token Pendaftar PPDB dari localStorage
+ */
+export const getPpdbToken = (): string | null => {
+  return localStorage.getItem('ppdb_token');
+};
+
+/**
+ * Simpan token Pendaftar PPDB ke localStorage
+ */
+export const setPpdbToken = (token: string): void => {
+  localStorage.setItem('ppdb_token', token);
+};
+
+/**
+ * Hapus token Pendaftar PPDB (logout pendaftar)
+ */
+export const removePpdbToken = (): void => {
+  localStorage.removeItem('ppdb_token');
 };
 
 /**
@@ -203,7 +224,45 @@ export const apiUpload = async (
 };
 
 /**
- * Login dan simpan token
+ * Wrapper fetch khusus Pendaftar PPDB — pakai ppdb_token
+ */
+export const ppdbApiFetch = async (
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<any> => {
+  const token = getPpdbToken();
+
+  const headers: Record<string, string> = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string> || {}),
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  if (response.status === 401) {
+    removePpdbToken();
+    throw new Error('Sesi telah berakhir. Silakan login kembali.');
+  }
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Terjadi kesalahan pada server.');
+  }
+
+  return data;
+};
+
+/**
+ * Login Admin dan simpan token
  */
 export const login = async (email: string, password: string) => {
   const data = await apiFetch('/login', {
@@ -219,7 +278,7 @@ export const login = async (email: string, password: string) => {
 };
 
 /**
- * Logout dan hapus token
+ * Logout Admin dan hapus token
  */
 export const logout = async () => {
   try {
@@ -227,4 +286,121 @@ export const logout = async () => {
   } finally {
     removeToken();
   }
+};
+
+/**
+ * Register Pendaftar PPDB — buat akun baru
+ */
+export const ppdbRegister = async (
+  nik: string,
+  username: string,
+  name: string,
+  password: string,
+  passwordConfirmation: string
+) => {
+  const data = await fetch(`${API_BASE_URL}/ppdb/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      nik,
+      username,
+      name,
+      password,
+      password_confirmation: passwordConfirmation,
+    }),
+  });
+
+  const json = await data.json();
+
+  if (!data.ok) {
+    // Ambil pesan error pertama dari Laravel validation
+    const firstError =
+      json.errors
+        ? Object.values(json.errors as Record<string, string[]>)[0]?.[0]
+        : null;
+    throw new Error(firstError || json.message || 'Gagal membuat akun.');
+  }
+
+  if (json.token) {
+    setPpdbToken(json.token);
+  }
+
+  return json;
+};
+
+/**
+ * Login Pendaftar PPDB dan simpan token
+ */
+export const ppdbLogin = async (username: string, password: string) => {
+  const data = await fetch(`${API_BASE_URL}/ppdb/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ username, password }),
+  });
+
+  const json = await data.json();
+
+  if (!data.ok) {
+    const firstError =
+      json.errors
+        ? Object.values(json.errors as Record<string, string[]>)[0]?.[0]
+        : null;
+    throw new Error(firstError || json.message || 'Email atau password salah.');
+  }
+
+  if (json.token) {
+    setPpdbToken(json.token);
+  }
+
+  return json;
+};
+
+/**
+ * Logout Pendaftar PPDB dan hapus token
+ */
+export const ppdbLogout = async () => {
+  const token = getPpdbToken();
+  try {
+    if (token) {
+      await fetch(`${API_BASE_URL}/ppdb/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+      });
+    }
+  } finally {
+    removePpdbToken();
+  }
+};
+
+/**
+ * Reset Password Pendaftar PPDB
+ */
+export const ppdbResetPassword = async (
+  username: string,
+  nik: string,
+  password: string,
+  passwordConfirmation: string
+) => {
+  const data = await fetch(`${API_BASE_URL}/ppdb/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      username,
+      nik,
+      password,
+      password_confirmation: passwordConfirmation,
+    }),
+  });
+
+  const json = await data.json();
+
+  if (!data.ok) {
+    const firstError =
+      json.errors
+        ? Object.values(json.errors as Record<string, string[]>)[0]?.[0]
+        : null;
+    throw new Error(firstError || json.message || 'Gagal reset password.');
+  }
+
+  return json;
 };

@@ -10,13 +10,25 @@ use App\Http\Controllers\Api\PrincipalController;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\SchoolSettingController;
 use App\Http\Controllers\Api\PpdbStatusController;
+use App\Http\Controllers\Api\ApplicantController;
 
 // ======================================
 // RUTE PUBLIK (tanpa autentikasi)
 // ======================================
 
-// Auth
+// Auth Admin
 Route::post('/login', [AuthController::class, 'login']);
+
+// Auth Pendaftar PPDB
+Route::post('/ppdb/register', [AuthController::class, 'ppdbRegister']);
+Route::post('/ppdb/login', [AuthController::class, 'ppdbLogin']);
+Route::post('/ppdb/reset-password', [AuthController::class, 'ppdbResetPassword']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/ppdb/logout', [AuthController::class, 'ppdbLogout']);
+    Route::get('/ppdb/me', [AuthController::class, 'me']);
+    Route::get('/ppdb/my-application', [ApplicantController::class, 'myApplication']);
+    Route::post('/ppdb/update', [ApplicantController::class, 'updateMyApplication']);
+});
 
 // Media gambar
 Route::get('/media/download/{filename}', [MediaController::class, 'download'])->where('filename', '.*');
@@ -24,7 +36,7 @@ Route::get('/media/{filename}', [MediaController::class, 'show'])->where('filena
 
 // PPDB Status & Form (Public)
 Route::get('/ppdb-status', [PpdbStatusController::class, 'getStatus']);
-Route::middleware('throttle:3,10')->post('/ppdb/apply', [\App\Http\Controllers\Api\ApplicantController::class, 'store']);
+Route::middleware(['auth:sanctum', 'throttle:3,10'])->post('/ppdb/apply', [\App\Http\Controllers\Api\ApplicantController::class, 'store']);
 
 // Guru
 Route::get('/teachers', [TeacherController::class, 'index']);

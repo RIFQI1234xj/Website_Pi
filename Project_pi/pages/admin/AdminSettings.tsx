@@ -276,7 +276,7 @@ export const AdminSettings: React.FC = () => {
   return (
     <div className="p-6 sm:p-8 space-y-6 max-w-6xl mx-auto animate-in fade-in duration-500">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">Pengaturan Sekolah</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">Manajemen Pengaturan</h1>
         <p className="text-slate-500 text-sm mt-1.5">
           Kelola identitas sekolah yang tampil di halaman profil, kontak, footer, dan tautan publik.
         </p>

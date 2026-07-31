@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../../lib/api';
 
 interface AdminLoginProps {
@@ -12,6 +13,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +42,14 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
 
       {/* Login Card */}
       <div className="w-full max-w-md relative z-10">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 text-teal-200 hover:text-white font-medium text-sm mb-6 transition-colors"
+        >
+          <ArrowLeft size={16} /> Kembali ke Beranda
+        </button>
+
         {/* Logo & Title */}
         <div className="text-center mb-8">
           <img 

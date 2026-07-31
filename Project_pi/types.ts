@@ -18,9 +18,13 @@ export enum Page {
   ADMIN_PROGRAMS = 'ADMIN_PROGRAMS',
   ADMIN_PRINCIPAL = 'ADMIN_PRINCIPAL',
   PPDB = 'PPDB',
+  PPDB_LOGIN = 'PPDB_LOGIN',
+  PPDB_REGISTER = 'PPDB_REGISTER',
+  PPDB_PORTAL = 'PPDB_PORTAL',
   PPDB_FORM = 'PPDB_FORM',
   ADMIN_PPDB = 'ADMIN_PPDB',
 }
+
 
 export type PPDBStatus = 'pending' | 'approved' | 'rejected';
 export type Gender = 'Laki-laki' | 'Perempuan';
@@ -35,6 +39,18 @@ export interface PPDBApplicant {
   address: string;
   parentName: string;
   whatsappNumber: string;
+  previousSchool?: string;
+  nisn?: string;
+  fatherName?: string;
+  fatherNik?: string;
+  fatherOccupation?: string;
+  fatherEducation?: string;
+  fatherIncome?: string;
+  motherName?: string;
+  motherNik?: string;
+  motherOccupation?: string;
+  motherEducation?: string;
+  motherIncome?: string;
   kkFileName: string;
   kkFileData: string;
   aktaFileName: string;

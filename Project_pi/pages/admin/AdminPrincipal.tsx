@@ -62,8 +62,8 @@ export const AdminPrincipal: React.FC = () => {
     <div className="p-6 sm:p-8 space-y-6 max-w-5xl mx-auto animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">Profil & Sambutan Pimpinan</h1>
-          <p className="text-slate-500 text-sm mt-1.5">Kelola informasi kepala sekolah dan teks sambutan resmi.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">Profil & Sambutan Kepala Madrasah</h1>
+          <p className="text-slate-500 text-sm mt-1.5">Kelola informasi kepala madrasah dan teks sambutan resmi.</p>
         </div>
         <button onClick={handleSave} disabled={saving} className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 font-semibold text-sm shadow-sm disabled:opacity-50 active:scale-95">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Simpan Perubahan

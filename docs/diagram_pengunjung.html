@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Activity Diagram Vertikal (Bentuk Draw.io)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e5e5e5;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+        .canvas {
+            width: 800px;
+            height: 1300px;
+            background: white;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #ccc;
+        }
+        .header {
+            position: absolute;
+            top: 0;
+            width: 400px;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px 0;
+            font-size: 18px;
+            border-bottom: 2px solid black;
+            background: #f8f9fa;
+        }
+        .header.pengunjung { left: 0; }
+        .header.sistem { left: 400px; }
+        
+        .divider {
+            position: absolute;
+            top: 0;
+            left: 400px;
+            width: 2px;
+            height: 1300px;
+            background: black;
+        }
+
+        .box {
+            width: 220px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            position: absolute;
+            border: 2px solid black;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        .pengunjung-box { background-color: #fff2cc; border-color: #d6b656; }
+        .sistem-box { background-color: #dae8fc; border-color: #6c8ebf; }
+
+        .circle-start {
+            width: 30px;
+            height: 30px;
+            background: black;
+            border-radius: 50%;
+            position: absolute;
+            left: 185px; /* center 200 */
+            top: 60px;
+            z-index: 10;
+        }
+        .circle-end {
+            width: 30px;
+            height: 30px;
+            background: black;
+            border-radius: 50%;
+            position: absolute;
+            left: 185px; 
+            top: 1215px;
+            border: 4px double white;
+            box-shadow: 0 0 0 2px black;
+            z-index: 10;
+        }
+
+        .diamond {
+            width: 42px;
+            height: 42px;
+            background: #dae8fc;
+            border: 2px solid #6c8ebf;
+            transform: rotate(45deg);
+            position: absolute;
+            z-index: 10;
+        }
+
+        .label {
+            position: absolute;
+            font-size: 12px;
+            background: white;
+            padding: 2px 4px;
+            color: #d32f2f;
+            font-weight: bold;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        <div class="header pengunjung">Pengunjung</div>
+        <div class="header sistem">Sistem</div>
+        <div class="divider"></div>
+
+        <!-- Node Awal & Akhir -->
+        <div class="circle-start"></div>
+        <div class="circle-end" style="left:585px;"></div>
+
+        <!-- Kotak-Kotak Pengunjung -->
+        <div class="box pengunjung-box" style="left:90px; top:120px;">Membuka Website</div>
+        <div class="box pengunjung-box" style="left:90px; top:200px;">Memilih Menu Utama</div>
+        <div class="box pengunjung-box" style="left:90px; top:420px;">Mengeklik Detail Program</div>
+        <div class="box pengunjung-box" style="left:90px; top:630px;">Mengeklik Detail Berita</div>
+        <div class="box pengunjung-box" style="left:90px; top:840px;">Mengeklik Foto Galeri</div>
+
+        <!-- Kotak-Kotak Sistem -->
+        <div class="box sistem-box" style="left:490px; top:120px;">Menampilkan Beranda</div>
+        <div class="diamond" style="left:579px; top:220px;"></div> <!-- Decision Center: 600, 241 -->
+        
+        <div class="box sistem-box" style="left:490px; top:300px;">Menampilkan Profil</div>
+        <div class="box sistem-box" style="left:490px; top:370px;">Menampilkan Program</div>
+        <div class="box sistem-box" style="left:490px; top:490px;">Menampilkan Detail Program</div>
+        
+        <div class="box sistem-box" style="left:490px; top:580px;">Menampilkan Berita & Artikel</div>
+        <div class="box sistem-box" style="left:490px; top:700px;">Menampilkan Detail Berita</div>
+        
+        <div class="box sistem-box" style="left:490px; top:790px;">Menampilkan Galeri</div>
+        <div class="box sistem-box" style="left:490px; top:910px;">Menampilkan Detail Galeri</div>
+        
+        <div class="box sistem-box" style="left:490px; top:1000px;">Menampilkan Info PPDB</div>
+        <div class="box sistem-box" style="left:490px; top:1070px;">Menampilkan Kontak</div>
+        
+        <div class="diamond" style="left:579px; top:1140px;"></div> <!-- Merge Center: 600, 1161 -->
+
+        <!-- Label Keterangan -->
+        <div class="label" style="left: 760px; top: 600px;">JALUR MASUK (KANAN)</div>
+        <div class="label" style="left: 410px; top: 600px;">JALUR KELUAR (KIRI)</div>
+
+        <!-- Garis-Garis SVG -->
+        <svg width="800" height="1300" style="position:absolute; top:0; left:0; z-index: 1;">
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#333" />
+                </marker>
+            </defs>
+            <g stroke="#333" stroke-width="2" fill="none">
+                <!-- Start ke Buka Web -->
+                <path d="M 200 90 L 200 120" marker-end="url(#arrow)" />
+                <!-- Buka Web ke Beranda -->
+                <path d="M 310 140 L 490 140" marker-end="url(#arrow)" />
+                <!-- Beranda ke Pilih Menu -->
+                <path d="M 600 160 L 600 180 L 200 180 L 200 200" marker-end="url(#arrow)" />
+                <!-- Pilih Menu ke Decision -->
+                <path d="M 310 220 L 570 220" marker-end="url(#arrow)" />
+                
+                <!-- JALUR MASUK KANAN (Highway Right) -->
+                <!-- Decision ke Highway Right -->
+                <path d="M 630 241 L 750 241 L 750 1090" />
+                <!-- Cabang dari Highway Right ke Kotak -->
+                <path d="M 750 320 L 710 320" marker-end="url(#arrow)" />
+                <path d="M 750 390 L 710 390" marker-end="url(#arrow)" />
+                <path d="M 750 600 L 710 600" marker-end="url(#arrow)" />
+                <path d="M 750 810 L 710 810" marker-end="url(#arrow)" />
+                <path d="M 750 1020 L 710 1020" marker-end="url(#arrow)" />
+                <path d="M 750 1090 L 710 1090" marker-end="url(#arrow)" />
+
+                <!-- ZIG-ZAG PROGRAM -->
+                <path d="M 490 390 L 450 390 L 450 440 L 310 440" marker-end="url(#arrow)" />
+                <path d="M 200 460 L 200 510 L 490 510" marker-end="url(#arrow)" />
+
+                <!-- ZIG-ZAG BERITA -->
+                <path d="M 490 600 L 450 600 L 450 650 L 310 650" marker-end="url(#arrow)" />
+                <path d="M 200 670 L 200 720 L 490 720" marker-end="url(#arrow)" />
+
+                <!-- ZIG-ZAG GALERI -->
+                <path d="M 490 810 L 450 810 L 450 860 L 310 860" marker-end="url(#arrow)" />
+                <path d="M 200 880 L 200 930 L 490 930" marker-end="url(#arrow)" />
+
+                <!-- JALUR KELUAR KIRI (Highway Left) -->
+                <!-- Garis keluar dari setiap ujung rute -->
+                <path d="M 490 320 L 440 320" />
+                <path d="M 490 510 L 440 510" />
+                <path d="M 490 720 L 440 720" />
+                <path d="M 490 930 L 440 930" />
+                <path d="M 490 1020 L 440 1020" />
+                <path d="M 490 1090 L 440 1090" />
+                <!-- Tulang punggung Highway Left menuju Merge -->
+                <path d="M 440 320 L 440 1161 L 570 1161" marker-end="url(#arrow)" />
+
+                <!-- Merge ke End -->
+                <path d="M 600 1190 L 600 1215" marker-end="url(#arrow)" />
+            </g>
+        </svg>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Activity Diagram - Calon Peserta Didik PPDB MI Al-Hasani</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+        h2 { color: #1a1a1a; margin-bottom: 20px; letter-spacing: 1px; }
+
+        .canvas {
+            width: 900px;
+            background: white;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid #ccc;
+        }
+
+        /* ===== SWIM LANE HEADER ===== */
+        .header {
+            position: absolute; top: 0;
+            width: 450px; text-align: center;
+            font-weight: bold; padding: 12px 0;
+            font-size: 14px; border-bottom: 2px solid black;
+            background: #f4f4f4; box-sizing: border-box;
+        }
+        .header.calon  { left: 0;     border-right: 1px solid #aaa; }
+        .header.sistem { left: 450px; }
+        .divider { position: absolute; top: 0; left: 450px; width: 2px; background: black; }
+
+        /* ===== ACTIVITY BOX ===== */
+        .box {
+            width: 190px; height: 40px;
+            text-align: center; position: absolute;
+            border: 2px solid; border-radius: 8px;
+            font-size: 10.5px; font-weight: bold;
+            z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            line-height: 1.3; padding: 4px; box-sizing: border-box;
+        }
+        /* Calon = kuning, cx=225, left=130 */
+        .cb { background: #fff2cc; border-color: #d6b656; left: 130px; }
+        /* Sistem = biru, cx=675, left=580 */
+        .sb { background: #dae8fc; border-color: #6c8ebf; left: 580px; }
+
+        /* ===== DIAMOND WRAPPER ===== */
+        .dw {
+            position: absolute; width: 80px; height: 80px; z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ds {
+            width: 56px; height: 56px;
+            transform: rotate(45deg);
+            position: absolute; border: 2px solid;
+        }
+        .ds.c { background: #fff2cc; border-color: #d6b656; }
+        .ds.s { background: #dae8fc; border-color: #6c8ebf; }
+        .dt {
+            position: relative; z-index: 11;
+            font-size: 9.5px; font-weight: bold;
+            text-align: center; width: 62px; line-height: 1.25;
+        }
+
+        /* ===== START / END ===== */
+        .cstart {
+            width: 28px; height: 28px; background: black;
+            border-radius: 50%; position: absolute; z-index: 10;
+        }
+        .cend {
+            width: 20px; height: 20px; background: black;
+            border-radius: 50%; position: absolute; z-index: 10;
+            border: 4px solid white; box-shadow: 0 0 0 3px black;
+        }
+
+        /* ===== LABEL PANAH ===== */
+        .lbl {
+            position: absolute; font-size: 10px; background: white;
+            padding: 1px 4px; color: #c62828; font-weight: bold;
+            z-index: 20; border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Activity Diagram Calon Peserta Didik — PPDB MI Al-Hasani</h2>
+
+<!--
+====================================================================
+  REFERENSI KOORDINAT UTAMA
+  Kolom Calon  (Kiri):  cx = 225 | Kotak: left=130, right=320
+  Kolom Sistem (Kanan): cx = 675 | Kotak: left=580, right=770
+  Divider: x = 450
+
+  BOX:   width=190, height=40 → cy = top + 20, bot = top + 40
+  DIAMOND (wrap 80x80):       → cy = top + 40
+     Sudut Atas   = (cx, top)
+     Sudut Bawah  = (cx, top+80)
+     Sudut Kiri   = (top, cy) → (left, cy)
+     Sudut Kanan  = (left+80, cy)
+====================================================================
+-->
+
+<div class="canvas" style="height:1600px;">
+
+    <!-- DIVIDER & HEADER -->
+    <div class="divider" style="height:1600px;"></div>
+    <div class="header calon">Calon Peserta Didik</div>
+    <div class="header sistem">Sistem</div>
+
+    <!-- ===================== NODES ===================== -->
+
+    <!-- START: cx=225, cy=70 -->
+    <div class="cstart" style="left:211px; top:56px;"></div>
+
+    <!-- ===== TAHAP 1: LOGIN ===== -->
+    <!-- R1: top=110, cy=130, bot=150 -->
+    <div class="box cb" style="top:110px;">Membuka Halaman Login PPDB</div>
+    <div class="box sb" style="top:110px;">Menampilkan Form Login</div>
+
+    <!-- R2: top=190, cy=210, bot=230 -->
+    <div class="box cb" style="top:190px;">Mengisi Username &amp; Password</div>
+    <div class="box sb" style="top:190px;">Melakukan Validasi Login</div>
+
+    <!-- D_valid: cx=675, cy=290, left=635, top=250 -->
+    <div class="dw" style="left:635px; top:250px;">
+        <div class="ds s"></div>
+        <div class="dt">Valid?</div>
+    </div>
+
+    <!-- ===== TAHAP 2: PORTAL & CEK DATA ===== -->
+    <!-- R3 Portal: cx=675, top=350, cy=370, bot=390 -->
+    <div class="box sb" style="top:350px;">Menampilkan Portal PPDB</div>
+
+    <!-- R4 Cek Data: cx=675, top=410, cy=430, bot=450 -->
+    <div class="box sb" style="top:410px; font-size:10px;">Mengecek Data Pendaftaran di Database</div>
+
+    <!-- D_sudah: cx=675, cy=510, left=635, top=470 -->
+    <div class="dw" style="left:635px; top:470px;">
+        <div class="ds s"></div>
+        <div class="dt">Sudah Mendaftar?</div>
+    </div>
+
+    <!-- ===== TAHAP 3A: BELUM MENDAFTAR ===== -->
+    <!-- R5b Formulir: top=570, cy=590, bot=610 -->
+    <div class="box sb" style="top:570px;">Menampilkan Halaman Formulir</div>
+    <div class="box cb" style="top:570px;">Mengisi Formulir &amp; Dokumen</div>
+
+    <!-- R6b Simpan: top=635, cy=655, bot=675 -->
+    <div class="box cb" style="top:635px;">Klik Tombol Simpan</div>
+    <div class="box sb" style="top:635px;">Menyimpan Data ke Database</div>
+
+    <!-- R7b PopUp: top=700, cy=720, bot=740 -->
+    <div class="box sb" style="top:700px;">Menampilkan Pop-Up Notifikasi Berhasil</div>
+    <div class="box cb" style="top:700px;">Klik OK pada Pop-Up</div>
+
+    <!-- ===== TAHAP 3B: SUDAH MENDAFTAR (enters via highway at y=800) ===== -->
+    <!-- R5s Cek Status: cx=675, top=800, cy=820, bot=840 -->
+    <div class="box sb" style="top:800px;">Mengecek Status Pendaftaran</div>
+
+    <!-- D_status: cx=675, cy=900, left=635, top=860 -->
+    <div class="dw" style="left:635px; top:860px;">
+        <div class="ds s"></div>
+        <div class="dt">Status?</div>
+    </div>
+
+    <!-- ===== JALUR MENUNGGU ===== -->
+    <!-- D_edit: cx=225, cy=980, left=185, top=940 -->
+    <div class="dw" style="left:185px; top:940px;">
+        <div class="ds c"></div>
+        <div class="dt">Ingin Edit Data?</div>
+    </div>
+    <!-- R_edit: top=1030, cy=1050, bot=1070 -->
+    <div class="box cb" style="top:1030px;">Klik Edit Data</div>
+    <div class="box sb" style="top:1030px;">Menyimpan Perubahan Data</div>
+
+    <!-- ===== JALUR DITERIMA ===== -->
+    <!-- D_cetak: cx=225, cy=1150, left=185, top=1110 -->
+    <div class="dw" style="left:185px; top:1110px;">
+        <div class="ds c"></div>
+        <div class="dt">Ingin Cetak Kartu?</div>
+    </div>
+    <!-- R_cetak: top=1210, cy=1230, bot=1250 -->
+    <div class="box cb" style="top:1210px;">Klik Cetak Kartu</div>
+    <div class="box sb" style="top:1210px;">Membuat &amp; Mengunduh PDF</div>
+
+    <!-- ===== JALUR DITOLAK ===== -->
+    <!-- R_tolak: w=220, left=565, top=1325, cy=1345, bot=1365 -->
+    <div class="box sb" style="top:1325px; left:565px; width:220px; font-size:10px;">
+        Menampilkan Pesan Penolakan
+    </div>
+
+    <!-- ===== MERGE (Titik Kumpul) ===== -->
+    <!-- D_merge: cx=675, cy=1420, left=635, top=1380 -->
+    <div class="dw" style="left:635px; top:1380px;">
+        <div class="ds s"></div>
+        <div class="dt" style="font-size:8.5px;">Titik Kumpul</div>
+    </div>
+
+    <!-- ===== LOGOUT ===== -->
+    <!-- R_logout: top=1480, cy=1500, bot=1520 -->
+    <div class="box cb" style="top:1480px;">Klik Logout</div>
+    <div class="box sb" style="top:1480px;">Mengakhiri Sesi</div>
+
+    <!-- END: cx=675, cy=1578 -->
+    <div class="cend" style="left:663px; top:1566px;"></div>
+
+
+    <!-- ===================== LABELS ===================== -->
+    <div class="lbl" style="left:545px; top:282px;">Tidak</div>
+    <div class="lbl" style="left:680px; top:310px;">Ya</div>
+    <div class="lbl" style="left:680px; top:552px;">Belum</div>
+    <div class="lbl" style="left:720px; top:504px;">Sudah</div>
+    <div class="lbl" style="left:375px; top:893px;">Menunggu</div>
+    <div class="lbl" style="left:745px; top:893px;">Diterima</div>
+    <div class="lbl" style="left:682px; top:938px;">Ditolak</div>
+    <div class="lbl" style="left:228px; top:1023px;">Ya</div>
+    <div class="lbl" style="left:105px; top:975px;">Tidak</div>
+    <div class="lbl" style="left:228px; top:1203px;">Ya</div>
+    <div class="lbl" style="left:80px; top:1144px;">Tidak</div>
+
+
+    <!-- ===================== SVG GARIS ===================== -->
+    <svg width="900" height="1600" style="position:absolute; top:0; left:0; z-index:1;">
+        <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#333"/>
+            </marker>
+        </defs>
+        <g stroke="#333" stroke-width="1.8" fill="none" marker-end="url(#arr)">
+
+            <!-- ============ TAHAP 1: LOGIN ============ -->
+            <!-- 1. Start → Membuka Login -->
+            <line x1="225" y1="84" x2="225" y2="110"/>
+
+            <!-- 2. Membuka Login → Tampil Form Login (kanan) -->
+            <line x1="320" y1="130" x2="580" y2="130"/>
+
+            <!-- 3. Tampil Form Login → Mengisi Username (cross kiri) -->
+            <path d="M 675 150 L 675 173 L 225 173 L 225 190"/>
+
+            <!-- 4. Mengisi Username → Validasi -->
+            <line x1="320" y1="210" x2="580" y2="210"/>
+
+            <!-- 5. Validasi → Diamond Valid? -->
+            <line x1="675" y1="230" x2="675" y2="250"/>
+
+            <!-- 6. Diamond Valid? Tidak (sudut kiri) → kembali ke Tampil Form Login -->
+            <path d="M 635 290 L 548 290 L 548 130 L 580 130"/>
+
+            <!-- 7. Diamond Valid? Ya (sudut bawah) → Menampilkan Portal -->
+            <line x1="675" y1="330" x2="675" y2="350"/>
+
+            <!-- ============ TAHAP 2: PORTAL & CEK DATA ============ -->
+            <!-- 8. Menampilkan Portal → Mengecek Data -->
+            <line x1="675" y1="390" x2="675" y2="410"/>
+
+            <!-- 9. Mengecek Data → Diamond Sudah Mendaftar? -->
+            <line x1="675" y1="450" x2="675" y2="470"/>
+
+            <!-- ============ TAHAP 3A: BELUM (sudut bawah diamond) ============ -->
+            <!-- 10. Diamond Sudah? Belum (sudut bawah) → Tampil Formulir -->
+            <line x1="675" y1="550" x2="675" y2="570"/>
+
+            <!-- 11. Diamond Sudah? Sudah (sudut kanan) → highway kanan → Cek Status -->
+            <!-- Highway: (715,510) → kanan ke x=848 → turun ke y=800 → kiri ke (675,800) -->
+            <path d="M 715 510 L 848 510 L 848 800 L 675 800"/>
+
+            <!-- 12. Tampil Formulir (sistem) → Isi Formulir (calon) -->
+            <line x1="580" y1="590" x2="320" y2="590"/>
+
+            <!-- 13. Isi Formulir → Klik Simpan (turun dalam calon) -->
+            <line x1="225" y1="610" x2="225" y2="635"/>
+
+            <!-- 14. Klik Simpan → Menyimpan Data -->
+            <line x1="320" y1="655" x2="580" y2="655"/>
+
+            <!-- 15. Menyimpan Data → Tampil Pop-Up -->
+            <line x1="675" y1="675" x2="675" y2="700"/>
+
+            <!-- 16. Tampil Pop-Up → Klik OK (cross kiri) -->
+            <line x1="580" y1="720" x2="320" y2="720"/>
+
+            <!-- 17. Klik OK → Merge (BYPASS KIRI, jalur Belum selesai) -->
+            <!-- Highway kiri: (225,740) → x=15 → turun ke y=1400 → kanan ke Merge (635,1400) -->
+            <path d="M 225 740 L 15 740 L 15 1400 L 635 1400"/>
+
+            <!-- ============ TAHAP 3B: SUDAH (masuk dari highway di y=800) ============ -->
+            <!-- 18. Cek Status → Diamond Status? -->
+            <line x1="675" y1="840" x2="675" y2="860"/>
+
+            <!-- 19. Diamond Status? Menunggu (sudut kiri) → Diamond Ingin Edit? -->
+            <path d="M 635 900 L 225 900 L 225 940"/>
+
+            <!-- 20. Diamond Status? Diterima (sudut kanan) → highway kanan → Diamond Ingin Cetak? -->
+            <!-- Turun lewat sisi kanan (x=870) lalu kiri ke Diamond Ingin Cetak? top (225,1110) -->
+            <path d="M 715 900 L 870 900 L 870 1110 L 225 1110"/>
+
+            <!-- 21. Diamond Status? Ditolak (sudut bawah) → highway kanan tengah → Pesan Penolakan kanan -->
+            <!-- Highway Ditolak: turun ke x=820, masuk ke sisi kanan kotak Pesan Penolakan (785,1345) -->
+            <path d="M 675 940 L 820 940 L 820 1345 L 785 1345"/>
+
+            <!-- ============ JALUR MENUNGGU ============ -->
+            <!-- 22. Diamond Ingin Edit? Ya (sudut bawah) → Klik Edit Data -->
+            <line x1="225" y1="1020" x2="225" y2="1030"/>
+
+            <!-- 23. Klik Edit Data → Menyimpan Perubahan -->
+            <line x1="320" y1="1050" x2="580" y2="1050"/>
+
+            <!-- 24. Menyimpan Perubahan → Merge (bypass kiri tengah x=540) -->
+            <!-- Rute: (675,1070) → kiri ke x=540 → turun ke y=1400 → kanan ke Merge (635,1400) -->
+            <path d="M 675 1070 L 540 1070 L 540 1400 L 635 1400"/>
+
+            <!-- 25. Diamond Ingin Edit? Tidak (sudut kiri) → bypass ke Merge -->
+            <path d="M 185 980 L 55 980 L 55 1400 L 635 1400"/>
+
+            <!-- ============ JALUR DITERIMA ============ -->
+            <!-- 26. Diamond Ingin Cetak? Ya (sudut bawah) → Klik Cetak Kartu -->
+            <line x1="225" y1="1190" x2="225" y2="1210"/>
+
+            <!-- 27. Klik Cetak → Membuat PDF -->
+            <line x1="320" y1="1230" x2="580" y2="1230"/>
+
+            <!-- 28. Membuat PDF → Merge (bypass kanan x=840) -->
+            <path d="M 675 1250 L 840 1250 L 840 1420 L 715 1420"/>
+
+            <!-- 29. Diamond Ingin Cetak? Tidak (sudut kiri) → bypass ke Merge -->
+            <path d="M 185 1150 L 35 1150 L 35 1420 L 635 1420"/>
+
+            <!-- ============ JALUR DITOLAK ============ -->
+            <!-- 30. Pesan Penolakan → Merge top -->
+            <line x1="675" y1="1365" x2="675" y2="1380"/>
+
+            <!-- ============ MERGE → LOGOUT → SELESAI ============ -->
+            <!-- 31. Merge (sudut bawah) → cross kiri → Klik Logout -->
+            <path d="M 675 1460 L 675 1472 L 225 1472 L 225 1480"/>
+
+            <!-- 32. Klik Logout → Mengakhiri Sesi -->
+            <line x1="320" y1="1500" x2="580" y2="1500"/>
+
+            <!-- 33. Mengakhiri Sesi → End -->
+            <line x1="675" y1="1520" x2="675" y2="1566"/>
+
+        </g>
+    </svg>
+
+</div><!-- end canvas -->
+</body>
+</html>

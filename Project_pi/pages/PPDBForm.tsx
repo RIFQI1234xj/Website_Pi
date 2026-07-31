@@ -1,14 +1,14 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Users, Upload, CheckCircle2, ChevronRight, ChevronLeft,
   FileText, Calendar, MapPin, Phone, X, AlertCircle, Image,
-  PartyPopper, ClipboardCheck, ArrowLeft, Trash2, File, Eye, Download, Lock
+  PartyPopper, ClipboardCheck, ArrowLeft, Trash2, File, Eye, Download, Lock, Loader2
 } from 'lucide-react';
 import { PPDBApplicant, Gender } from '../types';
 import { usePpdbStatus } from '../hooks/usePpdbStatus';
-import { apiFetch } from '../lib/api';
+import { apiFetch, ppdbApiFetch } from '../lib/api';
 
 type FormStep = 1 | 2 | 3 | 4;
 
@@ -18,8 +18,20 @@ interface FormData {
   birthDate: string;
   gender: Gender | '';
   address: string;
-  parentName: string;
+  parentName: string; // Wali utama
   whatsappNumber: string;
+  previousSchool: string;
+  nisn: string;
+  fatherName: string;
+  fatherNik: string;
+  fatherOccupation: string;
+  fatherEducation: string;
+  fatherIncome: string;
+  motherName: string;
+  motherNik: string;
+  motherOccupation: string;
+  motherEducation: string;
+  motherIncome: string;
   kkFile: File | null;
   kkPreview: string;
   aktaFile: File | null;
@@ -28,6 +40,10 @@ interface FormData {
   ktpPreview: string;
   ijazahFile: File | null;
   ijazahPreview: string;
+  existingKkFileName?: string;
+  existingAktaFileName?: string;
+  existingKtpFileName?: string;
+  existingIjazahFileName?: string;
 }
 
 interface FormErrors {
@@ -45,9 +61,16 @@ const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
 const MAX_WHATSAPP_DIGITS = 14;
 
-export const PPDBForm: React.FC = () => {
+interface PPDBFormProps {
+  onLogout?: () => void;
+}
+
+export const PPDBForm: React.FC<PPDBFormProps> = ({ onLogout }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isEditMode = searchParams.get('edit') === 'true';
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
+  const [isLoadingEdit, setIsLoadingEdit] = useState(isEditMode);
   const [showSuccess, setShowSuccess] = useState(false);
   const { ppdbStatus, loading } = usePpdbStatus();
   const isPpdbOpen = !loading && ppdbStatus ? ppdbStatus.is_open : true;
@@ -68,6 +91,18 @@ export const PPDBForm: React.FC = () => {
     address: '',
     parentName: '',
     whatsappNumber: '',
+    previousSchool: '',
+    nisn: '',
+    fatherName: '',
+    fatherNik: '',
+    fatherOccupation: '',
+    fatherEducation: '',
+    fatherIncome: '',
+    motherName: '',
+    motherNik: '',
+    motherOccupation: '',
+    motherEducation: '',
+    motherIncome: '',
     kkFile: null,
     kkPreview: '',
     aktaFile: null,
@@ -89,6 +124,127 @@ export const PPDBForm: React.FC = () => {
     }
   };
 
+  const DRAFT_KEY = 'ppdb_form_draft';
+
+  // --- Load Draft Data ---
+  React.useEffect(() => {
+    if (!isEditMode) {
+      const savedDraft = localStorage.getItem(DRAFT_KEY);
+      if (savedDraft) {
+        try {
+          const parsed = JSON.parse(savedDraft);
+          setFormData(prev => ({
+            ...prev,
+            studentName: parsed.studentName || '',
+            birthPlace: parsed.birthPlace || '',
+            birthDate: parsed.birthDate || '',
+            gender: parsed.gender || '',
+            address: parsed.address || '',
+            parentName: parsed.parentName || '',
+            whatsappNumber: parsed.whatsappNumber || '',
+            previousSchool: parsed.previousSchool || '',
+            nisn: parsed.nisn || '',
+            fatherName: parsed.fatherName || '',
+            fatherNik: parsed.fatherNik || '',
+            fatherOccupation: parsed.fatherOccupation || '',
+            fatherEducation: parsed.fatherEducation || '',
+            fatherIncome: parsed.fatherIncome || '',
+            motherName: parsed.motherName || '',
+            motherNik: parsed.motherNik || '',
+            motherOccupation: parsed.motherOccupation || '',
+            motherEducation: parsed.motherEducation || '',
+            motherIncome: parsed.motherIncome || '',
+          }));
+        } catch (e) {
+          console.error("Failed to load draft", e);
+        }
+      }
+    }
+  }, [isEditMode]);
+
+  // --- Save Draft Data ---
+  React.useEffect(() => {
+    if (!isEditMode && formData) {
+      // Hanya simpan teks, jangan simpan file/base64 yang besar
+      const draftToSave = {
+        studentName: formData.studentName,
+        birthPlace: formData.birthPlace,
+        birthDate: formData.birthDate,
+        gender: formData.gender,
+        address: formData.address,
+        parentName: formData.parentName,
+        whatsappNumber: formData.whatsappNumber,
+        previousSchool: formData.previousSchool,
+        nisn: formData.nisn,
+        fatherName: formData.fatherName,
+        fatherNik: formData.fatherNik,
+        fatherOccupation: formData.fatherOccupation,
+        fatherEducation: formData.fatherEducation,
+        fatherIncome: formData.fatherIncome,
+        motherName: formData.motherName,
+        motherNik: formData.motherNik,
+        motherOccupation: formData.motherOccupation,
+        motherEducation: formData.motherEducation,
+        motherIncome: formData.motherIncome,
+      };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draftToSave));
+    }
+  }, [formData, isEditMode]);
+
+
+  // --- Fetch Edit Data ---
+  React.useEffect(() => {
+    if (isEditMode) {
+      const fetchEditData = async () => {
+        try {
+          const res = await ppdbApiFetch('/ppdb/my-application');
+          const data = res.data;
+          if (data && data.status === 'pending') {
+            setFormData(prev => ({
+              ...prev,
+              studentName: data.student_name || '',
+              birthPlace: data.birth_place || '',
+              birthDate: data.birth_date || '',
+              gender: data.gender || '',
+              address: data.address || '',
+              parentName: data.parent_name || '',
+              whatsappNumber: data.whatsapp_number || '',
+              previousSchool: data.previous_school || '',
+              nisn: data.nisn || '',
+              fatherName: data.father_name || '',
+              fatherNik: data.father_nik || '',
+              fatherOccupation: data.father_occupation || '',
+              fatherEducation: data.father_education || '',
+              fatherIncome: data.father_income || '',
+              motherName: data.mother_name || '',
+              motherNik: data.mother_nik || '',
+              motherOccupation: data.mother_occupation || '',
+              motherEducation: data.mother_education || '',
+              motherIncome: data.mother_income || '',
+              kkPreview: data.kk_file_data || '',
+              existingKkFileName: data.kk_file_name || '',
+              aktaPreview: data.akta_file_data || '',
+              existingAktaFileName: data.akta_file_name || '',
+              ktpPreview: data.ktp_file_data || '',
+              existingKtpFileName: data.ktp_file_name || '',
+              ijazahPreview: data.ijazah_file_data || '',
+              existingIjazahFileName: data.ijazah_file_name || '',
+            }));
+            setRegistrationId(data.registration_id);
+          } else {
+            // Not pending or not found, cannot edit
+            navigate('/ppdb/portal');
+          }
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setIsLoadingEdit(false);
+        }
+      };
+      fetchEditData();
+    }
+  }, [isEditMode, navigate]);
+
   // --- Validation ---
   const validateStep = (step: FormStep): boolean => {
     const newErrors: FormErrors = {};
@@ -99,18 +255,27 @@ export const PPDBForm: React.FC = () => {
       if (!formData.birthDate) newErrors.birthDate = 'Tanggal lahir wajib diisi';
       if (!formData.gender) newErrors.gender = 'Jenis kelamin wajib dipilih';
       if (!formData.address.trim()) newErrors.address = 'Alamat lengkap wajib diisi';
+      if (formData.nisn && formData.nisn.length !== 10) {
+        newErrors.nisn = 'NISN harus 10 digit angka';
+      }
     }
 
     if (step === 2) {
-      if (!formData.parentName.trim()) newErrors.parentName = 'Nama orang tua wajib diisi';
+      if (!formData.parentName.trim()) newErrors.parentName = 'Nama wali (utama) wajib diisi';
       if (!formData.whatsappNumber.trim()) {
         newErrors.whatsappNumber = 'Nomor WhatsApp wajib diisi';
       } else if (!/^(\+62|62|08)\d{8,12}$/.test(formData.whatsappNumber.replace(/[\s-]/g, ''))) {
         newErrors.whatsappNumber = 'Format nomor tidak valid (contoh: 08123456789)';
       }
+      if (formData.fatherNik && formData.fatherNik.length !== 16) {
+        newErrors.fatherNik = 'NIK Ayah harus 16 digit';
+      }
+      if (formData.motherNik && formData.motherNik.length !== 16) {
+        newErrors.motherNik = 'NIK Ibu harus 16 digit';
+      }
     }
 
-    if (step === 3) {
+    if (step === 3 && !isEditMode) {
       if (!formData.kkFile) newErrors.kkFile = 'Dokumen KK wajib diunggah';
       if (!formData.aktaFile) newErrors.aktaFile = 'Dokumen Akta wajib diunggah';
       if (!formData.ktpFile) newErrors.ktpFile = 'Dokumen KTP Orang Tua wajib diunggah';
@@ -133,6 +298,14 @@ export const PPDBForm: React.FC = () => {
   const handleWhatsAppChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const digitsOnly = event.target.value.replace(/\D/g, '').slice(0, MAX_WHATSAPP_DIGITS);
     updateField('whatsappNumber', digitsOnly);
+  };
+
+  const handleDigitsOnlyChange = (field: keyof FormData, maxLength?: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    let digitsOnly = event.target.value.replace(/\D/g, '');
+    if (maxLength) {
+      digitsOnly = digitsOnly.slice(0, maxLength);
+    }
+    updateField(field, digitsOnly);
   };
 
   const handleLettersOnlyChange = (field: keyof FormData) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -223,7 +396,8 @@ export const PPDBForm: React.FC = () => {
     try {
       setIsSubmitting(true);
       
-      const res = await apiFetch('/ppdb/apply', {
+      const endpoint = isEditMode ? '/ppdb/update' : '/ppdb/apply';
+      const res = await ppdbApiFetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -236,6 +410,18 @@ export const PPDBForm: React.FC = () => {
           address: formData.address.trim(),
           parentName: formData.parentName.trim(),
           whatsappNumber: formData.whatsappNumber.trim(),
+          previousSchool: formData.previousSchool.trim(),
+          nisn: formData.nisn.trim(),
+          fatherName: formData.fatherName.trim(),
+          fatherNik: formData.fatherNik.trim(),
+          fatherOccupation: formData.fatherOccupation.trim(),
+          fatherEducation: formData.fatherEducation.trim(),
+          fatherIncome: formData.fatherIncome.trim(),
+          motherName: formData.motherName.trim(),
+          motherNik: formData.motherNik.trim(),
+          motherOccupation: formData.motherOccupation.trim(),
+          motherEducation: formData.motherEducation.trim(),
+          motherIncome: formData.motherIncome.trim(),
           kkFileName: formData.kkFile?.name || null,
           kkFileData: formData.kkPreview || null,
           aktaFileName: formData.aktaFile?.name || null,
@@ -250,6 +436,9 @@ export const PPDBForm: React.FC = () => {
       if (res.status === 'success' && res.data) {
         setRegistrationId(res.data.registration_id);
         setShowSuccess(true);
+        if (!isEditMode) {
+          localStorage.removeItem(DRAFT_KEY); // Hapus draft jika sukses mendaftar
+        }
       } else {
         throw new Error(res.message || 'Gagal mengirim pendaftaran');
       }
@@ -285,7 +474,7 @@ export const PPDBForm: React.FC = () => {
         {icon} {label}
       </label>
       <input
-        value={formData[field] as string}
+        value={(formData[field] as string) || ''}
         onChange={(e) => updateField(field, e.target.value)}
         className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 outline-none text-sm bg-white
           ${errors[field]
@@ -294,6 +483,45 @@ export const PPDBForm: React.FC = () => {
           }`}
         {...props}
       />
+      {errors[field] && (
+        <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
+          <AlertCircle size={12} /> {errors[field]}
+        </p>
+      )}
+    </div>
+  );
+
+  const renderSelect = (
+    label: string,
+    field: keyof FormData,
+    icon: React.ReactNode,
+    options: { value: string; label: string }[],
+    props: React.SelectHTMLAttributes<HTMLSelectElement> = {}
+  ) => (
+    <div>
+      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+        {icon} {label}
+      </label>
+      <div className="relative">
+        <select
+          value={(formData[field] as string) || ''}
+          onChange={(e) => updateField(field, e.target.value)}
+          className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 outline-none text-sm bg-white appearance-none
+            ${errors[field]
+              ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100'
+              : 'border-gray-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-100'
+            }`}
+          {...props}
+        >
+          <option value="" disabled hidden>Pilih salah satu</option>
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+        <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-500">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+      </div>
       {errors[field] && (
         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
           <AlertCircle size={12} /> {errors[field]}
@@ -315,30 +543,58 @@ export const PPDBForm: React.FC = () => {
         <FileText size={15} className="text-teal-600" /> {label} {isOptional && <span className="text-xs text-gray-500 font-normal">(Opsional)</span>}
       </label>
 
-      {file ? (
+      {file || (isEditMode && preview) ? (
         <div className="relative rounded-xl border-2 border-teal-200 bg-teal-50/50 p-4">
           <div className="flex items-center gap-4">
-            {file.type.startsWith('image/') && preview ? (
-              <img src={preview} alt={file.name} className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+            {(file?.type.startsWith('image/') || (!file && preview.match(/\.(jpeg|jpg|gif|png)$/i))) && preview ? (
+              <img src={preview} alt={label} className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
             ) : (
               <div className="w-16 h-16 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center">
                 <File size={24} className="text-red-500" />
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-800 truncate">{file.name}</p>
-              <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
-              <div className="flex items-center gap-1 mt-1">
-                <CheckCircle2 size={12} className="text-teal-500" />
-                <span className="text-xs text-teal-600 font-medium">File siap dikirim</span>
+              <p className="text-sm font-semibold text-gray-800 truncate">
+                {file ? file.name : (
+                  type === 'kk' ? formData.existingKkFileName :
+                  type === 'akta' ? formData.existingAktaFileName :
+                  type === 'ktp' ? formData.existingKtpFileName :
+                  formData.existingIjazahFileName
+                ) || 'File Terlampir'}
+              </p>
+              <div className="flex gap-2 mt-2">
+                {preview && (
+                  <button
+                    type="button"
+                    onClick={() => setViewDoc({ 
+                      url: preview, 
+                      name: file ? file.name : (type === 'kk' ? formData.existingKkFileName : type === 'akta' ? formData.existingAktaFileName : type === 'ktp' ? formData.existingKtpFileName : formData.existingIjazahFileName) || label 
+                    })}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 text-white text-xs font-semibold hover:bg-teal-700 transition-colors"
+                  >
+                    <Eye size={12} /> Lihat
+                  </button>
+                )}
+                
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-100 text-amber-700 text-xs font-semibold hover:bg-amber-200 transition-colors"
+                >
+                  <Upload size={12} /> Ganti
+                </button>
+
+                {file && (
+                  <button
+                    type="button"
+                    onClick={() => removeFile(type)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-100 text-rose-600 text-xs font-semibold hover:bg-rose-200 transition-colors"
+                  >
+                    <Trash2 size={12} /> Hapus
+                  </button>
+                )}
               </div>
             </div>
-            <button
-              onClick={() => removeFile(type)}
-              className="w-9 h-9 rounded-lg bg-red-100 hover:bg-red-200 flex items-center justify-center text-red-500 transition-colors flex-shrink-0"
-            >
-              <Trash2 size={16} />
-            </button>
           </div>
         </div>
       ) : (
@@ -359,17 +615,18 @@ export const PPDBForm: React.FC = () => {
             <p className="text-xs text-gray-500">
               atau <span className="text-teal-600 font-semibold underline">klik untuk browse</span>
             </p>
-            <p className="text-[10px] text-gray-500 mt-2">JPG, PNG, PDF â€¢ Maks 2MB</p>
+            <p className="text-[10px] text-gray-500 mt-2">JPG, PNG, PDF • Maks 2MB</p>
           </div>
-          <input
-            ref={inputRef}
-            type="file"
-            accept=".jpg,.jpeg,.png,.pdf"
-            onChange={(e) => handleFileInput(e, type)}
-            className="hidden"
-          />
         </div>
       )}
+      
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".jpg,.jpeg,.png,.pdf"
+        onChange={(e) => handleFileInput(e, type)}
+        className="hidden"
+      />
       {errors[`${type}File`] && (
         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
           <AlertCircle size={12} /> {errors[`${type}File`]}
@@ -390,11 +647,20 @@ export const PPDBForm: React.FC = () => {
                 <span className="font-semibold">Langkah 1:</span> Isi data calon peserta didik baru.
               </p>
             </div>
-            {renderInput('Nama Lengkap Siswa', 'studentName', <User size={15} className="text-teal-600" />, { 
-              placeholder: 'Masukkan nama lengkap', 
-              type: 'text',
-              onChange: handleLettersOnlyChange('studentName')
-            })}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {renderInput('Nama Lengkap Siswa', 'studentName', <User size={15} className="text-teal-600" />, { 
+                placeholder: 'Masukkan nama lengkap', 
+                type: 'text',
+                onChange: handleLettersOnlyChange('studentName')
+              })}
+              {renderInput('NISN (Opsional)', 'nisn', <FileText size={15} className="text-teal-600" />, { 
+                placeholder: 'Nomor Induk Siswa Nasional', 
+                type: 'text',
+                inputMode: 'numeric',
+                maxLength: 10,
+                onChange: handleDigitsOnlyChange('nisn', 10)
+              })}
+            </div>
             {renderInput('Tempat Lahir', 'birthPlace', <MapPin size={15} className="text-teal-600" />, { 
               placeholder: 'Contoh: Bandung', 
               type: 'text',
@@ -492,6 +758,12 @@ export const PPDBForm: React.FC = () => {
                 </p>
               )}
             </div>
+
+            {/* Asal Sekolah */}
+            {renderInput('Asal Sekolah TK / PAUD (Opsional)', 'previousSchool', <FileText size={15} className="text-teal-600" />, { 
+              placeholder: 'Contoh: TK Islam Al-Falah', 
+              type: 'text',
+            })}
           </div>
         );
 
@@ -504,21 +776,86 @@ export const PPDBForm: React.FC = () => {
                 <span className="font-semibold">Langkah 2:</span> Isi data orang tua / wali murid.
               </p>
             </div>
-            {renderInput('Nama Orang Tua / Wali', 'parentName', <Users size={15} className="text-blue-600" />, { 
-              placeholder: 'Masukkan nama lengkap orang tua', 
-              type: 'text',
-              onChange: handleLettersOnlyChange('parentName')
-            })}
-            {renderInput('Nomor WhatsApp', 'whatsappNumber', <Phone size={15} className="text-blue-600" />, {
-              placeholder: '08123456789',
-              type: 'tel',
-              inputMode: 'numeric',
-              maxLength: MAX_WHATSAPP_DIGITS,
-              pattern: '[0-9]*',
-              autoComplete: 'tel',
-              onChange: handleWhatsAppChange,
-            })}
-            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200/60">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {renderInput('Nama Wali Utama', 'parentName', <Users size={15} className="text-blue-600" />, { 
+                placeholder: 'Nama orang tua yang bisa dihubungi', 
+                type: 'text',
+                onChange: handleLettersOnlyChange('parentName')
+              })}
+              {renderInput('Nomor WhatsApp Wali', 'whatsappNumber', <Phone size={15} className="text-blue-600" />, {
+                placeholder: '08123456789',
+                type: 'tel',
+                inputMode: 'numeric',
+                maxLength: MAX_WHATSAPP_DIGITS,
+                pattern: '[0-9]*',
+                autoComplete: 'tel',
+                onChange: handleWhatsAppChange,
+              })}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 border-t border-gray-100 pt-6">
+              {/* Data Ayah */}
+              <div className="space-y-4">
+                <h4 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                  <User size={16} className="text-blue-600" /> Data Ayah Kandung
+                </h4>
+                {renderInput('Nama Ayah', 'fatherName', null, { 
+                  placeholder: 'Nama lengkap ayah', type: 'text',
+                  onChange: handleLettersOnlyChange('fatherName')
+                })}
+                {renderInput('NIK Ayah', 'fatherNik', null, { 
+                  placeholder: '16 digit NIK', type: 'text', maxLength: 16,
+                  inputMode: 'numeric',
+                  onChange: handleDigitsOnlyChange('fatherNik', 16)
+                })}
+                {renderInput('Pekerjaan Ayah', 'fatherOccupation', null, { 
+                  placeholder: 'Contoh: Wiraswasta', type: 'text'
+                })}
+                {renderInput('Pendidikan Ayah', 'fatherEducation', null, { 
+                  placeholder: 'Contoh: SMA / S1', type: 'text'
+                })}
+                {renderSelect('Penghasilan Ayah (Opsional)', 'fatherIncome', null, [
+                  { value: 'Kurang dari Rp 1.000.000', label: 'Kurang dari Rp 1.000.000' },
+                  { value: 'Rp 1.000.000 - Rp 2.000.000', label: 'Rp 1.000.000 - Rp 2.000.000' },
+                  { value: 'Rp 2.000.000 - Rp 3.000.000', label: 'Rp 2.000.000 - Rp 3.000.000' },
+                  { value: 'Rp 3.000.000 - Rp 5.000.000', label: 'Rp 3.000.000 - Rp 5.000.000' },
+                  { value: 'Lebih dari Rp 5.000.000', label: 'Lebih dari Rp 5.000.000' },
+                  { value: 'Tidak Berpenghasilan', label: 'Tidak Berpenghasilan' },
+                ])}
+              </div>
+
+              {/* Data Ibu */}
+              <div className="space-y-4">
+                <h4 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                  <User size={16} className="text-pink-600" /> Data Ibu Kandung
+                </h4>
+                {renderInput('Nama Ibu', 'motherName', null, { 
+                  placeholder: 'Nama lengkap ibu', type: 'text',
+                  onChange: handleLettersOnlyChange('motherName')
+                })}
+                {renderInput('NIK Ibu', 'motherNik', null, { 
+                  placeholder: '16 digit NIK', type: 'text', maxLength: 16,
+                  inputMode: 'numeric',
+                  onChange: handleDigitsOnlyChange('motherNik', 16)
+                })}
+                {renderInput('Pekerjaan Ibu', 'motherOccupation', null, { 
+                  placeholder: 'Contoh: Ibu Rumah Tangga', type: 'text'
+                })}
+                {renderInput('Pendidikan Ibu', 'motherEducation', null, { 
+                  placeholder: 'Contoh: SMA / S1', type: 'text'
+                })}
+                {renderSelect('Penghasilan Ibu (Opsional)', 'motherIncome', null, [
+                  { value: 'Kurang dari Rp 1.000.000', label: 'Kurang dari Rp 1.000.000' },
+                  { value: 'Rp 1.000.000 - Rp 2.000.000', label: 'Rp 1.000.000 - Rp 2.000.000' },
+                  { value: 'Rp 2.000.000 - Rp 3.000.000', label: 'Rp 2.000.000 - Rp 3.000.000' },
+                  { value: 'Rp 3.000.000 - Rp 5.000.000', label: 'Rp 3.000.000 - Rp 5.000.000' },
+                  { value: 'Lebih dari Rp 5.000.000', label: 'Lebih dari Rp 5.000.000' },
+                  { value: 'Tidak Berpenghasilan', label: 'Tidak Berpenghasilan' },
+                ])}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200/60 mt-4">
               <p className="text-xs text-amber-700 flex items-start gap-2">
                 <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
                 Pastikan nomor WhatsApp aktif. Pihak sekolah akan menghubungi melalui WhatsApp untuk informasi selanjutnya.
@@ -535,11 +872,16 @@ export const PPDBForm: React.FC = () => {
                 <Upload size={16} className="text-purple-600" />
                 <span className="font-semibold">Langkah 3:</span> Unggah dokumen persyaratan.
               </p>
+              {isEditMode && (
+                <div className="mt-2 text-xs text-purple-700 bg-white/50 p-2 rounded-lg border border-purple-100">
+                  <strong>Catatan:</strong> Dokumen bersifat opsional saat edit. Jika Anda tidak mengunggah file baru, dokumen lama akan tetap digunakan.
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {renderFileUpload('Kartu Keluarga (KK)', 'kk', formData.kkFile, formData.kkPreview, kkInputRef)}
-              {renderFileUpload('Akta Kelahiran', 'akta', formData.aktaFile, formData.aktaPreview, aktaInputRef)}
-              {renderFileUpload('KTP Orang Tua', 'ktp', formData.ktpFile, formData.ktpPreview, ktpInputRef)}
+              {renderFileUpload('Kartu Keluarga (KK)', 'kk', formData.kkFile, formData.kkPreview, kkInputRef, isEditMode)}
+              {renderFileUpload('Akta Kelahiran', 'akta', formData.aktaFile, formData.aktaPreview, aktaInputRef, isEditMode)}
+              {renderFileUpload('KTP Orang Tua', 'ktp', formData.ktpFile, formData.ktpPreview, ktpInputRef, isEditMode)}
               {renderFileUpload('Ijazah TK / PAUD', 'ijazah', formData.ijazahFile, formData.ijazahPreview, ijazahInputRef, true)}
             </div>
           </div>
@@ -569,6 +911,8 @@ export const PPDBForm: React.FC = () => {
                   <SummaryRow label="Tempat, Tanggal Lahir" value={`${formData.birthPlace}, ${formatDate(formData.birthDate)}`} />
                   <SummaryRow label="Jenis Kelamin" value={formData.gender} />
                   <SummaryRow label="Alamat Lengkap" value={formData.address} />
+                  <SummaryRow label="Asal Sekolah" value={formData.previousSchool} />
+                  {formData.nisn && <SummaryRow label="NISN" value={formData.nisn} />}
                 </div>
               </div>
 
@@ -580,8 +924,12 @@ export const PPDBForm: React.FC = () => {
                   </h4>
                 </div>
                 <div className="p-4 space-y-2.5 bg-white">
-                  <SummaryRow label="Nama Orang Tua" value={formData.parentName} />
+                  <SummaryRow label="Wali Utama" value={formData.parentName} />
                   <SummaryRow label="No. WhatsApp" value={formData.whatsappNumber} />
+                  <div className="pt-2 border-t border-gray-100">
+                    <SummaryRow label="Nama Ayah" value={formData.fatherName || '-'} />
+                    <SummaryRow label="Nama Ibu" value={formData.motherName || '-'} />
+                  </div>
                 </div>
               </div>
 
@@ -593,24 +941,23 @@ export const PPDBForm: React.FC = () => {
                   </h4>
                 </div>
                 <div className="p-4 space-y-3 bg-white">
-                  {/* Helper for rendering doc item */}
                   {[
-                    { label: 'Kartu Keluarga (KK)', file: formData.kkFile, preview: formData.kkPreview },
-                    { label: 'Akta Kelahiran', file: formData.aktaFile, preview: formData.aktaPreview },
-                    { label: 'KTP Orang Tua', file: formData.ktpFile, preview: formData.ktpPreview },
-                    { label: 'Ijazah TK / PAUD', file: formData.ijazahFile, preview: formData.ijazahPreview, optional: true },
+                    { label: 'Kartu Keluarga (KK)', file: formData.kkFile, preview: formData.kkPreview, name: formData.existingKkFileName },
+                    { label: 'Akta Kelahiran', file: formData.aktaFile, preview: formData.aktaPreview, name: formData.existingAktaFileName },
+                    { label: 'KTP Orang Tua', file: formData.ktpFile, preview: formData.ktpPreview, name: formData.existingKtpFileName },
+                    { label: 'Ijazah TK / PAUD', file: formData.ijazahFile, preview: formData.ijazahPreview, name: formData.existingIjazahFileName, optional: true },
                   ].map((doc, idx) => {
-                    if (doc.optional && !doc.file) return null;
+                    if (doc.optional && !doc.file && !doc.preview) return null;
                     return (
                       <div key={idx} className="flex items-center gap-3">
-                        {doc.file?.type.startsWith('image/') && doc.preview ? (
+                        {(doc.file?.type.startsWith('image/') || (!doc.file && doc.preview?.match(/\.(jpeg|jpg|gif|png)$/i))) && doc.preview ? (
                           <img src={doc.preview} alt={doc.label} className="w-12 h-12 object-cover rounded-lg border" />
                         ) : (
                           <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center"><File size={20} className="text-gray-500" /></div>
                         )}
                         <div className="flex-1">
                           <p className="text-xs font-semibold text-gray-800">{doc.label}</p>
-                          <p className="text-[10px] text-gray-500">{doc.file?.name}</p>
+                          <p className="text-[10px] text-gray-500">{doc.file ? doc.file.name : doc.name || 'File Terlampir'}</p>
                         </div>
                         {doc.preview && (
                           <button
@@ -639,13 +986,23 @@ export const PPDBForm: React.FC = () => {
       <div className="bg-gradient-to-r from-teal-900 via-teal-800 to-teal-900 text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-28 pb-12">
           <button
-            onClick={() => navigate('/ppdb')}
+            onClick={() => navigate('/ppdb/portal')}
             className="flex items-center gap-2 text-teal-300 hover:text-white text-sm font-medium mb-4 transition-colors"
           >
-            <ArrowLeft size={16} /> Kembali ke Panduan
+            <ArrowLeft size={16} /> Kembali ke Portal
           </button>
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Formulir Pendaftaran</h1>
-          <p className="text-teal-200 text-sm">PPDB MI Al-Hasani - Tahun Ajaran 2026/2027</p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-teal-50 drop-shadow-md">
+                {isEditMode ? 'Edit Formulir PPDB' : 'Formulir Pendaftaran'}
+              </h1>
+              <p className="text-teal-200 text-sm mt-2 drop-shadow">
+                {isEditMode 
+                  ? 'Ubah data yang diperlukan sebelum diverifikasi oleh panitia.' 
+                  : `PPDB MI Al-Hasani - Tahun Ajaran ${tahunAjaran}`}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -739,19 +1096,10 @@ export const PPDBForm: React.FC = () => {
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="flex-1 px-8 py-3.5 sm:py-4 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-600/40 transition-all duration-300 flex items-center justify-center gap-2 transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/30 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/25 ml-auto"
               >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Mengirim...</span>
-                  </div>
-                ) : (
-                  <>
-                    <span>Kirim Pendaftaran</span>
-                    <CheckCircle2 className="w-5 h-5" />
-                  </>
-                )}
+                {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <ClipboardCheck size={18} />}
+                {isSubmitting ? 'Menyimpan...' : (isEditMode ? 'Simpan Perubahan' : 'Kirim Pendaftaran')}
               </button>
             )}
           </div>
@@ -857,7 +1205,6 @@ export const PPDBForm: React.FC = () => {
               transition={{ type: 'spring', damping: 20, stiffness: 300 }}
               className="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl"
             >
-              {/* Confetti-like decorative elements */}
               <div className="relative">
                 <div className="absolute -top-4 left-1/4 w-3 h-3 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
                 <div className="absolute -top-2 right-1/3 w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
@@ -883,10 +1230,10 @@ export const PPDBForm: React.FC = () => {
               </p>
 
               <button
-                onClick={() => navigate('/ppdb')}
+                onClick={() => navigate('/ppdb/portal')}
                 className="w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-700 hover:to-teal-700 text-white font-bold text-sm shadow-lg shadow-emerald-600/25 transition-all"
               >
-                Kembali ke Halaman PPDB
+                Selesai & Ke Portal Pendaftar
               </button>
             </motion.div>
           </motion.div>

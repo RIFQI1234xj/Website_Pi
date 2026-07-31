@@ -10,6 +10,7 @@ class PpdbApplicant extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'registration_id',
         'tahun_ajaran',
         'student_name',
@@ -29,4 +30,9 @@ class PpdbApplicant extends Model
         'ijazah_file_data',
         'status',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { PPDBApplicant, PPDBStatus } from '../../types';
 import { API_BASE_URL, getImageUrl, apiFetch } from '../../lib/api';
+import * as XLSX from 'xlsx';
 
 const getDownloadUrl = (url: string, customName?: string) => {
   let fullUrl = url.startsWith('/') ? API_BASE_URL.replace(/\/api$/, '') + url : url;
@@ -49,6 +50,8 @@ export const AdminPPDB: React.FC = () => {
   const [printingReport, setPrintingReport] = useState(false);
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [view, setView] = useState<'grid'|'list'>('grid');
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isBulkUpdating, setIsBulkUpdating] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   const [waPromptApplicant, setWaPromptApplicant] = useState<PPDBApplicant | null>(null);
@@ -174,6 +177,55 @@ export const AdminPPDB: React.FC = () => {
       console.error('Failed to update status', error);
       showToast('Gagal memperbarui status', 'error');
     }
+  };
+
+  const handleBulkUpdate = async (status: PPDBStatus) => {
+    if (selectedIds.length === 0) return;
+    const label = status === 'approved' ? 'Terima' : 'Tolak';
+    if (!window.confirm(`Anda yakin ingin ${label} ${selectedIds.length} pendaftar yang dipilih?`)) return;
+
+    try {
+      setIsBulkUpdating(true);
+      let successCount = 0;
+      
+      await Promise.all(selectedIds.map(async (id) => {
+        const applicant = applicants.find(a => a.id === id);
+        if (!applicant) return;
+        const dbId = (applicant as any).dbId || id;
+        
+        try {
+          const res = await apiFetch(`/applicants/${dbId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+          });
+          if (res.status === 'success') successCount++;
+        } catch (e) {
+          console.error(`Failed to update ${id}`, e);
+        }
+      }));
+
+      await loadData();
+      showToast(`${successCount} pendaftar berhasil diperbarui`, 'success');
+      setSelectedIds([]); 
+    } catch (error) {
+      console.error('Bulk update failed', error);
+      showToast('Gagal memproses aksi massal', 'error');
+    } finally {
+      setIsBulkUpdating(false);
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(filtered.map(app => app.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id: string) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   };
 
   // Delete applicant via API
@@ -349,63 +401,74 @@ export const AdminPPDB: React.FC = () => {
     return () => window.removeEventListener('afterprint', handleAfterPrint);
   }, []);
 
-  const escapeCsv = (value: string | number | null | undefined): string => {
-    const text = value === null || value === undefined ? '' : String(value);
-    // Fix Excel scientific notation for phone numbers (e.g. 889E+10)
-    if (/^[0-9+\-\s]+$/.test(text) && text.replace(/[^0-9]/g, '').length >= 10) {
-      return `="${text}"`;
-    }
-    return `"${text.replace(/"/g, '""')}"`;
-  };
+    const exportAcademicYearReport = () => {
+    const data = filtered.length > 0 ? filtered.map((applicant) => ({
+      'No. Registrasi': applicant.id,
+      'Tahun Ajaran': applicant.tahunAjaran || configTahunAjaran,
+      'Nama Siswa': applicant.studentName,
+      'NISN': applicant.nisn || '-',
+      'Asal Sekolah': applicant.previousSchool || '-',
+      'Jenis Kelamin': applicant.gender,
+      'Tempat Lahir': applicant.birthPlace,
+      'Tanggal Lahir': formatFullDate(applicant.birthDate),
+      'Alamat': applicant.address,
+      'Wali Utama': applicant.parentName,
+      'WhatsApp': applicant.whatsappNumber,
+      'Nama Ayah': applicant.fatherName || '-',
+      'Pekerjaan Ayah': applicant.fatherOccupation || '-',
+      'Nama Ibu': applicant.motherName || '-',
+      'Pekerjaan Ibu': applicant.motherOccupation || '-',
+      'Status': STATUS_CONFIG[applicant.status].label,
+      'Tanggal Daftar': formatFullDate(applicant.submittedAt)
+    })) : [{
+      'No. Registrasi': '-',
+      'Tahun Ajaran': '-',
+      'Nama Siswa': '-',
+      'NISN': '-',
+      'Asal Sekolah': '-',
+      'Jenis Kelamin': '-',
+      'Tempat Lahir': '-',
+      'Tanggal Lahir': '-',
+      'Alamat': '-',
+      'Wali Utama': '-',
+      'WhatsApp': '-',
+      'Nama Ayah': '-',
+      'Pekerjaan Ayah': '-',
+      'Nama Ibu': '-',
+      'Pekerjaan Ibu': '-',
+      'Status': '-',
+      'Tanggal Daftar': '-'
+    }];
 
-  const exportAcademicYearReport = () => {
-    const lines: string[] = [];
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    
+    // Auto-size columns slightly
+    const colWidths = [
+      { wch: 15 }, // No Reg
+      { wch: 15 }, // Thn Ajaran
+      { wch: 25 }, // Nama
+      { wch: 15 }, // NISN
+      { wch: 20 }, // Asal Sekolah
+      { wch: 15 }, // JK
+      { wch: 15 }, // Tmp Lahir
+      { wch: 20 }, // Tgl Lahir
+      { wch: 40 }, // Alamat
+      { wch: 25 }, // Wali
+      { wch: 20 }, // WA
+      { wch: 25 }, // Nama Ayah
+      { wch: 20 }, // Pek Ayah
+      { wch: 25 }, // Nama Ibu
+      { wch: 20 }, // Pek Ibu
+      { wch: 15 }, // Status
+      { wch: 20 }, // Tgl Daftar
+    ];
+    worksheet['!cols'] = colWidths;
 
-    // Header untuk data lengkap pendaftar
-    lines.push([
-      'No. Registrasi', 
-      'Tahun Ajaran', 
-      'Nama Siswa',
-      'Jenis Kelamin',
-      'Tempat Lahir',
-      'Tanggal Lahir',
-      'Alamat',
-      'Nama Orang Tua', 
-      'WhatsApp', 
-      'Status', 
-      'Tanggal Daftar'
-    ].map(escapeCsv).join(','));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Laporan PPDB');
 
-    if (filtered.length > 0) {
-      filtered.forEach((applicant) => {
-        lines.push([
-          applicant.id,
-          applicant.tahunAjaran || configTahunAjaran,
-          applicant.studentName,
-          applicant.gender,
-          applicant.birthPlace,
-          formatFullDate(applicant.birthDate),
-          applicant.address,
-          applicant.parentName,
-          applicant.whatsappNumber,
-          STATUS_CONFIG[applicant.status].label,
-          formatFullDate(applicant.submittedAt),
-        ].map(escapeCsv).join(','));
-      });
-    } else {
-      // Jika kosong
-      lines.push(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'].map(escapeCsv).join(','));
-    }
-
-    const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `laporan-ppdb-${tahunAjaranFilter === 'all' ? 'semua-tahun-ajaran' : tahunAjaranFilter.replace(/\//g, '-')}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const fileName = `laporan-ppdb-${tahunAjaranFilter === 'all' ? 'semua-tahun-ajaran' : tahunAjaranFilter.replace(/\//g, '-')}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
   };
 
   return (
@@ -509,8 +572,8 @@ export const AdminPPDB: React.FC = () => {
         <div className="bg-white rounded-xl border border-gray-200/80 p-5 shadow-sm space-y-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div>
-              <h2 className="text-lg font-bold text-gray-900">Laporan Berdasarkan Tahun Ajaran</h2>
-              <p className="text-sm text-gray-500 mt-1">Rekap pendaftar PPDB per tahun ajaran yang tersimpan di sistem.</p>
+              <h2 className="text-lg font-bold text-gray-900">Rekapitulasi Data PPDB</h2>
+              <p className="text-sm text-gray-500 mt-1">Rekapitulasi jumlah pendaftar berdasarkan tahun ajaran.</p>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               <Filter size={16} className="text-gray-400" />
@@ -544,7 +607,7 @@ export const AdminPPDB: React.FC = () => {
                       }}
                       className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition-colors"
                     >
-                      <Download size={15} /> Export CSV
+                      <Download size={15} /> Export Excel
                     </button>
                     <button
                       type="button"
@@ -621,7 +684,11 @@ export const AdminPPDB: React.FC = () => {
         </div>
 
         {/* Search & Filter */}
-        <div className="bg-white rounded-xl border border-gray-200/80 p-4">
+        <div className="bg-white rounded-xl border border-gray-200/80 p-5 shadow-sm">
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-gray-900">Daftar Calon Siswa</h2>
+            <p className="text-sm text-gray-500 mt-1">Kelola data pendaftar, verifikasi, dan ubah status penerimaan.</p>
+          </div>
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -655,6 +722,38 @@ export const AdminPPDB: React.FC = () => {
           </div>
         </div>
 
+        {/* Bulk Actions Banner */}
+        {selectedIds.length > 0 && (
+          <div className="bg-teal-50 border border-teal-200 rounded-xl p-3 mb-6 flex flex-col sm:flex-row sm:items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-4 gap-3">
+            <div className="flex items-center gap-3">
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-teal-600 text-white text-xs font-bold">
+                {selectedIds.length}
+              </span>
+              <span className="text-sm font-semibold text-teal-800">
+                Pendaftar Terpilih
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={isBulkUpdating}
+                onClick={() => handleBulkUpdate('approved')}
+                className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50 shadow-sm"
+              >
+                {isBulkUpdating ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+                Terima Semua
+              </button>
+              <button
+                disabled={isBulkUpdating}
+                onClick={() => handleBulkUpdate('rejected')}
+                className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50 shadow-sm"
+              >
+                {isBulkUpdating ? <Loader2 size={16} className="animate-spin" /> : <XCircle size={16} />}
+                Tolak Semua
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Table */}
         <div className="bg-white rounded-xl border border-gray-200/80 overflow-hidden shadow-sm">
           {filtered.length === 0 ? (
@@ -676,6 +775,14 @@ export const AdminPPDB: React.FC = () => {
               <table className="w-full">
                 <thead>
                   <tr className="bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200">
+                    <th className="w-10 px-4 py-3 text-left">
+                      <input 
+                        type="checkbox" 
+                        checked={filtered.length > 0 && selectedIds.length === filtered.length}
+                        onChange={handleSelectAll}
+                        className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                      />
+                    </th>
                     <th className="whitespace-nowrap text-left px-4 py-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider">No. Registrasi</th>
                     <th className="whitespace-nowrap text-left px-4 py-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider">Nama Siswa</th>
                     <th className="whitespace-nowrap text-left px-4 py-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider hidden xl:table-cell">TTL</th>
@@ -691,7 +798,15 @@ export const AdminPPDB: React.FC = () => {
                     const statusConf = STATUS_CONFIG[applicant.status];
                     const StatusIcon = statusConf.icon;
                     return (
-                      <tr key={applicant.id} className="hover:bg-teal-50/30 transition-colors">
+                      <tr key={applicant.id} className={`hover:bg-teal-50/30 transition-colors ${selectedIds.includes(applicant.id) ? 'bg-teal-50/50' : ''}`}>
+                        <td className="px-4 py-3.5">
+                          <input 
+                            type="checkbox" 
+                            checked={selectedIds.includes(applicant.id)}
+                            onChange={() => handleSelectOne(applicant.id)}
+                            className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                          />
+                        </td>
                         <td className="px-4 py-3.5">
                           <span className="whitespace-nowrap text-xs font-mono font-bold text-teal-700 bg-teal-50 px-2 py-1 rounded-md border border-teal-200/60">
                             {applicant.id}
@@ -792,14 +907,22 @@ export const AdminPPDB: React.FC = () => {
                 const statusConf = STATUS_CONFIG[applicant.status];
                 const StatusIcon = statusConf.icon;
                 return (
-                  <div key={applicant.id} className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group p-5 flex flex-col">
+                  <div key={applicant.id} className={`bg-white rounded-xl border ${selectedIds.includes(applicant.id) ? 'border-teal-400 ring-1 ring-teal-400 shadow-md' : 'border-gray-200 shadow-sm'} hover:shadow-md transition-all group p-5 flex flex-col`}>
                     <div className="flex justify-between items-start mb-3">
                       <span className="text-xs font-mono font-bold text-teal-700 bg-teal-50 px-2 py-1 rounded-md border border-teal-200/60">
                         {applicant.id}
                       </span>
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold ${statusConf.color} ${statusConf.bg} border ${statusConf.border}`}>
-                        <StatusIcon size={11} /> {statusConf.label}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold ${statusConf.color} ${statusConf.bg} border ${statusConf.border}`}>
+                          <StatusIcon size={11} /> {statusConf.label}
+                        </span>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedIds.includes(applicant.id)}
+                          onChange={() => handleSelectOne(applicant.id)}
+                          className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 cursor-pointer w-4 h-4 ml-1"
+                        />
+                      </div>
                     </div>
                     <div className="mb-4">
                       <h3 className="text-base font-bold text-gray-900 line-clamp-1">{applicant.studentName}</h3>
@@ -830,6 +953,7 @@ export const AdminPPDB: React.FC = () => {
                         {applicant.status === 'approved' && (
                           <button onClick={() => handlePrint(applicant)} className="flex-1 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-indigo-200/60"><Printer size={13} /> Cetak</button>
                         )}
+                        <button onClick={() => deleteApplicant(applicant.id)} title="Hapus Data" className="px-3 py-1.5 rounded-lg bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-600 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-gray-200/60"><Trash2 size={13} /></button>
                       </div>
                     </div>
                   </div>
@@ -879,6 +1003,8 @@ export const AdminPPDB: React.FC = () => {
                 </div>
                 <div className="p-4 space-y-2 text-sm">
                   <DetailRow label="Nama Lengkap" value={selectedApplicant.studentName} />
+                  <DetailRow label="NISN" value={selectedApplicant.nisn || '-'} />
+                  <DetailRow label="Asal Sekolah TK/PAUD" value={selectedApplicant.previousSchool || '-'} />
                   <DetailRow label="Tempat Lahir" value={selectedApplicant.birthPlace} />
                   <DetailRow label="Tanggal Lahir" value={formatFullDate(selectedApplicant.birthDate)} />
                   <DetailRow label="Jenis Kelamin" value={selectedApplicant.gender} />
@@ -892,8 +1018,26 @@ export const AdminPPDB: React.FC = () => {
                   <h4 className="font-bold text-blue-800 text-xs flex items-center gap-2"><Users size={14} /> Data Orang Tua</h4>
                 </div>
                 <div className="p-4 space-y-2 text-sm">
-                  <DetailRow label="Nama Orang Tua" value={selectedApplicant.parentName} />
+                  <DetailRow label="Wali Utama" value={selectedApplicant.parentName} />
                   <DetailRow label="No. WhatsApp" value={selectedApplicant.whatsappNumber} />
+                  
+                  <div className="pt-2 mt-2 border-t border-gray-100">
+                    <p className="text-xs font-bold text-gray-500 mb-2">Ayah Kandung</p>
+                    <DetailRow label="Nama" value={selectedApplicant.fatherName || '-'} />
+                    <DetailRow label="NIK" value={selectedApplicant.fatherNik || '-'} />
+                    <DetailRow label="Pekerjaan" value={selectedApplicant.fatherOccupation || '-'} />
+                    <DetailRow label="Pendidikan" value={selectedApplicant.fatherEducation || '-'} />
+                    <DetailRow label="Penghasilan" value={selectedApplicant.fatherIncome || '-'} />
+                  </div>
+                  
+                  <div className="pt-2 mt-2 border-t border-gray-100">
+                    <p className="text-xs font-bold text-gray-500 mb-2">Ibu Kandung</p>
+                    <DetailRow label="Nama" value={selectedApplicant.motherName || '-'} />
+                    <DetailRow label="NIK" value={selectedApplicant.motherNik || '-'} />
+                    <DetailRow label="Pekerjaan" value={selectedApplicant.motherOccupation || '-'} />
+                    <DetailRow label="Pendidikan" value={selectedApplicant.motherEducation || '-'} />
+                    <DetailRow label="Penghasilan" value={selectedApplicant.motherIncome || '-'} />
+                  </div>
                 </div>
               </div>
 

@@ -2,193 +2,337 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Diagram - MI Al-Hasani</title>
+    <title>Class Diagram — MI Al-Hasani</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
-            color: #000000;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 { margin-bottom: 5px; }
-        .subtitle { color: #555; margin-bottom: 30px; }
-        .mermaid {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+
+        .canvas {
+            background: white;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+
+        /* ===== CLASS BOX ===== */
+        .cb {
+            position: absolute;
+            border: 1px solid #000;
+            background: white;
+            z-index: 10;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+        }
+
+        /* Class Header */
+        .ch {
+            text-align: center;
+            padding: 4px;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+        }
+
+        /* Class Section (Attrs / Methods) */
+        .cs {
+            border-bottom: 1px solid #000;
+            padding: 4px 6px;
+        }
+        .cs:last-child {
+            border-bottom: none;
+        }
+
+        /* Attribute & Method lines */
+        .at {
+            line-height: 15px;
+            white-space: nowrap;
         }
     </style>
-    <!-- Load Mermaid JS -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-    <script>
-        mermaid.initialize({ 
-            startOnLoad: true, 
-            theme: 'base',
-            themeVariables: {
-                primaryColor: '#ffffff',
-                primaryBorderColor: '#000000',
-                primaryTextColor: '#000000',
-                lineColor: '#000000',
-                fontFamily: 'Times New Roman'
-            },
-            class: {
-                hideEmptyMembersBox: true
-            }
-        });
-    </script>
 </head>
 <body>
 
-    <h1>Class Diagram - Website MI Al-Hasani</h1>
-    <p class="subtitle">Buka halaman ini, lalu Anda bisa mengambil screenshot (Snip) gambarnya untuk dimasukkan ke Bab 3 atau Bab 4.</p>
+<h2>Class Diagram (Conceptual) — Sistem Website MI Al-Hasani</h2>
 
-    <div class="mermaid">
-        classDiagram
-            direction TB
+<div class="canvas" style="width:1350px; height:750px;">
 
-            class User {
-                - id: Integer
-                - name: String
-                - email: String
-                - password: String
-                + login()
-                + logout()
-            }
+    <!-- ===== SVG: GARIS RELASI ===== -->
+    <svg width="1350" height="750" style="position:absolute; top:0; left:0; z-index:1;">
+        
+        <!-- Horizontal Bus Left (Dari User ke News, Gallery, Teacher, Program) -->
+        <line x1="630" y1="620" x2="85" y2="620" stroke="black" stroke-width="1" />
+        
+        <!-- Horizontal Bus Right (Dari User ke SchoolSetting, PpdbSetting, Principal) -->
+        <line x1="790" y1="620" x2="1225" y2="620" stroke="black" stroke-width="1" />
+        
+        <!-- Vertical to PpdbApplicant -->
+        <line x1="710" y1="570" x2="710" y2="447" stroke="black" stroke-width="1" />
 
-            class News {
-                - id: Integer
-                - title: String
-                - category: String
-                - image: String
-                - excerpt: String
-                - content: String
-                - author: String
-                - date: Date
-                + create()
-                + update()
-                + delete()
-            }
+        <!-- Vertical Drops (Kiri) -->
+        <line x1="85" y1="272" x2="85" y2="620" stroke="black" stroke-width="1" />
+        <line x1="235" y1="242" x2="235" y2="620" stroke="black" stroke-width="1" />
+        <line x1="385" y1="257" x2="385" y2="620" stroke="black" stroke-width="1" />
+        <line x1="540" y1="272" x2="540" y2="620" stroke="black" stroke-width="1" />
 
-            class Gallery {
-                - id: Integer
-                - title: String
-                - category: String
-                - image: String
-                - photos: String
-                - description: String
-                + create()
-                + update()
-                + delete()
-            }
+        <!-- Vertical Drops (Kanan) -->
+        <line x1="900" y1="522" x2="900" y2="620" stroke="black" stroke-width="1" />
+        <line x1="1075" y1="137" x2="1075" y2="620" stroke="black" stroke-width="1" />
+        <line x1="1225" y1="167" x2="1225" y2="620" stroke="black" stroke-width="1" />
 
-            class Teacher {
-                - id: Integer
-                - name: String
-                - role: String
-                - description: String
-                - image: String
-                - order: Integer
-                - subject: String
-                + create()
-                + update()
-                + delete()
-            }
+        <!-- Labels Multiplicity & Nama Relasi -->
+        <!-- User Left (1) -->
+        <text x="615" y="615" font-size="11" font-family="Arial">1</text>
+        
+        <!-- News -->
+        <text x="90" y="285" font-size="11" font-family="Arial">0..*</text>
+        <text x="90" y="300" font-size="11" font-family="Arial">+mengelola &gt;</text>
+        
+        <!-- Gallery -->
+        <text x="240" y="255" font-size="11" font-family="Arial">0..*</text>
+        <text x="240" y="270" font-size="11" font-family="Arial">+mengelola &gt;</text>
+        
+        <!-- Teacher -->
+        <text x="390" y="270" font-size="11" font-family="Arial">0..*</text>
+        <text x="390" y="285" font-size="11" font-family="Arial">+mengelola &gt;</text>
+        
+        <!-- Program -->
+        <text x="545" y="285" font-size="11" font-family="Arial">0..*</text>
+        <text x="545" y="300" font-size="11" font-family="Arial">+mengelola &gt;</text>
 
-            class Program {
-                - id: Integer
-                - title: String
-                - description: String
-                - image: String
-                - images: String
-                - category: String
-                - schedule: String
-                - is_active: Boolean
-                + create()
-                + update()
-                + delete()
-            }
+        <!-- PpdbApplicant -->
+        <text x="715" y="565" font-size="11" font-family="Arial">1</text>
+        <text x="715" y="460" font-size="11" font-family="Arial">0..*</text>
+        <text x="715" y="475" font-size="11" font-family="Arial">+mengelola &gt;</text>
 
-            class SchoolSetting {
-                - id: Integer
-                - school_name: String
-                - npsn: String
-                - email: String
-                - phone: String
-                - whatsapp_number: String
-                - website: String
-                - address: String
-                - postal_code: String
-                - school_status: String
-                - accreditation: String
-                - established_year: Integer
-                - welcome_title: String
-                - welcome_highlight: String
-                - welcome_tagline_1: String
-                - welcome_tagline_2: String
-                - welcome_tagline_3: String
-                - hero_images: String
-                - map_embed_url: String
-                - map_link: String
-                - facebook_url: String
-                - instagram_url: String
-                - youtube_url: String
-                - twitter_url: String
-                - brochure_images: String
-                + update()
-            }
+        <!-- User Right (1) -->
+        <text x="795" y="615" font-size="11" font-family="Arial">1</text>
+        
+        <!-- SchoolSetting -->
+        <text x="905" y="535" font-size="11" font-family="Arial">1</text>
+        <text x="905" y="550" font-size="11" font-family="Arial">+mengatur &gt;</text>
+        
+        <!-- PpdbSetting -->
+        <text x="1080" y="150" font-size="11" font-family="Arial">1</text>
+        <text x="1080" y="165" font-size="11" font-family="Arial">+mengatur &gt;</text>
+        
+        <!-- Principal -->
+        <text x="1230" y="180" font-size="11" font-family="Arial">1</text>
+        <text x="1230" y="195" font-size="11" font-family="Arial">+mengatur &gt;</text>
 
-            class PpdbSetting {
-                - id: Integer
-                - tahun_ajaran: String
-                - is_open: Boolean
-                + update()
-            }
+    </svg>
 
-            class Principal {
-                - id: Integer
-                - name: String
-                - role: String
-                - image: String
-                - message: String
-                + update()
-            }
-
-            class PpdbApplicant {
-                - id: Integer
-                - registration_id: String
-                - tahun_ajaran: String
-                - student_name: String
-                - birth_place: String
-                - birth_date: Date
-                - gender: String
-                - address: String
-                - parent_name: String
-                - whatsapp_number: String
-                - kk_file_name: String
-                - kk_file_data: String
-                - akta_file_name: String
-                - akta_file_data: String
-                - ktp_file_name: String
-                - ktp_file_data: String
-                - ijazah_file_name: String
-                - ijazah_file_data: String
-                - status: String
-                + create()
-                + update()
-                + delete()
-            }
-
-            User "1" -- "0..*" News : mengelola >
-            User "1" -- "0..*" Gallery : mengelola >
-            User "1" -- "0..*" Teacher : mengelola >
-            User "1" -- "0..*" Program : mengelola >
-            User "1" -- "0..*" PpdbApplicant : mengelola >
-            User "1" -- "1" SchoolSetting : mengatur >
-            User "1" -- "1" PpdbSetting : mengatur >
-            User "1" -- "1" Principal : mengatur >
+    <!-- ========================================== -->
+    <!--  1. NEWS (x=20)                            -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:20px; top:50px; width:130px;">
+        <div class="ch">News</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: title</div>
+            <div class="at">-String: category</div>
+            <div class="at">-String: image</div>
+            <div class="at">-String: excerpt</div>
+            <div class="at">-String: content</div>
+            <div class="at">-String: author</div>
+            <div class="at">-Date: date</div>
+        </div>
+        <div class="cs">
+            <div class="at">+create()</div>
+            <div class="at">+update()</div>
+            <div class="at">+delete()</div>
+        </div>
     </div>
+
+    <!-- ========================================== -->
+    <!--  2. GALLERY (x=170)                        -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:170px; top:50px; width:130px;">
+        <div class="ch">Gallery</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: title</div>
+            <div class="at">-String: category</div>
+            <div class="at">-String: image</div>
+            <div class="at">-String: photos</div>
+            <div class="at">-String: description</div>
+        </div>
+        <div class="cs">
+            <div class="at">+create()</div>
+            <div class="at">+update()</div>
+            <div class="at">+delete()</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  3. TEACHER (x=320)                        -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:320px; top:50px; width:130px;">
+        <div class="ch">Teacher</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: name</div>
+            <div class="at">-String: role</div>
+            <div class="at">-String: description</div>
+            <div class="at">-String: image</div>
+            <div class="at">-Integer: order</div>
+            <div class="at">-String: subject</div>
+        </div>
+        <div class="cs">
+            <div class="at">+create()</div>
+            <div class="at">+update()</div>
+            <div class="at">+delete()</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  4. PROGRAM (x=470)                        -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:470px; top:50px; width:140px;">
+        <div class="ch">Program</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: title</div>
+            <div class="at">-String: description</div>
+            <div class="at">-String: image</div>
+            <div class="at">-String: images</div>
+            <div class="at">-String: category</div>
+            <div class="at">-String: schedule</div>
+            <div class="at">-Boolean: is_active</div>
+        </div>
+        <div class="cs">
+            <div class="at">+create()</div>
+            <div class="at">+update()</div>
+            <div class="at">+delete()</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  5. PPDB APPLICANT (x=630)                 -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:630px; top:50px; width:160px;">
+        <div class="ch">PpdbApplicant</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: registration_id</div>
+            <div class="at">-String: tahun_ajaran</div>
+            <div class="at">-String: student_name</div>
+            <div class="at">-String: birth_place</div>
+            <div class="at">-Date: birth_date</div>
+            <div class="at">-String: gender</div>
+            <div class="at">-String: address</div>
+            <div class="at">-String: parent_name</div>
+            <div class="at">-String: whatsapp_number</div>
+            <div class="at">-String: kk_file_name</div>
+            <div class="at">-String: kk_file_data</div>
+            <div class="at">-String: akta_file_name</div>
+            <div class="at">-String: akta_file_data</div>
+            <div class="at">-String: ktp_file_name</div>
+            <div class="at">-String: ktp_file_data</div>
+            <div class="at">-String: ijazah_file_name</div>
+            <div class="at">-String: ijazah_file_data</div>
+            <div class="at">-String: status</div>
+        </div>
+        <div class="cs">
+            <div class="at">+create()</div>
+            <div class="at">+update()</div>
+            <div class="at">+delete()</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  6. SCHOOL SETTING (x=810)                 -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:810px; top:50px; width:180px;">
+        <div class="ch">SchoolSetting</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: school_name</div>
+            <div class="at">-String: npsn</div>
+            <div class="at">-String: email</div>
+            <div class="at">-String: phone</div>
+            <div class="at">-String: whatsapp_number</div>
+            <div class="at">-String: website</div>
+            <div class="at">-String: address</div>
+            <div class="at">-String: postal_code</div>
+            <div class="at">-String: school_status</div>
+            <div class="at">-String: accreditation</div>
+            <div class="at">-Integer: established_year</div>
+            <div class="at">-String: welcome_title</div>
+            <div class="at">-String: welcome_highlight</div>
+            <div class="at">-String: welcome_tagline_1</div>
+            <div class="at">-String: welcome_tagline_2</div>
+            <div class="at">-String: welcome_tagline_3</div>
+            <div class="at">-String: hero_images</div>
+            <div class="at">-String: map_embed_url</div>
+            <div class="at">-String: map_link</div>
+            <div class="at">-String: facebook_url</div>
+            <div class="at">-String: instagram_url</div>
+            <div class="at">-String: youtube_url</div>
+            <div class="at">-String: twitter_url</div>
+            <div class="at">-String: brochure_images</div>
+        </div>
+        <div class="cs">
+            <div class="at">+update()</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  7. PPDB SETTING (x=1010)                  -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:1010px; top:50px; width:130px;">
+        <div class="ch">PpdbSetting</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: tahun_ajaran</div>
+            <div class="at">-Boolean: is_open</div>
+        </div>
+        <div class="cs">
+            <div class="at">+update()</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  8. PRINCIPAL (x=1160)                     -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:1160px; top:50px; width:130px;">
+        <div class="ch">Principal</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: name</div>
+            <div class="at">-String: role</div>
+            <div class="at">-String: image</div>
+            <div class="at">-String: message</div>
+        </div>
+        <div class="cs">
+            <div class="at">+update()</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  9. USER (Center Bottom, x=630)            -->
+    <!-- ========================================== -->
+    <div class="cb" style="left:630px; top:570px; width:160px;">
+        <div class="ch">User</div>
+        <div class="cs">
+            <div class="at">-Integer: id</div>
+            <div class="at">-String: name</div>
+            <div class="at">-String: email</div>
+            <div class="at">-String: password</div>
+            <div class="at">-String: role</div>
+        </div>
+        <div class="cs">
+            <div class="at">+login()</div>
+            <div class="at">+logout()</div>
+        </div>
+    </div>
+
+</div>
 
 </body>
 </html>

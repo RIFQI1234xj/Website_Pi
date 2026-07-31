@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Page } from './types';
-import { getToken, removeToken } from './lib/api';
+import { getToken, removeToken, getPpdbToken, removePpdbToken } from './lib/api';
 import {
   DEFAULT_PROFILE_TAB,
   getNewsDetailPath,
@@ -22,6 +22,9 @@ import { NewsDetail } from './pages/NewsDetail';
 import { Contact } from './pages/Contact';
 import { PPDBGuide } from './pages/PPDBGuide';
 import { PPDBForm } from './pages/PPDBForm';
+import { PPDBLogin } from './pages/PPDBLogin';
+import { PPDBRegister } from './pages/PPDBRegister';
+import { PPDBPortal } from './pages/PPDBPortal';
 
 // Admin
 import { AdminLogin } from './pages/admin/AdminLogin';
@@ -122,6 +125,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
 function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!getToken());
+  const [isPpdbAuthenticated, setIsPpdbAuthenticated] = useState<boolean>(!!getPpdbToken());
   const location = useLocation();
   const navigate = useNavigate();
   const currentPage = getPageFromPathname(location.pathname);
@@ -178,6 +182,16 @@ function App() {
     navigate(getPagePath(Page.HOME), { replace: true });
   };
 
+  const handlePpdbLoginSuccess = () => {
+    setIsPpdbAuthenticated(true);
+    navigate(getPagePath(Page.PPDB_PORTAL), { replace: true });
+  };
+
+  const handlePpdbLogout = () => {
+    removePpdbToken();
+    setIsPpdbAuthenticated(false);
+  };
+
   return (
     <Routes>
       <Route
@@ -213,9 +227,42 @@ function App() {
           }
         />
         <Route path="kontak" element={<Contact />} />
-        <Route path="ppdb" element={<PPDBGuide />} />
-        <Route path="ppdb/daftar" element={<PPDBForm />} />
+        <Route path="ppdb" element={<PPDBGuide isPpdbAuthenticated={isPpdbAuthenticated} />} />
+        <Route
+          path="ppdb/daftar"
+          element={
+            isPpdbAuthenticated
+              ? <PPDBForm onLogout={handlePpdbLogout} />
+              : <Navigate to={getPagePath(Page.PPDB_LOGIN)} replace />
+          }
+        />
       </Route>
+
+      {/* PPDB Auth & Portal — full page tanpa Navbar website */}
+      <Route
+        path="/ppdb/login"
+        element={
+          isPpdbAuthenticated
+            ? <Navigate to={getPagePath(Page.PPDB_PORTAL)} replace />
+            : <PPDBLogin onLoginSuccess={handlePpdbLoginSuccess} />
+        }
+      />
+      <Route
+        path="/ppdb/register"
+        element={
+          isPpdbAuthenticated
+            ? <Navigate to={getPagePath(Page.PPDB_PORTAL)} replace />
+            : <PPDBRegister onRegisterSuccess={handlePpdbLoginSuccess} />
+        }
+      />
+      <Route
+        path="/ppdb/portal"
+        element={
+          isPpdbAuthenticated
+            ? <PPDBPortal onLogout={handlePpdbLogout} />
+            : <Navigate to={getPagePath(Page.PPDB_LOGIN)} replace />
+        }
+      />
 
       <Route
         path="/admin/login"

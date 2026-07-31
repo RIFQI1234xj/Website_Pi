@@ -13,9 +13,10 @@ import { getImageUrl } from '../lib/api';
 
 interface PPDBGuideProps {
   setPage?: (page: any) => void;
+  isPpdbAuthenticated?: boolean;
 }
 
-export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
+export const PPDBGuide: React.FC<PPDBGuideProps> = ({ isPpdbAuthenticated = false }) => {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
   const [isBrochureOpen, setIsBrochureOpen] = useState(false);
@@ -45,32 +46,33 @@ export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
   const steps = [
     {
       number: '01',
-      icon: BookOpen,
-      title: 'Baca Panduan',
-      desc: 'Baca informasi persyaratan dan alur pendaftaran di halaman ini.',
+      icon: UserCheck,
+      title: 'Buat Akun Pendaftaran',
+      desc: 'Daftar akun menggunakan NIK calon siswa dan Username. Pastikan NIK sesuai dengan Kartu Keluarga.',
     },
     {
       number: '02',
       icon: ClipboardList,
       title: 'Isi Formulir',
-      desc: 'Lengkapi data calon siswa, data orang tua, dan upload dokumen.',
+      desc: 'Lengkapi data diri calon siswa, data orang tua, dan unggah dokumen persyaratan yang diminta.',
     },
     {
       number: '03',
-      icon: Upload,
-      title: 'Upload Dokumen',
-      desc: 'Siapkan Kartu Keluarga (KK) dan Akta Kelahiran dalam format JPG/PNG/PDF (maks 2MB).',
+      icon: CheckCircle2,
+      title: 'Tunggu Verifikasi',
+      desc: 'Panitia PPDB akan memverifikasi data dan dokumen yang Anda kirimkan. Cek status secara berkala di Portal.',
     },
     {
       number: '04',
-      icon: CheckCircle2,
-      title: 'Dapatkan No. Registrasi',
-      desc: 'Setelah submit, Anda akan mendapatkan nomor registrasi unik sebagai bukti pendaftaran.',
+      icon: BookOpen,
+      title: 'Lihat Pengumuman',
+      desc: 'Hasil akhir seleksi PPDB (Diterima / Ditolak) dapat dilihat pada menu Pengumuman di Portal Anda.',
     },
   ];
 
   const generalRequirements = [
     'Berusia minimal 6 tahun pada tanggal 1 Juli tahun ajaran baru (pengecualian 5 tahun 6 bulan dengan surat rekomendasi psikolog/kepala sekolah asal).',
+    'Memiliki NIK (Nomor Induk Kependudukan) calon siswa yang valid sesuai Kartu Keluarga untuk pembuatan akun.',
     'Sehat secara jasmani maupun rohani.',
     'Bersedia mengikuti seluruh tahapan seleksi (jika ada) dan mematuhi tata tertib MI Al-Hasani.',
   ];
@@ -317,7 +319,10 @@ export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
 
             <button
               onClick={() => {
-                if (agreed && isPpdbOpen) navigate('/ppdb/daftar');
+                if (agreed && isPpdbOpen) {
+                  // Jika sudah login PPDB, langsung ke portal; kalau belum, ke halaman login
+                  navigate(isPpdbAuthenticated ? '/ppdb/portal' : '/ppdb/login');
+                }
               }}
               disabled={!agreed || !isPpdbOpen}
               className={`mt-6 w-full flex items-center justify-center gap-3 px-6 py-5 rounded-xl font-bold text-lg transition-all duration-300 transform ${
@@ -327,7 +332,9 @@ export const PPDBGuide: React.FC<PPDBGuideProps> = () => {
               }`}
             >
               <ClipboardList size={24} />
-              {isPpdbOpen ? 'Mulai Isi Formulir Pendaftaran' : 'Pendaftaran Ditutup'}
+              {isPpdbOpen 
+                ? (isPpdbAuthenticated ? 'Ke Portal Pendaftaran' : 'Buat Akun Pendaftaran') 
+                : 'Pendaftaran Ditutup'}
               {isPpdbOpen && <ArrowRight size={22} className={agreed ? 'animate-bounce-x' : ''} />}
             </button>
           </div>

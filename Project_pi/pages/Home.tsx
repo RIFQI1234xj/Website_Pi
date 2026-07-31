@@ -441,7 +441,7 @@ export const Home: React.FC<HomeProps> = ({ setPage, navigateToNewsDetail }) => 
       <section className="py-24 bg-ivory-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection animation="fade" className="text-center mb-12">
-            <h2 className="font-serif text-3xl font-bold text-gray-900">Artikel & Berita</h2>
+            <h2 className="font-serif text-3xl font-bold text-gray-900">Berita & Artikel</h2>
             <p className="text-gray-500 mt-2">Ikuti update terbaru seputar kegiatan dan informasi sekolah</p>
             <div className="w-16 h-1 bg-teal-500 mx-auto mt-4 rounded"></div>
           </AnimatedSection>

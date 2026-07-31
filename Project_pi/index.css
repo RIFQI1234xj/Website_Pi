@@ -32,6 +32,14 @@ h3, h4, h5, h6 {
 }
 
 /* Scroll Reveal Animation */
+/* Fix Chrome Autofill Background Color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(50px);
@@ -44,6 +52,9 @@ h3, h4, h5, h6 {
 
 /* ===== PRINT STYLES ===== */
 @media print {
+  @page {
+    margin: 10mm;
+  }
   /* Hide everything except print area */
   body * {
     visibility: hidden;
