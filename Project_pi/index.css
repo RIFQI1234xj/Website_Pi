@@ -86,7 +86,7 @@ input:-webkit-autofill:active {
 
 .print-receipt {
   max-width: 100%;
-  min-height: 277mm; /* A4 height minus margin */
+  min-height: 250mm; /* A4 height minus generous margins to prevent page break */
   box-sizing: border-box;
   margin: 0 auto;
   padding: 40px;
