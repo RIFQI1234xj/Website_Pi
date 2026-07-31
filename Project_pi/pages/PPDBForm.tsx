@@ -907,12 +907,12 @@ export const PPDBForm: React.FC<PPDBFormProps> = ({ onLogout }) => {
                   </h4>
                 </div>
                 <div className="p-4 space-y-2.5 bg-white">
-                  <SummaryRow label="Nama Lengkap" value={formData.studentName} />
-                  <SummaryRow label="Tempat, Tanggal Lahir" value={`${formData.birthPlace}, ${formatDate(formData.birthDate)}`} />
-                  <SummaryRow label="Jenis Kelamin" value={formData.gender} />
-                  <SummaryRow label="Alamat Lengkap" value={formData.address} />
-                  <SummaryRow label="Asal Sekolah" value={formData.previousSchool} />
-                  {formData.nisn && <SummaryRow label="NISN" value={formData.nisn} />}
+                  <SummaryRow label="Nama Lengkap" value={formData.studentName || '-'} />
+                  <SummaryRow label="Tempat, Tanggal Lahir" value={`${formData.birthPlace || '-'}, ${formData.birthDate ? formatDate(formData.birthDate) : '-'}`} />
+                  <SummaryRow label="Jenis Kelamin" value={formData.gender || '-'} />
+                  <SummaryRow label="Alamat Lengkap" value={formData.address || '-'} />
+                  <SummaryRow label="Asal Sekolah" value={formData.previousSchool || '-'} />
+                  <SummaryRow label="NISN" value={formData.nisn || '-'} />
                 </div>
               </div>
 
@@ -920,15 +920,30 @@ export const PPDBForm: React.FC<PPDBFormProps> = ({ onLogout }) => {
               <div className="rounded-xl border border-gray-200 overflow-hidden">
                 <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
                   <h4 className="font-bold text-blue-800 text-sm flex items-center gap-2">
-                    <Users size={15} /> Data Orang Tua
+                    <Users size={15} /> Data Orang Tua & Wali
                   </h4>
                 </div>
                 <div className="p-4 space-y-2.5 bg-white">
-                  <SummaryRow label="Wali Utama" value={formData.parentName} />
-                  <SummaryRow label="No. WhatsApp" value={formData.whatsappNumber} />
-                  <div className="pt-2 border-t border-gray-100">
+                  <div className="pb-2">
+                    <h5 className="font-semibold text-gray-700 text-xs mb-2 text-blue-600">Ayah Kandung</h5>
                     <SummaryRow label="Nama Ayah" value={formData.fatherName || '-'} />
+                    <SummaryRow label="NIK Ayah" value={formData.fatherNik || '-'} />
+                    <SummaryRow label="Pekerjaan" value={formData.fatherOccupation || '-'} />
+                    <SummaryRow label="Pendidikan" value={formData.fatherEducation || '-'} />
+                    <SummaryRow label="Penghasilan" value={formData.fatherIncome || '-'} />
+                  </div>
+                  <div className="py-2 border-t border-gray-100">
+                    <h5 className="font-semibold text-gray-700 text-xs mb-2 text-pink-600">Ibu Kandung</h5>
                     <SummaryRow label="Nama Ibu" value={formData.motherName || '-'} />
+                    <SummaryRow label="NIK Ibu" value={formData.motherNik || '-'} />
+                    <SummaryRow label="Pekerjaan" value={formData.motherOccupation || '-'} />
+                    <SummaryRow label="Pendidikan" value={formData.motherEducation || '-'} />
+                    <SummaryRow label="Penghasilan" value={formData.motherIncome || '-'} />
+                  </div>
+                  <div className="pt-2 border-t border-gray-100">
+                    <h5 className="font-semibold text-gray-700 text-xs mb-2">Kontak Darurat / Wali Utama</h5>
+                    <SummaryRow label="Wali Utama" value={formData.parentName || '-'} />
+                    <SummaryRow label="No. WhatsApp" value={formData.whatsappNumber || '-'} />
                   </div>
                 </div>
               </div>
