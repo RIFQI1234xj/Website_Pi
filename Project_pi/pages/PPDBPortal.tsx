@@ -631,6 +631,24 @@ export const PPDBPortal: React.FC<PPDBPortalProps> = ({ onLogout }) => {
             </div>
             
             <div className="p-6 overflow-y-auto flex-1 space-y-6">
+              {/* Seksi Info Pendaftaran */}
+              <div className="bg-teal-50/50 p-4 rounded-xl border border-teal-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+                  <div>
+                    <p className="text-xs text-teal-600 font-semibold uppercase tracking-wider">Nomor Pendaftaran</p>
+                    <p className="text-lg font-bold text-teal-900">{application.registration_id || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-teal-600 font-semibold uppercase tracking-wider">Status Pendaftaran</p>
+                    <div className="mt-1">
+                      {application.status === 'pending' && <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-bold border border-yellow-200">Menunggu Review</span>}
+                      {application.status === 'approved' && <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-bold border border-emerald-200">Diterima</span>}
+                      {application.status === 'rejected' && <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-bold border border-red-200">Ditolak</span>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Seksi Siswa */}
               <div>
                 <h4 className="text-sm font-bold text-teal-800 mb-3 flex items-center gap-2 border-b border-gray-100 pb-2">
@@ -672,6 +690,78 @@ export const PPDBPortal: React.FC<PPDBPortalProps> = ({ onLogout }) => {
                     <p className="text-xs text-gray-500">No. WhatsApp</p>
                     <p className="text-sm font-semibold text-gray-800">{application.whatsapp_number || '-'}</p>
                   </div>
+                </div>
+              </div>
+
+              {/* Seksi Berkas */}
+              <div>
+                <h4 className="text-sm font-bold text-teal-800 mb-3 flex items-center gap-2 border-b border-gray-100 pb-2">
+                  <FileText size={16} /> Berkas Pendaftaran
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {application.kk_file_data ? (
+                    <a href={application.kk_file_data} target="_blank" rel="noreferrer" className="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-teal-50 transition-colors group hover:border-teal-300">
+                      <div className="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center mr-3 group-hover:bg-teal-600 group-hover:text-white transition-colors shadow-sm">
+                        <FileText size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-800 truncate">Kartu Keluarga</p>
+                        <p className="text-xs text-gray-500 truncate">{application.kk_file_name}</p>
+                      </div>
+                    </a>
+                  ) : (
+                    <div className="flex items-center p-3 border border-dashed border-gray-200 rounded-xl bg-gray-50">
+                      <p className="text-sm text-gray-400 italic">KK belum diunggah</p>
+                    </div>
+                  )}
+
+                  {application.akta_file_data ? (
+                    <a href={application.akta_file_data} target="_blank" rel="noreferrer" className="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-teal-50 transition-colors group hover:border-teal-300">
+                      <div className="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center mr-3 group-hover:bg-teal-600 group-hover:text-white transition-colors shadow-sm">
+                        <FileText size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-800 truncate">Akta Kelahiran</p>
+                        <p className="text-xs text-gray-500 truncate">{application.akta_file_name}</p>
+                      </div>
+                    </a>
+                  ) : (
+                    <div className="flex items-center p-3 border border-dashed border-gray-200 rounded-xl bg-gray-50">
+                      <p className="text-sm text-gray-400 italic">Akta belum diunggah</p>
+                    </div>
+                  )}
+
+                  {application.ktp_file_data ? (
+                    <a href={application.ktp_file_data} target="_blank" rel="noreferrer" className="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-teal-50 transition-colors group hover:border-teal-300">
+                      <div className="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center mr-3 group-hover:bg-teal-600 group-hover:text-white transition-colors shadow-sm">
+                        <FileText size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-800 truncate">KTP Orang Tua</p>
+                        <p className="text-xs text-gray-500 truncate">{application.ktp_file_name}</p>
+                      </div>
+                    </a>
+                  ) : (
+                    <div className="flex items-center p-3 border border-dashed border-gray-200 rounded-xl bg-gray-50">
+                      <p className="text-sm text-gray-400 italic">KTP belum diunggah</p>
+                    </div>
+                  )}
+
+                  {application.ijazah_file_data ? (
+                    <a href={application.ijazah_file_data} target="_blank" rel="noreferrer" className="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-teal-50 transition-colors group hover:border-teal-300">
+                      <div className="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center mr-3 group-hover:bg-teal-600 group-hover:text-white transition-colors shadow-sm">
+                        <FileText size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-800 truncate">Ijazah / SKL</p>
+                        <p className="text-xs text-gray-500 truncate">{application.ijazah_file_name}</p>
+                      </div>
+                    </a>
+                  ) : (
+                    <div className="flex items-center p-3 border border-dashed border-gray-200 rounded-xl bg-gray-50">
+                      <p className="text-sm text-gray-400 italic">Ijazah belum diunggah</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
