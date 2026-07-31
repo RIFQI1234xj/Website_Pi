@@ -86,7 +86,7 @@ input:-webkit-autofill:active {
 
 .print-receipt {
   max-width: 100%;
-  min-height: 250mm; /* A4 height minus generous margins to prevent page break */
+  height: 260mm; /* A4 height minus generous margins */
   box-sizing: border-box;
   margin: 0 auto;
   padding: 40px;
@@ -94,8 +94,6 @@ input:-webkit-autofill:active {
   color: #1a1a1a;
   position: relative;
   page-break-inside: avoid;
-  display: flex;
-  flex-direction: column;
 }
 .print-header {
   display: flex;
@@ -232,10 +230,12 @@ input:-webkit-autofill:active {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-top: auto; /* Push footer to bottom */
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  right: 40px;
   padding-top: 20px;
   border-top: 1px solid #e5e7eb;
-  page-break-inside: avoid;
 }
 .print-footer-left {
   font-size: 9px;
