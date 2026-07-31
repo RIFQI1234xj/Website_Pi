@@ -32,6 +32,26 @@ interface ApplicationData {
   tahun_ajaran: string;
   status: 'pending' | 'approved' | 'rejected';
   created_at: string;
+  previous_school?: string;
+  nisn?: string;
+  father_name?: string;
+  father_nik?: string;
+  father_occupation?: string;
+  father_education?: string;
+  father_income?: string;
+  mother_name?: string;
+  mother_nik?: string;
+  mother_occupation?: string;
+  mother_education?: string;
+  mother_income?: string;
+  kk_file_name?: string;
+  kk_file_data?: string;
+  akta_file_name?: string;
+  akta_file_data?: string;
+  ktp_file_name?: string;
+  ktp_file_data?: string;
+  ijazah_file_name?: string;
+  ijazah_file_data?: string;
 }
 
 const StatusBadge: React.FC<{ status: ApplicationData['status'] }> = ({ status }) => {
@@ -657,11 +677,19 @@ export const PPDBPortal: React.FC<PPDBPortalProps> = ({ onLogout }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
                   <div>
                     <p className="text-xs text-gray-500">Nama Lengkap</p>
-                    <p className="text-sm font-semibold text-gray-800">{application.student_name}</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.student_name || '-'}</p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Jenis Kelamin</p>
                     <p className="text-sm font-semibold text-gray-800">{application.gender || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Asal Sekolah (TK/RA)</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.previous_school || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">NISN</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.nisn || '-'}</p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Tempat, Tanggal Lahir</p>
@@ -676,14 +704,72 @@ export const PPDBPortal: React.FC<PPDBPortalProps> = ({ onLogout }) => {
                 </div>
               </div>
 
-              {/* Seksi Orang Tua */}
+              {/* Seksi Data Ayah */}
               <div>
                 <h4 className="text-sm font-bold text-teal-800 mb-3 flex items-center gap-2 border-b border-gray-100 pb-2">
-                  <User size={16} /> Data Orang Tua/Wali
+                  <User size={16} /> Data Ayah Kandung
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
                   <div>
-                    <p className="text-xs text-gray-500">Nama Orang Tua/Wali</p>
+                    <p className="text-xs text-gray-500">Nama Ayah</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.father_name || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">NIK Ayah</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.father_nik || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Pekerjaan</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.father_occupation || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Pendidikan Terakhir</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.father_education || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Penghasilan</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.father_income || '-'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Seksi Data Ibu */}
+              <div>
+                <h4 className="text-sm font-bold text-teal-800 mb-3 flex items-center gap-2 border-b border-gray-100 pb-2">
+                  <User size={16} /> Data Ibu Kandung
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+                  <div>
+                    <p className="text-xs text-gray-500">Nama Ibu</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.mother_name || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">NIK Ibu</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.mother_nik || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Pekerjaan</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.mother_occupation || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Pendidikan Terakhir</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.mother_education || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Penghasilan</p>
+                    <p className="text-sm font-semibold text-gray-800">{application.mother_income || '-'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Seksi Kontak Wali */}
+              <div>
+                <h4 className="text-sm font-bold text-teal-800 mb-3 flex items-center gap-2 border-b border-gray-100 pb-2">
+                  <Phone size={16} /> Kontak Wali (Utama)
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+                  <div>
+                    <p className="text-xs text-gray-500">Nama Wali</p>
                     <p className="text-sm font-semibold text-gray-800">{application.parent_name || '-'}</p>
                   </div>
                   <div>
